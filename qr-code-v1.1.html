@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Live QR Code Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --bg-color: #f4f4f9;
+      --text-color: #222;
+      --container-bg: #fff;
+      --input-bg: #fff;
+      --input-border: #ccc;
+      --input-focus: #4CAF50;
+      --button-bg: #4CAF50;
+      --button-hover: #45a049;
+      --footer-color: #666;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: var(--container-bg);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    .content {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .input-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding-right: 20px;
+    }
+
+    textarea {
+      width: 300px;
+      height: 200px;
+      padding: 10px;
+      background-color: var(--input-bg);
+      color: var(--text-color);
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: Arial, sans-serif;
+      resize: none;
+      outline: none;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    textarea:focus {
+      border-color: var(--input-focus);
+      box-shadow: 0 0 5px var(--input-focus);
+    }
+
+    .data-count {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      background-color: var(--button-bg);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 15px;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: var(--button-hover);
+    }
+
+    .qr-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #qrcode {
+      width: 256px;
+      height: 256px;
+      margin-top: 20px;
+    }
+
+    .page-info {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #444;
+    }
+
+    .pagination {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .footer-note {
+      margin-top: 20px;
+      font-size: 12px;
+      color: var(--footer-color);
+      text-align: center;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="content">
+      <!-- Text input and clear button -->
+      <div class="input-container">
+        <textarea id="qrText" placeholder="Paste your data here..."></textarea>
+        <div class="data-count" id="dataCount">0 values</div>
+        <button id="clearButton">Clear</button>
+      </div>
+
+      <!-- QR code display -->
+      <div class="qr-container">
+        <div id="qrcode"></div>
+        <div class="page-info" id="pageInfo"></div>
+        <div class="pagination" id="paginationControls" style="display: none;">
+          <button id="prevBtn">Previous</button>
+          <button id="nextBtn">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-note">Made by Vys Ing 🤖 in conjunction with ChatGPT</div>
+  </div>
+
+  <script>
+    const qrText = document.getElementById("qrText");
+    const qrContainer = document.getElementById("qrcode");
+    const clearButton = document.getElementById("clearButton");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const pageInfo = document.getElementById("pageInfo");
+    const paginationControls = document.getElementById("paginationControls");
+    const dataCount = document.getElementById("dataCount");
+
+    const MAX_QR_CHARS = 1200;
+    let pages = [];
+    let currentPage = 0;
+
+    function processInputText(text) {
+      const values = text.trim().split(/\s+/).filter(v => v !== "");
+      updateDataCount(values.length);
+      return values.join('\r');
+    }
+
+    function updateDataCount(count) {
+      dataCount.textContent = `${count} value${count === 1 ? '' : 's'}`;
+    }
+
+    function splitIntoPages(data) {
+      const result = [];
+      for (let i = 0; i < data.length; i += MAX_QR_CHARS) {
+        result.push(data.substring(i, i + MAX_QR_CHARS));
+      }
+      return result;
+    }
+
+    function updatePageInfo() {
+      if (pages.length <= 1) {
+        paginationControls.style.display = "none";
+        pageInfo.textContent = "";
+      } else {
+        paginationControls.style.display = "flex";
+        pageInfo.textContent = `Page ${currentPage + 1} of ${pages.length}`;
+      }
+    }
+
+    function generateQRCode(text) {
+      if (text.trim() === "") {
+        qrContainer.innerHTML = "";
+        updateDataCount(0);
+        pages = [];
+        pageInfo.textContent = "";
+        paginationControls.style.display = "none";
+        return;
+      }
+
+      const formattedText = processInputText(text);
+      pages = splitIntoPages(formattedText);
+      currentPage = 0;
+      updateQRCodeDisplay();
+    }
+
+    function updateQRCodeDisplay() {
+      qrContainer.innerHTML = "";
+      if (pages.length > 0) {
+        new QRCode(qrContainer, {
+          text: pages[currentPage],
+          width: 256,
+          height: 256,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      }
+      updatePageInfo();
+    }
+
+    qrText.addEventListener("input", () => {
+      generateQRCode(qrText.value);
+    });
+
+    clearButton.addEventListener("click", () => {
+      qrText.value = "";
+      qrContainer.innerHTML = "";
+      pages = [];
+      pageInfo.textContent = "";
+      updateDataCount(0);
+      paginationControls.style.display = "none";
+    });
+
+    prevBtn.addEventListener("click", () => {
+      if (currentPage > 0) {
+        currentPage--;
+        updateQRCodeDisplay();
+      }
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (currentPage < pages.length - 1) {
+        currentPage++;
+        updateQRCodeDisplay();
+      }
+    });
+  </script>
+
+</body>
+</html>
