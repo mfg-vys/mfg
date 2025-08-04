@@ -1,123 +1,164 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Device Sign In/Out 1</title>
+  <title>Device Sign In/Out Multi-Step</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <style>
     .page { display: none; }
     .active { display: block; }
     body { font-family: Arial, sans-serif; margin: 20px; }
     button { margin: 5px; padding: 10px 20px; font-size: 16px; }
-    input, select { padding: 8px; font-size: 16px; width: 200px; margin: 5px 0; }
+    select, input { padding: 8px; font-size: 16px; width: 220px; margin: 8px 0; }
     #result { margin-top: 10px; font-weight: bold; }
   </style>
 </head>
 <body>
+
   <!-- Page 1: Choose Sign In or Sign Out -->
-  <div id="page-choose" class="page active">
+  <div id="page-choose-action" class="page active">
     <h1>Choose Action</h1>
-    <button onclick="showPage('page-signin')">Sign In</button>
-    <button onclick="showPage('page-signout')">Sign Out</button>
+    <button onclick="selectAction('sign in')">Sign In</button>
+    <button onclick="selectAction('sign out')">Sign Out</button>
   </div>
 
-  <!-- Page 2: Sign In form -->
-  <div id="page-signin" class="page">
-    <h1>Sign In</h1>
-    <input id="signin-name" placeholder="Your Name" />
-    <select id="signin-device">
-      <option>Loading devices...</option>
-    </select>
-    <br/>
-    <button onclick="submitSign('sign in')">Submit</button>
-    <button onclick="showPage('page-choose')">Back</button>
-    <div id="signin-result"></div>
+  <!-- Page 2: Select Device Type -->
+  <div id="page-select-type" class="page">
+    <h1>Select Device Type</h1>
+    <button onclick="selectDeviceType('mushiny')">Mushiny</button>
+    <button onclick="selectDeviceType('wms')">WMS</button>
+    <br /><button onclick="showPage('page-choose-action')">Back</button>
   </div>
 
-  <!-- Page 3: Sign Out form -->
-  <div id="page-signout" class="page">
-    <h1>Sign Out</h1>
-    <input id="signout-name" placeholder="Your Name" />
-    <select id="signout-device">
-      <option>Loading devices...</option>
-    </select>
-    <br/>
-    <button onclick="submitSign('sign out')">Submit</button>
-    <button onclick="showPage('page-choose')">Back</button>
-    <div id="signout-result"></div>
+  <!-- Page 3: Select Device ID -->
+  <div id="page-select-device" class="page">
+    <h1>Select Device ID</h1>
+    <select id="device-id-select"></select>
+    <br /><button onclick="showPage('page-select-type')">Back</button>
+    <button onclick="proceedToName()">Next</button>
+  </div>
+
+  <!-- Page 4: Enter User Name -->
+  <div id="page-enter-name" class="page">
+    <h1>Enter Your Name</h1>
+    <input id="user-name-input" placeholder="Your Name" />
+    <br />
+    <button onclick="showPage('page-select-device')">Back</button>
+    <button onclick="submitSign()">Submit</button>
+    <div id="submit-result"></div>
   </div>
 
   <script>
-    // Your Supabase credentials
     const SUPABASE_URL = "https://tnzrbszknrorumoajgty.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuenJic3prbnJvcnVtb2FqZ3R5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NTM0MTAsImV4cCI6MjA2OTUyOTQxMH0.3Mw2Ke2csi0P2p9LXBv9v1cy1ORVMhgz-mCBqv7Uj4A";
 
-    // Initialize Supabase client correctly
     const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // State holders
+    let selectedAction = null;
+    let selectedDeviceType = null;
+    let selectedDeviceId = null;
 
     function showPage(id) {
       document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
       });
       document.getElementById(id).classList.add('active');
-      clearResults();
+      clearMessages();
     }
 
-    function clearResults() {
-      ['signin-result', 'signout-result'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = "";
-      });
+    function clearMessages() {
+      const resultDiv = document.getElementById('submit-result');
+      if (resultDiv) resultDiv.textContent = '';
     }
 
-    async function loadDevices() {
-      const { data, error } = await client.from('devices').select('id,type').order('type');
-      console.log('Devices data:', data);
-      console.log('Devices error:', error);
+    // Step 1: User selects sign in or out
+    function selectAction(action) {
+      selectedAction = action;
+      showPage('page-select-type');
+    }
+
+    // Step 2: User selects device type
+    function selectDeviceType(type) {
+      selectedDeviceType = type;
+      loadDevicesByType(type);
+      showPage('page-select-device');
+    }
+
+    // Load devices filtered by type into select box
+    async function loadDevicesByType(type) {
+      const { data, error } = await client
+                               .from('devices')
+                               .select('id')
+                               .eq('type', type)
+                               .order('id');
+
+      const select = document.getElementById('device-id-select');
+      select.innerHTML = '';
       if (error) {
-        alert('Failed to load devices: ' + error.message);
+        alert('Error loading devices: ' + error.message);
         return;
       }
-      ['signin-device', 'signout-device'].forEach(selectId => {
-        const select = document.getElementById(selectId);
-        select.innerHTML = '';
-        data.forEach(device => {
-          const option = document.createElement('option');
-          option.value = device.id;
-          option.textContent = `${device.type} - ${device.id}`;
-          select.appendChild(option);
-        });
+      if (!data || data.length === 0) {
+        const emptyOption = document.createElement('option');
+        emptyOption.textContent = 'No devices found';
+        select.appendChild(emptyOption);
+        select.disabled = true;
+        return;
+      }
+      data.forEach(device => {
+        const option = document.createElement('option');
+        option.value = device.id;
+        option.textContent = device.id;
+        select.appendChild(option);
       });
+      select.disabled = false;
     }
 
-    async function submitSign(action) {
-      const nameInput = document.getElementById(action === 'sign in' ? 'signin-name' : 'signout-name');
-      const deviceSelect = document.getElementById(action === 'sign in' ? 'signin-device' : 'signout-device');
-      const resultDiv = document.getElementById(action === 'sign in' ? 'signin-result' : 'signout-result');
-
-      const user_name = nameInput.value.trim();
-      const device_id = deviceSelect.value;
-
-      if (!user_name || !device_id) {
-        resultDiv.textContent = 'Please fill all fields.';
+    // Step 3: Proceed from device selection to name input
+    function proceedToName() {
+      const select = document.getElementById('device-id-select');
+      selectedDeviceId = select.value;
+      if (!selectedDeviceId) {
+        alert('Please select a device.');
         return;
       }
+      showPage('page-enter-name');
+    }
 
-      const { error } = await client.from('device_sign_logs').insert([{ 
-        user_name,
-        device_id,
-        action
+    // Step 4: Submit the sign in/out record
+    async function submitSign() {
+      const nameInput = document.getElementById('user-name-input');
+      const userName = nameInput.value.trim();
+      const resultDiv = document.getElementById('submit-result');
+
+      if (!userName) {
+        resultDiv.textContent = 'Please enter your name.';
+        return;
+      }
+      if (!selectedAction || !selectedDeviceType || !selectedDeviceId) {
+        resultDiv.textContent = 'Something went wrong. Please start again.';
+        return;
+      }
+      
+      const { error } = await client.from('device_sign_logs').insert([{
+        user_name: userName,
+        device_id: selectedDeviceId,
+        action: selectedAction
       }]);
 
       if (error) {
-        resultDiv.textContent = 'Failed to submit: ' + error.message;
+        resultDiv.textContent = 'Submit failed: ' + error.message;
       } else {
         resultDiv.textContent = 'Success! Your entry was recorded.';
+        // Reset state & inputs for next user
+        selectedAction = null;
+        selectedDeviceType = null;
+        selectedDeviceId = null;
         nameInput.value = '';
-        deviceSelect.selectedIndex = 0;
+        showPage('page-choose-action');
       }
     }
 
-    window.onload = () => loadDevices();
   </script>
 </body>
 </html>
