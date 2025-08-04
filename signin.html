@@ -38,18 +38,19 @@
       color: #222;
     }
     button {
-      width: 80vw;
-      max-width: 400px;
-      height: 60px;
-      font-size: 1.2rem;
-      margin-bottom: 20px;
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
       border: none;
+      border-radius: 8px;
       background-color: #007BFF;
       color: white;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
       user-select: none;
+      transition: background-color 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     button:hover {
       background-color: #0056b3;
@@ -98,17 +99,52 @@
       max-width: 400px;
       text-align: center;
       font-weight: bold;
-      color: #d32f2f; /* red for errors */
+      color: #d32f2f;
       margin-top: 10px;
       min-height: 24px;
     }
-    /* Responsive adjustments */
-    @media (min-width: 600px) {
-      button, input[type="text"], #device-list {
-        width: 400px;
+
+    /* Responsive device type button container */
+    #page-device-selection > div {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      padding: 0 10px;  /* padding to prevent cutoff on edges */
+      box-sizing: border-box;
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 420px;
+    }
+    #page-device-selection > div > button {
+      flex: 1 1 0;
+      min-width: 0;  /* allow shrinking */
+      max-width: 50vw;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      padding: 12px;
+      /* Reset colors for toggle effect */
+      background-color: transparent;
+      color: #007BFF;
+      border: 2px solid #007BFF;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+    #page-device-selection > div > button:hover {
+      background-color: #007BFF;
+      color: white;
+    }
+    #page-device-selection > div > button.active {
+      background-color: #007BFF;
+      color: white;
+    }
+
+    @media (max-width: 320px) {
+      #page-device-selection > div {
+        flex-direction: column;
       }
-      h1 {
-        font-size: 2.5rem;
+      #page-device-selection > div > button {
+        max-width: 100%;
+        margin-bottom: 8px;
       }
     }
   </style>
@@ -125,9 +161,9 @@
   <!-- Page 2: Device Type and Selection -->
   <div id="page-device-selection" class="page" role="main">
     <h1 id="action-title"></h1>
-    <div style="display: flex; gap: 20px; margin-bottom: 20px;">
-      <button style="flex: 1;" onclick="selectDeviceType('mushiny')" id="btn-mushiny">Mushiny</button>
-      <button style="flex: 1;" onclick="selectDeviceType('wms')" id="btn-wms">WMS</button>
+    <div>
+      <button id="btn-mushiny" onclick="selectDeviceType('mushiny')">Mushiny</button>
+      <button id="btn-wms" onclick="selectDeviceType('wms')">WMS</button>
     </div>
     <ul id="device-list" aria-label="Device selection list" role="listbox" tabindex="0"></ul>
     <input type="text" id="user-name" placeholder="Enter your name" aria-label="User Name" />
@@ -158,7 +194,7 @@
     const msg = document.getElementById('result-message');
     if (msg) {
       msg.textContent = '';
-      msg.style.color = '#d32f2f'; // default to error color, can change on success
+      msg.style.color = '#d32f2f'; // default error red
     }
   }
 
@@ -183,18 +219,10 @@
     clearDeviceList();
     clearResultMessage();
 
-    // Highlight active device type button
-    document.getElementById('btn-mushiny').style.backgroundColor = 'transparent';
-    document.getElementById('btn-wms').style.backgroundColor = 'transparent';
-    if (type === 'mushiny') {
-      document.getElementById('btn-mushiny').style.backgroundColor = '#007BFF';
-      document.getElementById('btn-mushiny').style.color = 'white';
-      document.getElementById('btn-wms').style.color = 'black';
-    } else {
-      document.getElementById('btn-wms').style.backgroundColor = '#007BFF';
-      document.getElementById('btn-wms').style.color = 'white';
-      document.getElementById('btn-mushiny').style.color = 'black';
-    }
+    // Update active button style
+    document.getElementById('btn-mushiny').classList.remove('active');
+    document.getElementById('btn-wms').classList.remove('active');
+    document.getElementById(`btn-${type}`).classList.add('active');
 
     const { data, error } = await client
       .from('devices')
@@ -288,6 +316,8 @@
     selectedDeviceId = null;
     clearDeviceList();
     document.getElementById('user-name').value = '';
+    document.getElementById('btn-mushiny').classList.remove('active');
+    document.getElementById('btn-wms').classList.remove('active');
     showPage('page-choose-action');
   }
 </script>
