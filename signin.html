@@ -6,6 +6,10 @@
   <style>
     .page { display: none; }
     .active { display: block; }
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    button { margin: 5px; padding: 10px 20px; font-size: 16px; }
+    input, select { padding: 8px; font-size: 16px; width: 200px; margin: 5px 0; }
+    #result { margin-top: 10px; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -21,8 +25,9 @@
     <h1>Sign In</h1>
     <input id="signin-name" placeholder="Your Name" />
     <select id="signin-device">
-      <!-- options dynamically loaded -->
+      <option>Loading devices...</option>
     </select>
+    <br/>
     <button onclick="submitSign('sign in')">Submit</button>
     <button onclick="showPage('page-choose')">Back</button>
     <div id="signin-result"></div>
@@ -33,47 +38,54 @@
     <h1>Sign Out</h1>
     <input id="signout-name" placeholder="Your Name" />
     <select id="signout-device">
-      <!-- options dynamically loaded -->
+      <option>Loading devices...</option>
     </select>
+    <br/>
     <button onclick="submitSign('sign out')">Submit</button>
     <button onclick="showPage('page-choose')">Back</button>
     <div id="signout-result"></div>
   </div>
 
   <script>
-    // Supabase init
-    const SUPABASE_URL = "https://your-project-ref.supabase.co";
-    const SUPABASE_KEY = "your-anon-key";
+    // Your Supabase credentials
+    const SUPABASE_URL = "https://tnzrbszknrorumoajgty.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuenJic3prbnJvcnVtb2FqZ3R5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NTM0MTAsImV4cCI6MjA2OTUyOTQxMH0.3Mw2Ke2csi0P2p9LXBv9v1cy1ORVMhgz-mCBqv7Uj4A";
+
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // Show only the specified page div
     function showPage(id) {
       document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
       });
       document.getElementById(id).classList.add('active');
+      clearResults();
     }
 
-    // Load device list dynamically to all select boxes
+    function clearResults() {
+      ['signin-result', 'signout-result'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = "";
+      });
+    }
+
     async function loadDevices() {
-      const { data, error } = await supabase.from('devices').select('id,name');
+      const { data, error } = await supabase.from('devices').select('id,type').order('type');
       if (error) {
         alert('Failed to load devices: ' + error.message);
         return;
       }
       ['signin-device', 'signout-device'].forEach(selectId => {
         const select = document.getElementById(selectId);
-        select.innerHTML = ''; // clear previous
+        select.innerHTML = '';
         data.forEach(device => {
           const option = document.createElement('option');
           option.value = device.id;
-          option.textContent = device.name;
+          option.textContent = `${device.type} - ${device.id}`;
           select.appendChild(option);
         });
       });
     }
 
-    // Called on submit from sign in/out forms
     async function submitSign(action) {
       const nameInput = document.getElementById(action === 'sign in' ? 'signin-name' : 'signout-name');
       const deviceSelect = document.getElementById(action === 'sign in' ? 'signin-device' : 'signout-device');
@@ -96,11 +108,12 @@
       if (error) {
         resultDiv.textContent = 'Failed to submit: ' + error.message;
       } else {
-        resultDiv.textContent = 'Success!';
+        resultDiv.textContent = 'Success! Your entry was recorded.';
+        nameInput.value = '';
+        deviceSelect.selectedIndex = 0;
       }
     }
 
-    // Load devices on page load
     window.onload = () => loadDevices();
   </script>
 </body>
