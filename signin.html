@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Device Sign In/Out</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+  <h1>Device Sign In/Out</h1>
+  <input id="name" placeholder="User name" />
+  <input id="device" placeholder="Device ID" />
+  <select id="action">
+    <option value="sign in">Sign In</option>
+    <option value="sign out">Sign Out</option>
+  </select>
+  <button onclick="signDevice()">Submit</button>
+  <div id="result"></div>
+  <script>
+    // -- Replace these with YOUR Supabase project credentials --
+    const SUPABASE_URL = "https://your-project-ref.supabase.co";
+    const SUPABASE_KEY = "your-anon-key";
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function signDevice() {
+      const user_name = document.getElementById('name').value;
+      const device_id = document.getElementById('device').value;
+      const action = document.getElementById('action').value;
+      let resDiv = document.getElementById('result');
+      if (!user_name || !device_id) {
+        resDiv.textContent = "Please fill both fields.";
+        return;
+      }
+      const { error } = await client
+        .from('device_sign_logs')
+        .insert([{ user_name, device_id, action }]);
+      if (error) {
+        resDiv.textContent = "Failed to submit: " + error.message;
+      } else {
+        resDiv.textContent = "Success!";
+      }
+    }
+  </script>
+</body>
+</html>
