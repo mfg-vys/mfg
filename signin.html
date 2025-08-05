@@ -37,10 +37,17 @@
       text-align: center;
       color: #222;
     }
-    /* Shared button style for main menu, device type buttons, and submit/back */
-    .btn, #actions-row button {
+    /* --- Large Button Container: 90% width --- */
+    .fullwidth-btns {
       width: 90vw;
-      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      margin: 0 auto 10px auto;
+    }
+    .fullwidth-btns button {
+      width: 100%;
       min-height: 56px;
       font-size: 1.2rem;
       font-weight: bold;
@@ -48,52 +55,80 @@
       background: #007BFF;
       color: #fff;
       border: none;
-      padding: 16px 0;
-      margin: 8px 0;
+      transition: background 0.2s;
+      margin: 0;
+      padding: 18px 0;
       cursor: pointer;
       user-select: none;
-      transition: background 0.2s ease;
-      box-sizing: border-box;
+      letter-spacing: 0.5px;
     }
-    .btn:hover, .btn:focus,
-    #actions-row button:hover,
-    #actions-row button:focus {
+    .fullwidth-btns button:hover,
+    .fullwidth-btns button:focus {
       background: #0056b3;
       outline: none;
     }
-    /* Disabled Back button style */
-    #actions-row button.back-btn {
-      background: #6c757d;
-      color: #fff;
-      margin-left: 14px;
-    }
-    #actions-row button.back-btn:hover,
-    #actions-row button.back-btn:focus {
-      background: #545b62;
-    }
-    /* Device type button container */
+    /* --- Device Type Buttons Row: 90vw --- */
     #type-btn-row {
       width: 90vw;
-      max-width: 600px;
       display: flex;
-      justify-content: space-between;
-      padding: 0;
+      gap: 0;
       margin: 0 auto 20px auto;
-      gap: 14px;
     }
     #type-btn-row button {
-      width: 48%;
+      flex: 1 1 0;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #007BFF;
+      background: #fff;
+      border: none;
+      border-radius: 0;
+      min-height: 56px;
       text-align: center;
-      padding: 16px 0;
-      border-radius: 8px;
+      transition: background 0.2s, color 0.2s;
+      outline: none;
+      cursor: pointer;
+      user-select: none;
+      letter-spacing: 0.5px;
+      padding: 18px 0;
+      margin: 0;
+      border-top: 2px solid #007BFF;
+      border-bottom: 2px solid #007BFF;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
     }
-    /* Device list styles */
+    #btn-mushiny {
+      border-left: 2px solid #007BFF;
+      border-radius: 8px 0 0 8px;
+    }
+    #btn-wms {
+      border-right: 2px solid #007BFF;
+      border-radius: 0 8px 8px 0;
+    }
+    #type-btn-row button.active,
+    #type-btn-row button:focus {
+      background: #007BFF;
+      color: #fff;
+      border-color: #007BFF;
+    }
+    @media (max-width: 380px) {
+      #type-btn-row {
+        flex-direction: column;
+        gap: 16px;
+      }
+      #btn-mushiny, #btn-wms {
+        border-radius: 8px !important;
+        border-left: 2px solid #007BFF !important;
+        border-right: 2px solid #007BFF !important;
+      }
+    }
+    /* --- Device List --- */
     #device-list {
       list-style: none;
       padding: 0;
       margin: 0 0 20px 0;
       width: 90vw;
-      max-width: 600px;
       background: #fff;
       border: 1px solid #ccc;
       border-radius: 8px;
@@ -120,10 +155,9 @@
     #device-list li:last-child {
       border-bottom: none;
     }
-    /* User name input styling */
+    /* --- User Name Input --- */
     input[type="text"] {
       width: 90vw;
-      max-width: 600px;
       margin-bottom: 18px;
       padding: 16px;
       font-size: 1.1rem;
@@ -135,10 +169,45 @@
       margin-left: auto;
       margin-right: auto;
     }
-    /* Result message styles */
+    /* --- Submit & Back Row --- */
+    #actions-row {
+      width: 90vw;
+      display: flex;
+      gap: 14px;
+      margin-bottom: 8px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #actions-row button {
+      flex: 1 1 0;
+      font-size: 1.2rem;
+      min-height: 56px;
+      padding: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      border: none;
+      outline: none;
+    }
+    #actions-row button:first-child {
+      background: #007BFF;
+      color: white;
+      transition: background 0.2s;
+    }
+    #actions-row button:first-child:hover,
+    #actions-row button:first-child:focus { background: #0056b3; }
+    #actions-row button:last-child {
+      background: #6c757d;
+      color: white;
+      transition: background 0.2s;
+    }
+    #actions-row button:last-child:hover,
+    #actions-row button:last-child:focus { background: #545b62; }
+    /* --- Result Message --- */
     #result-message {
       width: 90vw;
-      max-width: 600px;
       text-align: center;
       font-weight: bold;
       color: #d32f2f;
@@ -158,9 +227,9 @@
   <!-- Main menu (page 1) -->
   <div id="page-choose-action" class="page active">
     <h1>Choose Action</h1>
-    <div id="action-btn-container">
-      <button class="btn" onclick="selectAction('sign in')">Sign In</button>
-      <button class="btn" onclick="selectAction('sign out')">Sign Out</button>
+    <div class="fullwidth-btns" id="action-btn-container">
+      <button onclick="selectAction('sign in')">Sign In</button>
+      <button onclick="selectAction('sign out')">Sign Out</button>
     </div>
   </div>
 
@@ -168,14 +237,14 @@
   <div id="page-device-selection" class="page" role="main">
     <h1 id="action-title"></h1>
     <div id="type-btn-row">
-      <button class="btn" id="btn-mushiny" onclick="selectDeviceType('mushiny')">Mushiny</button>
-      <button class="btn" id="btn-wms" onclick="selectDeviceType('wms')">WMS</button>
+      <button id="btn-mushiny" onclick="selectDeviceType('mushiny')">Mushiny</button>
+      <button id="btn-wms" onclick="selectDeviceType('wms')">WMS</button>
     </div>
     <ul id="device-list" aria-label="Device selection list" role="listbox" tabindex="0"></ul>
     <input type="text" id="user-name" placeholder="Enter your name" aria-label="User Name" />
     <div id="actions-row">
-      <button class="btn" onclick="submitSign()" id="submit-btn">Submit</button>
-      <button class="btn back-btn" onclick="backToAction()" id="back-btn">Back</button>
+      <button onclick="submitSign()" id="submit-btn">Submit</button>
+      <button onclick="backToAction()" id="back-btn">Back</button>
     </div>
     <div id="result-message" role="alert"></div>
   </div>
