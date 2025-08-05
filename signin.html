@@ -67,7 +67,7 @@
       background: #0056b3;
       outline: none;
     }
-    /* --- Device Type Buttons in Row: 90vw --- */
+    /* --- Device Type Buttons Row: 90vw --- */
     #type-btn-row {
       width: 90vw;
       display: flex;
@@ -83,20 +83,32 @@
       border: 2px solid #007BFF;
       min-height: 56px;
       border-radius: 0;
+      text-align: center;
       transition: background 0.2s, color 0.2s;
       outline: none;
       cursor: pointer;
       user-select: none;
       letter-spacing: 0.5px;
       padding: 18px 0;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     #type-btn-row button.active,
     #type-btn-row button:focus {
       background: #007BFF;
       color: #fff;
+      border: 2px solid #007BFF;
     }
-    #btn-mushiny { border-radius: 8px 0 0 8px; border-right: none; }
-    #btn-wms { border-radius: 0 8px 8px 0; border-left: none; }
+    #btn-mushiny {
+      border-radius: 8px 0 0 8px;
+      border-right: none;
+    }
+    #btn-wms {
+      border-radius: 0 8px 8px 0;
+      border-left: none;
+    }
     @media (max-width: 380px) {
       #type-btn-row {
         flex-direction: column;
@@ -137,7 +149,9 @@
       background-color: #007BFF;
       color: white;
     }
-    #device-list li:last-child { border-bottom: none; }
+    #device-list li:last-child {
+      border-bottom: none;
+    }
     /* --- User Name Input --- */
     input[type="text"] {
       width: 90vw;
@@ -200,7 +214,9 @@
       margin-right: auto;
       font-size: 1rem;
     }
-    #result-message.success { color: #007B00; }
+    #result-message.success {
+      color: #007B00;
+    }
   </style>
 </head>
 <body>
@@ -208,7 +224,7 @@
   <!-- Main menu (page 1) -->
   <div id="page-choose-action" class="page active">
     <h1>Choose Action</h1>
-    <div class="fullwidth-btns">
+    <div class="fullwidth-btns" id="action-btn-container">
       <button onclick="selectAction('sign in')">Sign In</button>
       <button onclick="selectAction('sign out')">Sign Out</button>
     </div>
