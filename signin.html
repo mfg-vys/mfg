@@ -58,37 +58,50 @@
     /* ==== Updated Button Container and Button for Device Type ==== */
     #page-device-selection > div {
       display: flex;
-      gap: 16px;
-      justify-content: center;
-      margin-bottom: 20px;
       width: 80vw;
-      max-width: 400px;
+      max-width: 600px;
+      margin-bottom: 20px;
       padding: 0 0;
       box-sizing: border-box;
+      gap: 0; /* no gap so buttons are flush */
+      justify-content: center;
     }
     #page-device-selection > div > button {
       flex: 1 1 0;
-      min-width: 0;
-      width: 50%;
-      max-width: none;
-      padding: 16px 0;
-      background-color: transparent;
-      color: #007BFF;
-      border: 2px solid #007BFF;
-      border-radius: 8px;
       font-weight: 600;
-      font-size: 1.2rem;
+      color: #007BFF;
+      background: #fff;
+      border: 2px solid #007BFF;
+      min-height: 60px;
+      border-radius: 0;
+      text-align: center;
+      transition: background-color 0.2s, color 0.2s;
+      outline: none;
     }
     #page-device-selection > div > button.active,
     #page-device-selection > div > button:focus {
-      background-color: #007BFF;
-      color: white;
+      background: #007BFF;
+      color: #fff;
     }
-    @media (max-width: 500px) {
+    #btn-mushiny {
+      border-radius: 8px 0 0 8px;
+      border-right: none;
+    }
+    #btn-wms {
+      border-radius: 0 8px 8px 0;
+      border-left: none;
+    }
+    @media (max-width: 320px) {
       #page-device-selection > div {
+        flex-direction: column;
         width: 96vw;
         max-width: none;
         gap: 8px;
+      }
+      #page-device-selection > div > button {
+        border-radius: 8px !important;
+        border-right: 2px solid #007BFF !important;
+        border-left: 2px solid #007BFF !important;
       }
     }
     #device-list {
@@ -96,48 +109,63 @@
       padding: 0;
       margin: 0 0 20px 0;
       width: 80vw;
-      max-width: 400px;
-      max-height: 240px;
+      max-width: 600px;
+      max-height: 250px;
       overflow-y: auto;
       border-radius: 8px;
       border: 1px solid #ccc;
       background-color: white;
     }
     #device-list li {
-      padding: 16px;
-      border-bottom: 1px solid #eee;
+      padding: 18px;
       cursor: pointer;
-      font-size: 1.1rem;
+      border-bottom: 1px solid #eee;
+      font-size: 1.15rem;
       text-align: center;
       user-select: none;
-      transition: background-color 0.2s ease, color 0.2s ease;
-    }
-    #device-list li:last-child {
-      border-bottom: none;
+      transition: background-color 0.2s;
     }
     #device-list li.selected {
       background-color: #007BFF;
       color: white;
-      font-weight: 600;
+      font-weight: 700;
+    }
+    #device-list li:last-child {
+      border-bottom: none;
     }
     input[type="text"] {
       width: 80vw;
-      max-width: 400px;
+      max-width: 600px;
+      margin-bottom: 16px;
+      padding: 14px;
       font-size: 1.1rem;
-      padding: 16px;
       border-radius: 8px;
       border: 1px solid #ccc;
       box-sizing: border-box;
-      margin-bottom: 20px;
+    }
+    #actions-row {
+      width: 80vw;
+      max-width: 600px;
+      display: flex;
+      gap: 14px;
+    }
+    #actions-row button {
+      flex: 1;
+      font-size: 1.15rem;
+      min-height: 48px;
+      padding: 0;
     }
     #result-message {
       width: 80vw;
-      max-width: 400px;
+      max-width: 600px;
       text-align: center;
       font-weight: bold;
       color: #d32f2f;
-      margin-top: 10px;
+      margin-top: 12px;
       min-height: 24px;
+    }
+    #result-message.success {
+      color: #007B00;
     }
   </style>
 </head>
@@ -159,9 +187,9 @@
     </div>
     <ul id="device-list" aria-label="Device selection list" role="listbox" tabindex="0"></ul>
     <input type="text" id="user-name" placeholder="Enter your name" aria-label="User Name" />
-    <div>
+    <div id="actions-row">
       <button onclick="submitSign()">Submit</button>
-      <button onclick="backToAction()" style="background-color: #6c757d; margin-left: 10px;">Back</button>
+      <button onclick="backToAction()" style="background-color: #6c757d;">Back</button>
     </div>
     <div id="result-message" role="alert"></div>
   </div>
@@ -186,6 +214,7 @@
     const msg = document.getElementById('result-message');
     if (msg) {
       msg.textContent = '';
+      msg.classList.remove('success');
       msg.style.color = '#d32f2f'; // default error red
     }
   }
@@ -211,7 +240,6 @@
     clearDeviceList();
     clearResultMessage();
 
-    // Update active button style
     document.getElementById('btn-mushiny').classList.remove('active');
     document.getElementById('btn-wms').classList.remove('active');
     document.getElementById(`btn-${type}`).classList.add('active');
@@ -271,12 +299,14 @@
 
     if (!selectedDeviceId) {
       resultDiv.textContent = "Please select a device.";
+      resultDiv.classList.remove('success');
       resultDiv.style.color = '#d32f2f';
       return;
     }
 
     if (!userName) {
       resultDiv.textContent = "Please enter your name.";
+      resultDiv.classList.remove('success');
       resultDiv.style.color = '#d32f2f';
       return;
     }
@@ -289,9 +319,11 @@
 
     if (error) {
       resultDiv.textContent = "Submission failed: " + error.message;
+      resultDiv.classList.remove('success');
       resultDiv.style.color = '#d32f2f';
     } else {
       resultDiv.textContent = "Success! Your entry was recorded.";
+      resultDiv.classList.add('success');
       resultDiv.style.color = '#007B00';
       // Reset form and navigate back
       selectedAction = null;
