@@ -21,12 +21,12 @@
     .page {
       display: none;
       flex-direction: column;
-      height: 100%;
-      padding: 20px;
+      min-height: 100vh;
+      padding: 20px 0;
       box-sizing: border-box;
       justify-content: center;
       align-items: center;
-      width: 100%;
+      width: 100vw;
     }
     .active {
       display: flex;
@@ -37,17 +37,16 @@
       text-align: center;
       color: #222;
     }
-    /* Main menu buttons container */
-    #action-btn-container {
+    /* --- Large Button Container: 90% width --- */
+    .fullwidth-btns {
       width: 90vw;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 20px;
       align-items: center;
-      margin: 0 auto;
+      margin: 0 auto 10px auto;
     }
-    /* Main menu buttons style */
-    #action-btn-container button {
+    .fullwidth-btns button {
       width: 100%;
       min-height: 56px;
       font-size: 1.2rem;
@@ -58,113 +57,94 @@
       border: none;
       transition: background 0.2s;
       margin: 0;
-      padding: 16px 0;
+      padding: 18px 0;
       cursor: pointer;
       user-select: none;
+      letter-spacing: 0.5px;
     }
-    #action-btn-container button:hover,
-    #action-btn-container button:focus {
+    .fullwidth-btns button:hover,
+    .fullwidth-btns button:focus {
       background: #0056b3;
       outline: none;
     }
-    /* Device Type Buttons container */
-    #page-device-selection > div {
+    /* --- Device Type Buttons in Row: 90vw --- */
+    #type-btn-row {
+      width: 90vw;
       display: flex;
-      width: 80vw;
-      max-width: 600px;
-      margin-bottom: 20px;
-      padding: 0 0;
-      box-sizing: border-box;
       gap: 0;
-      justify-content: center;
-      margin-left: auto;
-      margin-right: auto;
+      margin: 0 auto 20px auto;
     }
-    /* Device Type Buttons style */
-    #page-device-selection > div > button {
+    #type-btn-row button {
       flex: 1 1 0;
-      font-weight: 600;
+      font-size: 1.2rem;
+      font-weight: bold;
       color: #007BFF;
       background: #fff;
       border: 2px solid #007BFF;
-      min-height: 60px;
+      min-height: 56px;
       border-radius: 0;
-      text-align: center;
-      transition: background-color 0.2s, color 0.2s;
+      transition: background 0.2s, color 0.2s;
       outline: none;
       cursor: pointer;
       user-select: none;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      letter-spacing: 0.5px;
+      padding: 18px 0;
     }
-    #page-device-selection > div > button.active,
-    #page-device-selection > div > button:focus {
+    #type-btn-row button.active,
+    #type-btn-row button:focus {
       background: #007BFF;
       color: #fff;
     }
-    #btn-mushiny {
-      border-radius: 8px 0 0 8px;
-      border-right: none;
-    }
-    #btn-wms {
-      border-radius: 0 8px 8px 0;
-      border-left: none;
-    }
-    @media (max-width: 320px) {
-      #page-device-selection > div {
+    #btn-mushiny { border-radius: 8px 0 0 8px; border-right: none; }
+    #btn-wms { border-radius: 0 8px 8px 0; border-left: none; }
+    @media (max-width: 380px) {
+      #type-btn-row {
         flex-direction: column;
-        width: 96vw;
-        max-width: none;
-        gap: 8px;
-        margin-left: auto;
-        margin-right: auto;
+        gap: 16px;
       }
-      #page-device-selection > div > button {
+      #btn-mushiny,
+      #btn-wms {
         border-radius: 8px !important;
-        border-right: 2px solid #007BFF !important;
-        border-left: 2px solid #007BFF !important;
+        border: 2px solid #007BFF;
       }
     }
-    /* Device list styles */
+    /* --- Device List --- */
     #device-list {
       list-style: none;
       padding: 0;
       margin: 0 0 20px 0;
-      width: 80vw;
-      max-width: 600px;
-      max-height: 250px;
-      overflow-y: auto;
-      border-radius: 8px;
+      width: 90vw;
+      background: #fff;
       border: 1px solid #ccc;
-      background-color: white;
+      border-radius: 8px;
+      max-height: 240px;
+      overflow-y: auto;
       margin-left: auto;
       margin-right: auto;
     }
     #device-list li {
-      padding: 18px;
+      padding: 22px;
       cursor: pointer;
       border-bottom: 1px solid #eee;
       font-size: 1.15rem;
       text-align: center;
       user-select: none;
-      transition: background-color 0.2s;
+      font-weight: bold;
+      transition: background 0.2s, color 0.2s;
+      letter-spacing: 0.5px;
     }
     #device-list li.selected {
       background-color: #007BFF;
       color: white;
-      font-weight: 700;
     }
-    #device-list li:last-child {
-      border-bottom: none;
-    }
-    /* User name input styling */
+    #device-list li:last-child { border-bottom: none; }
+    /* --- User Name Input --- */
     input[type="text"] {
-      width: 80vw;
-      max-width: 600px;
-      margin-bottom: 16px;
-      padding: 14px;
+      width: 90vw;
+      margin-bottom: 18px;
+      padding: 16px;
       font-size: 1.1rem;
+      font-weight: bold;
       border-radius: 8px;
       border: 1px solid #ccc;
       box-sizing: border-box;
@@ -172,23 +152,25 @@
       margin-left: auto;
       margin-right: auto;
     }
-    /* Buttons row on device selection */
+    /* --- Submit & Back Row --- */
     #actions-row {
-      width: 80vw;
-      max-width: 600px;
+      width: 90vw;
       display: flex;
       gap: 14px;
+      margin-bottom: 8px;
       margin-left: auto;
       margin-right: auto;
     }
     #actions-row button {
-      flex: 1;
-      font-size: 1.15rem;
-      min-height: 48px;
+      flex: 1 1 0;
+      font-size: 1.2rem;
+      min-height: 56px;
       padding: 0;
       border-radius: 8px;
       cursor: pointer;
       user-select: none;
+      font-weight: bold;
+      letter-spacing: 0.5px;
     }
     #actions-row button:first-child {
       background: #007BFF;
@@ -197,10 +179,7 @@
       transition: background 0.2s;
     }
     #actions-row button:first-child:hover,
-    #actions-row button:first-child:focus {
-      background: #0056b3;
-      outline: none;
-    }
+    #actions-row button:first-child:focus { background: #0056b3; }
     #actions-row button:last-child {
       background: #6c757d;
       color: white;
@@ -208,42 +187,37 @@
       transition: background 0.2s;
     }
     #actions-row button:last-child:hover,
-    #actions-row button:last-child:focus {
-      background: #545b62;
-      outline: none;
-    }
-    /* Result message styles */
+    #actions-row button:last-child:focus { background: #545b62; }
+    /* --- Result Message --- */
     #result-message {
-      width: 80vw;
-      max-width: 600px;
+      width: 90vw;
       text-align: center;
       font-weight: bold;
       color: #d32f2f;
-      margin-top: 12px;
-      min-height: 24px;
+      margin-top: 14px;
+      min-height: 26px;
       margin-left: auto;
       margin-right: auto;
+      font-size: 1rem;
     }
-    #result-message.success {
-      color: #007B00;
-    }
+    #result-message.success { color: #007B00; }
   </style>
 </head>
 <body>
 
-  <!-- Page 1: Choose Sign In or Sign Out -->
+  <!-- Main menu (page 1) -->
   <div id="page-choose-action" class="page active">
     <h1>Choose Action</h1>
-    <div id="action-btn-container">
+    <div class="fullwidth-btns">
       <button onclick="selectAction('sign in')">Sign In</button>
       <button onclick="selectAction('sign out')">Sign Out</button>
     </div>
   </div>
 
-  <!-- Page 2: Device Type and Selection -->
+  <!-- Device Type/Selection (page 2) -->
   <div id="page-device-selection" class="page" role="main">
     <h1 id="action-title"></h1>
-    <div>
+    <div id="type-btn-row">
       <button id="btn-mushiny" onclick="selectDeviceType('mushiny')">Mushiny</button>
       <button id="btn-wms" onclick="selectDeviceType('wms')">WMS</button>
     </div>
@@ -259,9 +233,7 @@
 <script>
   const SUPABASE_URL = "https://tnzrbszknrorumoajgty.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuenJic3prbnJvcnVtb2FqZ3R5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NTM0MTAsImV4cCI6MjA2OTUyOTQxMH0.3Mw2Ke2csi0P2p9LXBv9v1cy1ORVMhgz-mCBqv7Uj4A";
-
   const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
   let selectedAction = null;
   let selectedDeviceType = null;
   let selectedDeviceId = null;
@@ -271,16 +243,14 @@
     document.getElementById(id).classList.add('active');
     clearResultMessage();
   }
-
   function clearResultMessage() {
     const msg = document.getElementById('result-message');
     if (msg) {
       msg.textContent = '';
       msg.classList.remove('success');
-      msg.style.color = '#d32f2f'; // default error red
+      msg.style.color = '#d32f2f';
     }
   }
-
   function selectAction(action) {
     selectedAction = action;
     selectedDeviceType = null;
@@ -290,40 +260,27 @@
     document.getElementById('user-name').value = '';
     showPage('page-device-selection');
   }
-
   function clearDeviceList() {
-    const list = document.getElementById('device-list');
-    list.innerHTML = '';
+    document.getElementById('device-list').innerHTML = '';
   }
-
   async function selectDeviceType(type) {
     selectedDeviceType = type;
     selectedDeviceId = null;
     clearDeviceList();
     clearResultMessage();
-
     document.getElementById('btn-mushiny').classList.remove('active');
     document.getElementById('btn-wms').classList.remove('active');
     document.getElementById(`btn-${type}`).classList.add('active');
-
-    const { data, error } = await client
-      .from('devices')
-      .select('id')
-      .eq('type', type)
-      .order('id');
-
+    const { data, error } = await client.from('devices').select('id').eq('type', type).order('id');
     const list = document.getElementById('device-list');
-
     if (error) {
-      alert("Error loading devices: " + error.message);
+      list.innerHTML = '<li>Error loading devices</li>';
       return;
     }
-
     if (!data || data.length === 0) {
       list.innerHTML = '<li>No devices found.</li>';
       return;
     }
-
     data.forEach(device => {
       const li = document.createElement('li');
       li.tabIndex = 0;
@@ -342,43 +299,32 @@
       list.appendChild(li);
     });
   }
-
   function highlightSelectedDevice(deviceId) {
-    const listItems = document.getElementById('device-list').children;
-    for (let item of listItems) {
-      if (item.textContent === deviceId) {
-        item.classList.add('selected');
-      } else {
-        item.classList.remove('selected');
-      }
-    }
+    Array.from(document.getElementById('device-list').children).forEach(li =>
+      li.classList.toggle('selected', li.textContent === deviceId)
+    );
   }
-
   async function submitSign() {
     const userNameInput = document.getElementById('user-name');
     const userName = userNameInput.value.trim();
     const resultDiv = document.getElementById('result-message');
-
     if (!selectedDeviceId) {
       resultDiv.textContent = "Please select a device.";
       resultDiv.classList.remove('success');
       resultDiv.style.color = '#d32f2f';
       return;
     }
-
     if (!userName) {
       resultDiv.textContent = "Please enter your name.";
       resultDiv.classList.remove('success');
       resultDiv.style.color = '#d32f2f';
       return;
     }
-
     const { error } = await client.from('device_sign_logs').insert([{
       user_name: userName,
       device_id: selectedDeviceId,
       action: selectedAction
     }]);
-
     if (error) {
       resultDiv.textContent = "Submission failed: " + error.message;
       resultDiv.classList.remove('success');
@@ -387,7 +333,6 @@
       resultDiv.textContent = "Success! Your entry was recorded.";
       resultDiv.classList.add('success');
       resultDiv.style.color = '#007B00';
-      // Reset form and navigate back
       selectedAction = null;
       selectedDeviceType = null;
       selectedDeviceId = null;
@@ -396,7 +341,6 @@
       showPage('page-choose-action');
     }
   }
-
   function backToAction() {
     selectedDeviceType = null;
     selectedDeviceId = null;
@@ -407,6 +351,5 @@
     showPage('page-choose-action');
   }
 </script>
-
 </body>
 </html>
