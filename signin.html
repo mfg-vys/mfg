@@ -39,8 +39,7 @@
     }
     button {
       margin: 5px;
-      padding: 10px 20px;
-      font-size: 16px;
+      font-size: 1.2rem;
       cursor: pointer;
       border: none;
       border-radius: 8px;
@@ -51,9 +50,46 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      padding: 16px 0;
     }
     button:hover {
       background-color: #0056b3;
+    }
+    /* ==== Updated Button Container and Button for Device Type ==== */
+    #page-device-selection > div {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-bottom: 20px;
+      width: 80vw;
+      max-width: 400px;
+      padding: 0 0;
+      box-sizing: border-box;
+    }
+    #page-device-selection > div > button {
+      flex: 1 1 0;
+      min-width: 0;
+      width: 50%;
+      max-width: none;
+      padding: 16px 0;
+      background-color: transparent;
+      color: #007BFF;
+      border: 2px solid #007BFF;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+    #page-device-selection > div > button.active,
+    #page-device-selection > div > button:focus {
+      background-color: #007BFF;
+      color: white;
+    }
+    @media (max-width: 500px) {
+      #page-device-selection > div {
+        width: 96vw;
+        max-width: none;
+        gap: 8px;
+      }
     }
     #device-list {
       list-style: none;
@@ -102,48 +138,6 @@
       color: #d32f2f;
       margin-top: 10px;
       min-height: 24px;
-    }
-
-    #page-device-selection > div {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      padding: 0 10px;
-      box-sizing: border-box;
-      margin-bottom: 20px;
-      width: 100%;
-      max-width: 420px;
-    }
-    #page-device-selection > div > button {
-      flex: 1 1 0;
-      min-width: 0;
-      max-width: 50vw;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      padding: 12px;
-      background-color: transparent;
-      color: #007BFF;
-      border: 2px solid #007BFF;
-      border-radius: 8px;
-      font-weight: 600;
-    }
-    #page-device-selection > div > button:hover {
-      background-color: #007BFF;
-      color: white;
-    }
-    #page-device-selection > div > button.active {
-      background-color: #007BFF;
-      color: white;
-    }
-
-    @media (max-width: 320px) {
-      #page-device-selection > div {
-        flex-direction: column;
-      }
-      #page-device-selection > div > button {
-        max-width: 100%;
-        margin-bottom: 8px;
-      }
     }
   </style>
 </head>
