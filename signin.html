@@ -37,25 +37,37 @@
       text-align: center;
       color: #222;
     }
-    button {
-      margin: 5px;
+    /* Main menu buttons container */
+    #action-btn-container {
+      width: 80vw;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+      margin: 0 auto;
+    }
+    /* Main menu buttons style */
+    #action-btn-container button {
+      width: 100%;
+      min-height: 56px;
       font-size: 1.2rem;
-      cursor: pointer;
-      border: none;
+      font-weight: bold;
       border-radius: 8px;
-      background-color: #007BFF;
-      color: white;
-      user-select: none;
-      transition: background-color 0.2s ease;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      background: #007BFF;
+      color: #fff;
+      border: none;
+      transition: background 0.2s;
+      margin: 0;
       padding: 16px 0;
+      cursor: pointer;
+      user-select: none;
     }
-    button:hover {
-      background-color: #0056b3;
+    #action-btn-container button:hover,
+    #action-btn-container button:focus {
+      background: #0056b3;
+      outline: none;
     }
-    /* ==== Updated Button Container and Button for Device Type ==== */
+    /* Device Type Buttons container */
     #page-device-selection > div {
       display: flex;
       width: 80vw;
@@ -63,9 +75,12 @@
       margin-bottom: 20px;
       padding: 0 0;
       box-sizing: border-box;
-      gap: 0; /* no gap so buttons are flush */
+      gap: 0;
       justify-content: center;
+      margin-left: auto;
+      margin-right: auto;
     }
+    /* Device Type Buttons style */
     #page-device-selection > div > button {
       flex: 1 1 0;
       font-weight: 600;
@@ -77,6 +92,11 @@
       text-align: center;
       transition: background-color 0.2s, color 0.2s;
       outline: none;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     #page-device-selection > div > button.active,
     #page-device-selection > div > button:focus {
@@ -97,6 +117,8 @@
         width: 96vw;
         max-width: none;
         gap: 8px;
+        margin-left: auto;
+        margin-right: auto;
       }
       #page-device-selection > div > button {
         border-radius: 8px !important;
@@ -104,6 +126,7 @@
         border-left: 2px solid #007BFF !important;
       }
     }
+    /* Device list styles */
     #device-list {
       list-style: none;
       padding: 0;
@@ -115,6 +138,8 @@
       border-radius: 8px;
       border: 1px solid #ccc;
       background-color: white;
+      margin-left: auto;
+      margin-right: auto;
     }
     #device-list li {
       padding: 18px;
@@ -133,6 +158,7 @@
     #device-list li:last-child {
       border-bottom: none;
     }
+    /* User name input styling */
     input[type="text"] {
       width: 80vw;
       max-width: 600px;
@@ -142,19 +168,51 @@
       border-radius: 8px;
       border: 1px solid #ccc;
       box-sizing: border-box;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
+    /* Buttons row on device selection */
     #actions-row {
       width: 80vw;
       max-width: 600px;
       display: flex;
       gap: 14px;
+      margin-left: auto;
+      margin-right: auto;
     }
     #actions-row button {
       flex: 1;
       font-size: 1.15rem;
       min-height: 48px;
       padding: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
     }
+    #actions-row button:first-child {
+      background: #007BFF;
+      color: white;
+      border: none;
+      transition: background 0.2s;
+    }
+    #actions-row button:first-child:hover,
+    #actions-row button:first-child:focus {
+      background: #0056b3;
+      outline: none;
+    }
+    #actions-row button:last-child {
+      background: #6c757d;
+      color: white;
+      border: none;
+      transition: background 0.2s;
+    }
+    #actions-row button:last-child:hover,
+    #actions-row button:last-child:focus {
+      background: #545b62;
+      outline: none;
+    }
+    /* Result message styles */
     #result-message {
       width: 80vw;
       max-width: 600px;
@@ -163,6 +221,8 @@
       color: #d32f2f;
       margin-top: 12px;
       min-height: 24px;
+      margin-left: auto;
+      margin-right: auto;
     }
     #result-message.success {
       color: #007B00;
@@ -174,8 +234,10 @@
   <!-- Page 1: Choose Sign In or Sign Out -->
   <div id="page-choose-action" class="page active">
     <h1>Choose Action</h1>
-    <button onclick="selectAction('sign in')">Sign In</button>
-    <button onclick="selectAction('sign out')">Sign Out</button>
+    <div id="action-btn-container">
+      <button onclick="selectAction('sign in')">Sign In</button>
+      <button onclick="selectAction('sign out')">Sign Out</button>
+    </div>
   </div>
 
   <!-- Page 2: Device Type and Selection -->
@@ -188,8 +250,8 @@
     <ul id="device-list" aria-label="Device selection list" role="listbox" tabindex="0"></ul>
     <input type="text" id="user-name" placeholder="Enter your name" aria-label="User Name" />
     <div id="actions-row">
-      <button onclick="submitSign()">Submit</button>
-      <button onclick="backToAction()" style="background-color: #6c757d;">Back</button>
+      <button onclick="submitSign()" id="submit-btn">Submit</button>
+      <button onclick="backToAction()" id="back-btn">Back</button>
     </div>
     <div id="result-message" role="alert"></div>
   </div>
