@@ -288,9 +288,18 @@
     selectedAction = action;
     selectedDeviceType = null;
     selectedDeviceId = null;
+
+    // Clear active states from device type buttons
+    document.getElementById('btn-mushiny').classList.remove('active');
+    document.getElementById('btn-wms').classList.remove('active');
+    
     document.getElementById('action-title').textContent = action === 'take' ? 'Take a Scanner' : 'Return Scanner';
     clearDeviceList();
     document.getElementById('user-name').value = '';
+
+    // Disable submit button initially
+    document.getElementById('submit-btn').disabled = true;
+
     showPage('page-device-selection');
   }
   function clearDeviceList() {
@@ -403,10 +412,16 @@
   function backToAction() {
     selectedDeviceType = null;
     selectedDeviceId = null;
+    
     clearDeviceList();
     document.getElementById('user-name').value = '';
+    
     document.getElementById('btn-mushiny').classList.remove('active');
     document.getElementById('btn-wms').classList.remove('active');
+
+    // Disable submit button
+    document.getElementById('submit-btn').disabled = true;
+    
     showPage('page-choose-action');
   }
 </script>
