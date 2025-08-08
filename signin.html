@@ -416,53 +416,14 @@
     submitBtn.disabled = false;
   }
 }
-
-
-
-
   
   function highlightSelectedDevice(deviceId) {
     Array.from(document.getElementById('device-list').children).forEach(li =>
       li.classList.toggle('selected', li.textContent === deviceId)
     );
   }
-  async function submitSign() {
-    const userNameInput = document.getElementById('user-name');
-    const userName = userNameInput.value.trim();
-    const resultDiv = document.getElementById('result-message');
-    if (!selectedDeviceId) {
-      resultDiv.textContent = "Please select a device.";
-      resultDiv.classList.remove('success');
-      resultDiv.style.color = '#d32f2f';
-      return;
-    }
-    if (!userName) {
-      resultDiv.textContent = "Please enter your name.";
-      resultDiv.classList.remove('success');
-      resultDiv.style.color = '#d32f2f';
-      return;
-    }
-    const { error } = await client.from('device_sign_logs').insert([{
-      user_name: userName,
-      device_id: selectedDeviceId,
-      action: selectedAction
-    }]);
-    if (error) {
-      resultDiv.textContent = "Submission failed: " + error.message;
-      resultDiv.classList.remove('success');
-      resultDiv.style.color = '#d32f2f';
-    } else {
-      resultDiv.textContent = "Success! Your entry was recorded.";
-      resultDiv.classList.add('success');
-      resultDiv.style.color = '#007B00';
-      selectedAction = null;
-      selectedDeviceType = null;
-      selectedDeviceId = null;
-      userNameInput.value = '';
-      clearDeviceList();
-      showPage('page-choose-action');
-    }
-  }
+
+  
   function backToAction() {
     selectedDeviceType = null;
     selectedDeviceId = null;
