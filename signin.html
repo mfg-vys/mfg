@@ -201,8 +201,8 @@
     <div class="content-col">
       <h1>Choose Action</h1>
       <div class="fullwidth-btns" id="action-btn-container">
-        <button class="btn" onclick="selectAction('sign in')">Sign In</button>
-        <button class="btn" onclick="selectAction('sign out')">Sign Out</button>
+        <button class="btn" onclick="selectAction('take')">Take a Scanner</button>
+        <button class="btn" onclick="selectAction('return')">Return Scanner</button>
       </div>
     </div>
   </div>
@@ -250,7 +250,7 @@
     selectedAction = action;
     selectedDeviceType = null;
     selectedDeviceId = null;
-    document.getElementById('action-title').textContent = action === 'sign in' ? 'Sign In' : 'Sign Out';
+    document.getElementById('action-title').textContent = action === 'take' ? 'Taken a Scanner' : 'Return Scanner';
     clearDeviceList();
     document.getElementById('user-name').value = '';
     showPage('page-device-selection');
