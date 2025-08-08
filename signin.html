@@ -101,7 +101,7 @@
     #device-list {
       flex: 1 1 auto;
       min-height: 56px;
-      max-height: 90%; /* 60vh */
+      max-height: 80%; /* 60vh */
       overflow-y: auto;
       list-style: none;
       width: 90vw;
@@ -256,7 +256,7 @@
     selectedAction = action;
     selectedDeviceType = null;
     selectedDeviceId = null;
-    document.getElementById('action-title').textContent = action === 'take' ? 'Taken a Scanner' : 'Return Scanner';
+    document.getElementById('action-title').textContent = action === 'take' ? 'Take a Scanner' : 'Return Scanner';
     clearDeviceList();
     document.getElementById('user-name').value = '';
     showPage('page-device-selection');
