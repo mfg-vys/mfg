@@ -333,6 +333,7 @@
       li.classList.toggle('selected', li.textContent === deviceId)
     );
   }
+  /*
   async function submitSign() {
     const userNameInput = document.getElementById('user-name');
     const userName = userNameInput.value.trim();
@@ -370,6 +371,90 @@
       showPage('page-choose-action');
     }
   }
+  */
+
+async function submitSign() {
+  const userNameInput = document.getElementById('user-name');
+  const userName = userNameInput.value.trim();
+  const resultDiv = document.getElementById('result-message');
+
+  if (!selectedDeviceId) {
+    resultDiv.textContent = "Please select a device.";
+    resultDiv.classList.remove('success');
+    resultDiv.style.color = '#d32f2f';
+    return;
+  }
+
+  // For "take" action, check if device is already taken out
+  if (selectedAction === 'take') {
+    // Query the most recent log entry for the selected device
+    const { data: latestLogs, error: fetchError } = await client
+      .from('device_sign_logs')
+      .select('action')
+      .eq('device_id', selectedDeviceId)
+      .order('logged_at', { ascending: false })
+      .limit(1);
+
+    if (fetchError) {
+      resultDiv.textContent = "Error checking device status: " + fetchError.message;
+      resultDiv.classList.remove('success');
+      resultDiv.style.color = '#d32f2f';
+      return;
+    }
+
+    // If latest action is "take", block taking again
+    if (latestLogs && latestLogs.length > 0 && latestLogs[0].action === 'take') {
+      resultDiv.textContent = "This device is already taken out and must be returned before taking again.";
+      resultDiv.classList.remove('success');
+      resultDiv.style.color = '#d32f2f';
+      return;
+    }
+
+    // User name is required for taking a scanner
+    if (!userName) {
+      resultDiv.textContent = "Please enter your name.";
+      resultDiv.classList.remove('success');
+      resultDiv.style.color = '#d32f2f';
+      return;
+    }
+  }
+
+  // For the "return" action, user name is not required
+
+  // Prepare the data entry for insertion
+  const entry = {
+    device_id: selectedDeviceId,
+    action: selectedAction
+  };
+
+  if (selectedAction === 'take') {
+    entry.user_name = userName;
+  }
+
+  // Insert the new device sign log entry
+  const { error } = await client.from('device_sign_logs').insert([entry]);
+
+  if (error) {
+    resultDiv.textContent = "Submission failed: " + error.message;
+    resultDiv.classList.remove('success');
+    resultDiv.style.color = '#d32f2f';
+  } else {
+    resultDiv.textContent = "Success! Your entry was recorded.";
+    resultDiv.classList.add('success');
+    resultDiv.style.color = '#007B00';
+
+    // Reset selections and inputs
+    selectedAction = null;
+    selectedDeviceType = null;
+    selectedDeviceId = null;
+    userNameInput.value = '';
+    clearDeviceList();
+    showPage('page-choose-action');
+  }
+}
+
+
+  
   function backToAction() {
     selectedDeviceType = null;
     selectedDeviceId = null;
