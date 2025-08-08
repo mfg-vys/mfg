@@ -313,11 +313,10 @@
   clearDeviceList();
   clearResultMessage();
 
-  // Indicate loading state
   const list = document.getElementById('device-list');
   list.innerHTML = '<div class="loading-spinner" aria-label="Loading devices"></div>';
 
-  // Disable type buttons and submit to prevent interference
+  // Disable buttons during loading
   document.getElementById('btn-mushiny').disabled = true;
   document.getElementById('btn-wms').disabled = true;
   document.getElementById('submit-btn').disabled = true;
@@ -327,16 +326,16 @@
   document.getElementById(`btn-${type}`).classList.add('active');
 
   try {
-    const { data, error } = await client.from('devices').select('id').eq('type', type).order('id');
-    if (error) {
-      list.innerHTML = '<li>Error loading devices</li>';
-      return;
+    const { data, error, status } = await client.from('devices').select('id').eq('type', type).order('id');
+    if (error || !data) {
+      throw new Error(error?.message || 'Failed to load devices');
     }
-    if (!data || data.length === 0) {
+    if (data.length === 0) {
       list.innerHTML = '<li>No devices found.</li>';
       return;
     }
-    list.innerHTML = ''; // Clear spinner
+
+    list.innerHTML = '';
     data.forEach(device => {
       const li = document.createElement('li');
       li.tabIndex = 0;
@@ -344,7 +343,6 @@
       li.onclick = () => {
         selectedDeviceId = device.id;
         highlightSelectedDevice(device.id);
-        // Enable submit button when a device is selected
         document.getElementById('submit-btn').disabled = false;
       };
       li.onkeypress = (e) => {
@@ -357,13 +355,69 @@
       };
       list.appendChild(li);
     });
+  } catch (err) {
+    list.innerHTML = `<li>Error loading devices: ${err.message}. <button id="retry-btn" style="margin-top:8px;">Retry</button></li>`;
+    document.getElementById('retry-btn').onclick = () => selectDeviceType(type);
   } finally {
-    // Re-enable type buttons regardless of success/error
     document.getElementById('btn-mushiny').disabled = false;
     document.getElementById('btn-wms').disabled = false;
-    // Note: submit-btn remains disabled until a device is selected
   }
 }
+
+
+  async function submitSign() {
+  const userNameInput = document.getElementById('user-name');
+  const userName = userNameInput.value.trim();
+  const resultDiv = document.getElementById('result-message');
+
+  if (!selectedDeviceId) {
+    resultDiv.textContent = "Please select a device.";
+    resultDiv.classList.remove('success');
+    resultDiv.style.color = '#d32f2f';
+    return;
+  }
+  if (!userName) {
+    resultDiv.textContent = "Please enter your name.";
+    resultDiv.classList.remove('success');
+    resultDiv.style.color = '#d32f2f';
+    return;
+  }
+
+  // Disable submit button to prevent duplicates
+  const submitBtn = document.getElementById('submit-btn');
+  submitBtn.disabled = true;
+
+  try {
+    const { error } = await client.from('device_sign_logs').insert([{
+      user_name: userName,
+      device_id: selectedDeviceId,
+      action: selectedAction
+    }]);
+    if (error) {
+      throw new Error(error.message || 'Submission failed');
+    }
+    resultDiv.textContent = "Success! Your entry was recorded.";
+    resultDiv.classList.add('success');
+    resultDiv.style.color = '#007B00';
+
+    // Reset inputs and states
+    selectedAction = null;
+    selectedDeviceType = null;
+    selectedDeviceId = null;
+    userNameInput.value = '';
+    clearDeviceList();
+
+    showPage('page-choose-action');
+  } catch (err) {
+    resultDiv.textContent = `Submission failed: ${err.message}. Please try again.`;
+    resultDiv.classList.remove('success');
+    resultDiv.style.color = '#d32f2f';
+  } finally {
+    submitBtn.disabled = false;
+  }
+}
+
+
 
 
   
