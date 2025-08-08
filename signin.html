@@ -144,14 +144,15 @@
     }
     #actions-row {
       width: 90vw;
-      max-width: none;
       display: flex;
-      gap: 14px;
+      gap: 14px;          /* space between buttons */
       margin: 0 auto 10px auto;
-      flex: 0 0 auto;
+      box-sizing: border-box;
+      max-width: none;    /* ensure no max-width restriction */     
     }
     #actions-row button {
-      flex: 1 1 0;
+      flex: 1 1 0;        /* flexible width, but can shrink */
+      min-width: 0;       /* allow shrinkage below content width */
       font-size: 1.2rem;
       min-height: 56px;
       border-radius: 8px;
@@ -161,18 +162,23 @@
       letter-spacing: 0.5px;
       border: none;
       outline: none;
+      padding: 16px 0;
+      background: #007BFF;
+      color: #fff;
+      margin: 0;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     #actions-row button:first-child {
-      background: #007BFF;
-      color: white;
-      transition: background 0.2s;
+       background: #007BFF;
     }
     #actions-row button:first-child:hover,
     #actions-row button:first-child:focus { background: #0056b3; }
     #actions-row button:last-child {
       background: #6c757d;
       color: white;
-      transition: background 0.2s;
     }
     #actions-row button:last-child:hover,
     #actions-row button:last-child:focus { background: #545b62; }
