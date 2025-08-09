@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Device Sign In/Out v1.2</title>
+  <title>Device Sign In/Out v1.3</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <style>
@@ -376,9 +376,7 @@
       selectedDeviceId = null;
       userNameInput.value = '';
       clearDeviceList();
-      setTimeout(() => {
-        showPage('page-choose-action');
-      }, 1000);
+      showPage('page-choose-action');
     }
   }
   */
@@ -434,7 +432,7 @@ async function submitSign() {
   // After short delay, go back to action choose page
   setTimeout(() => {
     showPage('page-choose-action');
-  }, 1500);
+  }, 0);
 }
 
 
