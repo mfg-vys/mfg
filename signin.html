@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Device Sign In/Out v1.4</title>
+  <title>Device Sign In/Out v1.5</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <style>
@@ -208,6 +208,20 @@
     .logo-container {
       margin-top 20px;
     }
+
+
+    #success-modal button {
+      padding: 10px 16px;
+      border: none;
+      background: #007BFF;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #success-modal button:hover {
+      background: #0056b3;
+    }
   </style>
 </head>
 <body>
@@ -255,6 +269,11 @@
   let selectedAction = null;
   let selectedDeviceType = null;
   let selectedDeviceId = null;
+
+  function closeSuccessModal() {
+    document.getElementById('success-modal').style.display = 'none';
+    showPage('page-choose-action');
+  }
 
   function showPage(id) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
@@ -374,6 +393,11 @@ async function submitSign() {
     return;
   }
 
+  if (!error) {
+    document.getElementById('success-message').textContent = "✅ Success! Action completed.";
+    document.getElementById('success-modal').style.display = 'flex';
+  }
+
   // ✅ Success – show message
   resultDiv.textContent = "Success! Action completed.";
   resultDiv.classList.add('success');
@@ -418,5 +442,27 @@ async function submitSign() {
     showPage('page-choose-action');
   }
 </script>
+
+<div id="success-modal" style="
+  display:none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;">
+  <div style="
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 300px;">
+    <p id="success-message">Success!</p>
+    <button onclick="closeSuccessModal()">OK</button>
+  </div>
+</div>
+
+
+  
 </body>
 </html>
