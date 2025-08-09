@@ -52,12 +52,14 @@
     <tbody></tbody>
   </table>
 
+  <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
   <script>
-    // Initialize Supabase client using your public anon key and URL
-    const supabaseUrl = 'https://YOUR_SUPABASE_PROJECT_URL.supabase.co'; // <-- Replace with your Supabase URL
-    const supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY'; // <-- Replace with your anon key
-    const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+    // 🔹 Your Supabase details
+    const SUPABASE_URL = "https://tnzrbszknrorumoajgty.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuenJic3prbnJvcnVtb2FqZ3R5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NTM0MTAsImV4cCI6MjA2OTUyOTQxMH0.3Mw2Ke2csi0P2p9LXBv9v1cy1ORVMhgz-mCBqv7Uj4A";
+
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     const tableBody = document.querySelector('#scanners-table tbody');
     const statusDiv = document.getElementById('status');
@@ -65,7 +67,8 @@
 
     async function fetchTakenScanners() {
       statusDiv.textContent = 'Loading...';
-      // Query devices with current_status = 'signed_out'
+
+      // Query: only signed_out devices
       const { data, error } = await supabase
         .from('devices')
         .select('id, current_holder')
@@ -78,7 +81,7 @@
         return;
       }
 
-      // Clear existing rows
+      // Clear old data
       tableBody.innerHTML = '';
 
       if (data.length === 0) {
@@ -86,7 +89,7 @@
         return;
       }
 
-      // Populate table with data
+      // Populate table
       data.forEach(device => {
         const tr = document.createElement('tr');
         const idTd = document.createElement('td');
@@ -101,10 +104,10 @@
       statusDiv.textContent = `Showing ${data.length} taken scanner(s).`;
     }
 
-    // Set up refresh button click handler
+    // Refresh handler
     refreshBtn.addEventListener('click', fetchTakenScanners);
 
-    // Automatically load on page load
+    // Initial load
     fetchTakenScanners();
   </script>
 
