@@ -342,6 +342,7 @@
     );
   }
 
+  /*
   async function submitSign() {
     const userNameInput = document.getElementById('user-name');
     const userName = userNameInput.value.trim();
@@ -380,6 +381,92 @@
       }, 1000);
     }
   }
+  */
+
+
+
+
+
+async function submitSign() {
+  const userNameInput = document.getElementById('user-name');
+  const userName = userNameInput.value.trim();
+  const resultDiv = document.getElementById('result-message');
+
+  if (!selectedDeviceId) {
+    resultDiv.textContent = "Please select a device.";
+    resultDiv.style.color = '#d32f2f';
+    return;
+  }
+  if (!userName) {
+    resultDiv.textContent = "Please enter your name.";
+    resultDiv.style.color = '#d32f2f';
+    return;
+  }
+
+  // 🔹 Call the Postgres function
+  const { error } = await client.rpc('sign_device', {
+    _device_id: selectedDeviceId.toString(),
+    _user_name: userName,
+    _action: selectedAction
+  });
+
+  if (error) {
+    console.error("RPC error:", error);
+    resultDiv.textContent = "Submission failed: " + error.message;
+    resultDiv.style.color = '#d32f2f';
+    return;
+  }
+
+  // ✅ Step 1: Get updated device status
+  const { data: deviceData, error: devErr } = await client
+    .from('devices')
+    .select('current_status, current_holder')
+    .eq('id', selectedDeviceId.toString())
+    .single();
+
+  // ✅ Step 2: Get latest log entry for that device
+  const { data: logData, error: logErr } = await client
+    .from('device_sign_logs')
+    .select('logged_at, action, user_name')
+    .eq('device_id', selectedDeviceId.toString())
+    .order('logged_at', { ascending: false })
+    .limit(1);
+
+  if (devErr) console.error("Device fetch error:", devErr);
+  if (logErr) console.error("Log fetch error:", logErr);
+
+  // ✅ Step 3: Build confirmation message
+  let verifyMsg = '';
+  if (deviceData) {
+    verifyMsg += `Device status: ${deviceData.current_status}, Holder: ${deviceData.current_holder || 'None'}. `;
+  }
+  if (logData && logData.length > 0) {
+    const log = logData[0];
+    verifyMsg += `Last log: ${log.action} by ${log.user_name} at ${new Date(log.logged_at).toLocaleString()}`;
+  }
+
+  resultDiv.textContent = "Success! " + verifyMsg;
+  resultDiv.classList.add('success');
+  resultDiv.style.color = '#007B00';
+
+  // Reset form state
+  selectedAction = null;
+  selectedDeviceType = null;
+  selectedDeviceId = null;
+  userNameInput.value = '';
+  clearDeviceList();
+
+  // Return to main menu after short delay
+  setTimeout(() => showPage('page-choose-action'), 2000);
+}
+
+
+
+
+
+
+
+  
 
   function backToAction() {
     selectedDeviceType = null;
