@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Device Sign In/Out v1.1</title>
+  <title>Device Sign In/Out v1.2</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <style>
@@ -403,7 +403,7 @@ async function submitSign() {
     return;
   }
 
-  // 🔹 Call the Postgres function
+  // 🔹 Call Postgres function
   const { error } = await client.rpc('sign_device', {
     _device_id: selectedDeviceId.toString(),
     _user_name: userName,
@@ -417,48 +417,26 @@ async function submitSign() {
     return;
   }
 
-  // ✅ Step 1: Get updated device status
-  const { data: deviceData, error: devErr } = await client
-    .from('devices')
-    .select('current_status, current_holder')
-    .eq('id', selectedDeviceId.toString())
-    .single();
-
-  // ✅ Step 2: Get latest log entry for that device
-  const { data: logData, error: logErr } = await client
-    .from('device_sign_logs')
-    .select('logged_at, action, user_name')
-    .eq('device_id', selectedDeviceId.toString())
-    .order('logged_at', { ascending: false })
-    .limit(1);
-
-  if (devErr) console.error("Device fetch error:", devErr);
-  if (logErr) console.error("Log fetch error:", logErr);
-
-  // ✅ Step 3: Build confirmation message
-  let verifyMsg = '';
-  if (deviceData) {
-    verifyMsg += `Device status: ${deviceData.current_status}, Holder: ${deviceData.current_holder || 'None'}. `;
-  }
-  if (logData && logData.length > 0) {
-    const log = logData[0];
-    verifyMsg += `Last log: ${log.action} by ${log.user_name} at ${new Date(log.logged_at).toLocaleString()}`;
-  }
-
-  resultDiv.textContent = "Success! " + verifyMsg;
+  // ✅ Success – show message
+  resultDiv.textContent = "Success! Action completed.";
   resultDiv.classList.add('success');
   resultDiv.style.color = '#007B00';
 
-  // Reset form state
-  selectedAction = null;
-  selectedDeviceType = null;
+  // ✅ Refetch device list so UI is up to date
+  if (selectedDeviceType) {
+    await selectDeviceType(selectedDeviceType);
+  }
+
+  // Reset selection
   selectedDeviceId = null;
   userNameInput.value = '';
-  clearDeviceList();
 
-  // Return to main menu after short delay
-  setTimeout(() => showPage('page-choose-action'), 2000);
+  // After short delay, go back to action choose page
+  setTimeout(() => {
+    showPage('page-choose-action');
+  }, 1500);
 }
+
 
 
 
