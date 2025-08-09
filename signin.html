@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Device Sign In/Out v1.3</title>
+  <title>Device Sign In/Out v1.4</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <style>
@@ -342,47 +342,6 @@
     );
   }
 
-  /*
-  async function submitSign() {
-    const userNameInput = document.getElementById('user-name');
-    const userName = userNameInput.value.trim();
-    const resultDiv = document.getElementById('result-message');
-
-    if (!selectedDeviceId) {
-      resultDiv.textContent = "Please select a device.";
-      return;
-    }
-    if (!userName) {
-      resultDiv.textContent = "Please enter your name.";
-      return;
-    }
-
-    // 🔹 Use the Postgres function for atomic insert/update
-    const { error } = await client.rpc('sign_device', {
-      _device_id: selectedDeviceId.toString(),  // always TEXT
-      _user_name: userName,
-      _action: selectedAction
-    });
-
-    if (error) {
-      resultDiv.textContent = "Submission failed: " + error.message;
-      resultDiv.style.color = '#d32f2f';
-    } else {
-      resultDiv.textContent = "Success! Your entry was recorded.";
-      resultDiv.classList.add('success');
-      resultDiv.style.color = '#007B00';
-      selectedAction = null;
-      selectedDeviceType = null;
-      selectedDeviceId = null;
-      userNameInput.value = '';
-      clearDeviceList();
-      showPage('page-choose-action');
-    }
-  }
-  */
-
-
-
 
 
 async function submitSign() {
@@ -430,9 +389,14 @@ async function submitSign() {
   userNameInput.value = '';
 
   // After short delay, go back to action choose page
+  /*
   setTimeout(() => {
     showPage('page-choose-action');
   }, 0);
+  */
+
+  alert("Success! Your action has been recorded.");
+  showPage('page-choose-action');
 }
 
 
