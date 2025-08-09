@@ -211,18 +211,6 @@
   </style>
 </head>
 <body>
-  <!-- Main menu (page 1) 
-  <div id="page-choose-action" class="page active">
-    <div class="content-col">
-      <h1>Choose Action</h1>
-      <div class="fullwidth-btns" id="action-btn-container">
-        <button class="btn" onclick="selectAction('take')">Take a Scanner</button>
-        <button class="btn" onclick="selectAction('return')">Return Scanner</button>
-      </div>
-    </div>
-  </div>-->
-
-
 <div id="page-choose-action" class="page active">
   <div class="content-col">
     <div class="logo-container" style="display:flex; justify-content:center; margin-bottom: 16px; margin-top: 20px;">
@@ -263,6 +251,7 @@
   const SUPABASE_URL = "https://tnzrbszknrorumoajgty.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuenJic3prbnJvcnVtb2FqZ3R5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NTM0MTAsImV4cCI6MjA2OTUyOTQxMH0.3Mw2Ke2csi0P2p9LXBv9v1cy1ORVMhgz-mCBqv7Uj4A";
   const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
   let selectedAction = null;
   let selectedDeviceType = null;
   let selectedDeviceId = null;
@@ -287,11 +276,15 @@
     document.getElementById('action-title').textContent = action === 'take' ? 'Take a Scanner' : 'Return Scanner';
     clearDeviceList();
     document.getElementById('user-name').value = '';
+    // reset active class on type buttons
+    document.getElementById('btn-mushiny').classList.remove('active');
+    document.getElementById('btn-wms').classList.remove('active');
     showPage('page-device-selection');
   }
   function clearDeviceList() {
     document.getElementById('device-list').innerHTML = '';
   }
+
   async function selectDeviceType(type) {
     selectedDeviceType = type;
     selectedDeviceId = null;
@@ -300,8 +293,21 @@
     document.getElementById('btn-mushiny').classList.remove('active');
     document.getElementById('btn-wms').classList.remove('active');
     document.getElementById(`btn-${type}`).classList.add('active');
-    const { data, error } = await client.from('devices').select('id').eq('type', type).order('id');
+
     const list = document.getElementById('device-list');
+    list.innerHTML = '<li>Loading devices...</li>';
+
+    let query = client.from('devices').select('id').eq('type', type);
+
+    // 🔹 filter based on action
+    if (selectedAction === 'take') {
+      query = query.eq('current_status', 'available');
+    } else if (selectedAction === 'return') {
+      query = query.eq('current_status', 'signed_out');
+    }
+
+    const { data, error } = await query.order('id');
+
     if (error) {
       list.innerHTML = '<li>Error loading devices</li>';
       return;
@@ -310,53 +316,55 @@
       list.innerHTML = '<li>No devices found.</li>';
       return;
     }
+    list.innerHTML = '';
     data.forEach(device => {
       const li = document.createElement('li');
       li.tabIndex = 0;
       li.textContent = device.id;
       li.onclick = () => {
-        selectedDeviceId = device.id;
-        highlightSelectedDevice(device.id);
+        selectedDeviceId = device.id.toString(); // ensure string for IDs like 0429
+        highlightSelectedDevice(selectedDeviceId);
       };
       li.onkeypress = (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
-          selectedDeviceId = device.id;
-          highlightSelectedDevice(device.id);
+          selectedDeviceId = device.id.toString();
+          highlightSelectedDevice(selectedDeviceId);
           e.preventDefault();
         }
       };
       list.appendChild(li);
     });
   }
+
   function highlightSelectedDevice(deviceId) {
     Array.from(document.getElementById('device-list').children).forEach(li =>
       li.classList.toggle('selected', li.textContent === deviceId)
     );
   }
+
   async function submitSign() {
     const userNameInput = document.getElementById('user-name');
     const userName = userNameInput.value.trim();
     const resultDiv = document.getElementById('result-message');
+
     if (!selectedDeviceId) {
       resultDiv.textContent = "Please select a device.";
-      resultDiv.classList.remove('success');
-      resultDiv.style.color = '#d32f2f';
       return;
     }
     if (!userName) {
       resultDiv.textContent = "Please enter your name.";
-      resultDiv.classList.remove('success');
-      resultDiv.style.color = '#d32f2f';
       return;
     }
-    const { error } = await client.from('device_sign_logs').insert([{
-      user_name: userName,
-      device_id: selectedDeviceId,
-      action: selectedAction
-    }]);
+
+    // 🔹 Use the Postgres function for atomic insert/update
+    const { error } = await client.rpc('sign_device', {
+      _device_id: selectedDeviceId.toString(),  // always TEXT
+      _user_name: userName,
+      _action: selectedAction
+    });
+
     if (error) {
       resultDiv.textContent = "Submission failed: " + error.message;
-      resultDiv.classList.remove('success');
       resultDiv.style.color = '#d32f2f';
     } else {
       resultDiv.textContent = "Success! Your entry was recorded.";
@@ -367,9 +375,12 @@
       selectedDeviceId = null;
       userNameInput.value = '';
       clearDeviceList();
-      showPage('page-choose-action');
+      setTimeout(() => {
+        showPage('page-choose-action');
+      }, 1000);
     }
   }
+
   function backToAction() {
     selectedDeviceType = null;
     selectedDeviceId = null;
