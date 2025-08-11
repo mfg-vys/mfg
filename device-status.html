@@ -39,7 +39,7 @@
 </head>
 <body>
 
-  <h1>Currently Taken Scanners Report v1.3</h1>
+  <h1>Currently Taken Scanners Report v1.4</h1>
   <button id="refresh-btn">Refresh List</button>
   <div id="status"></div>
   <table id="scanners-table">
@@ -73,11 +73,20 @@
       statusDiv.textContent = 'Loading...';
 
       // Query: only signed_out devices
+      /*
       const { data, error } = await supabase
         .from('devices')
         .select('id, current_holder')
         .eq('current_status', 'signed_out')
         .order('id', { ascending: true });
+      */
+      
+      const { data, error } = await supabase
+        .from('devices')
+        .select('*');
+
+      
+      
 
       if (error) {
         statusDiv.textContent = 'Error fetching data: ' + error.message;
