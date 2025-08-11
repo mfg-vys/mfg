@@ -39,7 +39,7 @@
 </head>
 <body>
 
-  <h1>Currently Taken Scanners Report v1.8</h1>
+  <h1>Currently Taken Scanners Report v1.9</h1>
   <button id="refresh-btn">Refresh List</button>
   <div id="status"></div>
   <table id="scanners-table">
@@ -86,7 +86,10 @@
 
       const { data, error } = await supabaseClient
         .from('devices')
-        .select('*');
+        .select('id, current_holder')
+        .eq('current_status', 'signed_out')
+        .order('id', { ascending: true });
+
 
 
       
