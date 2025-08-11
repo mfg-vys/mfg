@@ -39,13 +39,14 @@
 </head>
 <body>
 
-  <h1>Currently Taken Scanners Report v1.9</h1>
+  <h1>Currently Taken Scanners Report v2.0</h1>
   <button id="refresh-btn">Refresh List</button>
   <div id="status"></div>
   <table id="scanners-table">
     <thead>
       <tr>
         <th>Device ID</th>
+        <th>Type</th>
         <th>Current Holder</th>
       </tr>
     </thead>
@@ -76,17 +77,9 @@
       statusDiv.textContent = 'Loading...';
 
       // Query: only signed_out devices
-      /*
-      const { data, error } = await supabase
-        .from('devices')
-        .select('id, current_holder')
-        .eq('current_status', 'signed_out')
-        .order('id', { ascending: true });
-      */
-
       const { data, error } = await supabaseClient
         .from('devices')
-        .select('id, current_holder')
+        .select('id, type, current_holder')
         .eq('current_status', 'signed_out')
         .order('id', { ascending: true });
 
@@ -112,14 +105,22 @@
       // Populate table
       data.forEach(device => {
         const tr = document.createElement('tr');
+        
         const idTd = document.createElement('td');
         idTd.textContent = device.id;
+      
+        const typeTd = document.createElement('td');
+        typeTd.textContent = device.type || 'N/A';
+      
         const holderTd = document.createElement('td');
         holderTd.textContent = device.current_holder || 'N/A';
+      
         tr.appendChild(idTd);
+        tr.appendChild(typeTd);
         tr.appendChild(holderTd);
         tableBody.appendChild(tr);
       });
+
 
       statusDiv.textContent = `Showing ${data.length} taken scanner(s).`;
     }
