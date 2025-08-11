@@ -39,7 +39,7 @@
 </head>
 <body>
 
-  <h1>Currently Taken Scanners Report v1.2</h1>
+  <h1>Currently Taken Scanners Report v1.3</h1>
   <button id="refresh-btn">Refresh List</button>
   <div id="status"></div>
   <table id="scanners-table">
@@ -64,6 +64,11 @@
     const statusDiv = document.getElementById('status');
     const refreshBtn = document.getElementById('refresh-btn');
 
+    supabase
+      .from('devices')
+      .select('*')
+      .then(console.log)
+    
     async function fetchTakenScanners() {
       statusDiv.textContent = 'Loading...';
 
@@ -102,11 +107,6 @@
 
       statusDiv.textContent = `Showing ${data.length} taken scanner(s).`;
     }
-
-    supabase
-      .from('devices')
-      .select('*')
-      .then(console.log)
 
     
     // Refresh handler
