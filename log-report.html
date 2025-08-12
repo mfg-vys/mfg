@@ -15,7 +15,7 @@
 </head>
 <body>
 
-  <h1>Device Sign Logs Report 1.0</h1>
+  <h1>Device Sign Logs Report 1.1</h1>
 
   <label>From: <input type="date" id="from-date"></label>
   <label>To: <input type="date" id="to-date"></label>
@@ -48,6 +48,20 @@
     const tableBody = document.querySelector('#logs-table tbody');
     const refreshBtn = document.getElementById('refresh-btn');
 
+    function setDefaultDatesToToday() {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+      const dd = String(today.getDate()).padStart(2, '0');
+      const formattedDate = `${yyyy}-${mm}-${dd}`;
+    
+      const fromDateInput = document.getElementById('from-date');
+      const toDateInput = document.getElementById('to-date');
+    
+      if (fromDateInput) fromDateInput.value = formattedDate;
+      if (toDateInput) toDateInput.value = formattedDate;
+    }
+    
     async function fetchLogs() {
       statusDiv.textContent = 'Loading logs...';
       tableBody.innerHTML = '';
@@ -104,6 +118,9 @@
 
     refreshBtn.addEventListener('click', fetchLogs);
 
+    // Call this function on page load
+    setDefaultDatesToToday();
+    
     // Load all logs immediately on page load
     fetchLogs();
   </script>
