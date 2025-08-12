@@ -2,23 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Scanner Reporting</title>
+  <title>Available Scanners Report v2.1</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
     }
     h1 {
+      color: #28a745;
+      margin-bottom: 5px;
+    }
+    h2 {
       color: #007BFF;
+      margin-top: 25px;
     }
     table {
       border-collapse: collapse;
       width: 100%;
-      margin-top: 15px;
+      margin-top: 5px;
+      margin-bottom: 20px;
     }
     th, td {
-      border: 1px solid #cccccc;
-      padding: 10px;
+      border: 1px solid #ccc;
+      padding: 8px;
       text-align: left;
     }
     th {
@@ -39,54 +45,58 @@
 </head>
 <body>
 
-  <h1>Currently Taken Scanners Report v2.0</h1>
+  <h1>Available Scanners Report v2.1</h1>
   <button id="refresh-btn">Refresh List</button>
-  <div id="status"></div>
-  <table id="scanners-table">
+  <div id="status" aria-live="polite"></div>
+
+  <!-- Mushiny Table -->
+  <h2>Mushiny Scanners</h2>
+  <table id="mushiny-table">
     <thead>
       <tr>
         <th>Device ID</th>
         <th>Type</th>
         <th>Current Holder</th>
+        <th>Status</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
 
-  <!-- Supabase JS -->
-  <!--<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>-->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
-  <script>
-     
+  <!-- WMS Table -->
+  <h2>WMS Scanners</h2>
+  <table id="wms-table">
+    <thead>
+      <tr>
+        <th>Device ID</th>
+        <th>Type</th>
+        <th>Current Holder</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-    // 🔹 Your Supabase details
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
     const SUPABASE_URL = "https://tnzrbszknrorumoajgty.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuenJic3prbnJvcnVtb2FqZ3R5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NTM0MTAsImV4cCI6MjA2OTUyOTQxMH0.3Mw2Ke2csi0P2p9LXBv9v1cy1ORVMhgz-mCBqv7Uj4A";
-    //const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    //const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    const { createClient } = supabase; // available globally after loading the script
+    const SUPABASE_KEY = "YOUR_SECURE_BACKEND_KEY_OR_ANON_KEY";
+    const { createClient } = supabase;
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    const mushinyBody = document.querySelector('#mushiny-table tbody');
+    const wmsBody     = document.querySelector('#wms-table tbody');
+    const statusDiv   = document.getElementById('status');
+    const refreshBtn  = document.getElementById('refresh-btn');
 
-    const tableBody = document.querySelector('#scanners-table tbody');
-    const statusDiv = document.getElementById('status');
-    const refreshBtn = document.getElementById('refresh-btn');
-    
-    async function fetchTakenScanners() {
+    async function fetchAvailableScanners() {
       statusDiv.textContent = 'Loading...';
 
-      // Query: only signed_out devices
       const { data, error } = await supabaseClient
         .from('devices')
-        .select('id, type, current_holder')
-        .eq('current_status', 'signed_out')
+        .select('id, type, current_holder, current_status')
+        .neq('current_status', 'signed_out')
         .order('id', { ascending: true });
-
-
-
-      
-      
 
       if (error) {
         statusDiv.textContent = 'Error fetching data: ' + error.message;
@@ -94,43 +104,65 @@
         return;
       }
 
-      // Clear old data
-      tableBody.innerHTML = '';
+      // Clear tables
+      mushinyBody.innerHTML = '';
+      wmsBody.innerHTML = '';
 
-      if (data.length === 0) {
-        statusDiv.textContent = 'No scanners are currently taken.';
+      if (!data || data.length === 0) {
+        statusDiv.textContent = 'No available scanners found.';
         return;
       }
 
-      // Populate table
+      // Separate into Mushiny and WMS
+      const mushinyList = [];
+      const wmsList = [];
+
       data.forEach(device => {
-        const tr = document.createElement('tr');
-        
-        const idTd = document.createElement('td');
-        idTd.textContent = device.id;
-      
-        const typeTd = document.createElement('td');
-        typeTd.textContent = device.type || 'N/A';
-      
-        const holderTd = document.createElement('td');
-        holderTd.textContent = device.current_holder || 'N/A';
-      
-        tr.appendChild(idTd);
-        tr.appendChild(typeTd);
-        tr.appendChild(holderTd);
-        tableBody.appendChild(tr);
+        // Here we decide based on the 'type' field (adjust if your DB uses another field)
+        if (device.type && device.type.toLowerCase().includes('mushiny')) {
+          mushinyList.push(device);
+        } else if (device.type && device.type.toLowerCase().includes('wms')) {
+          wmsList.push(device);
+        }
       });
 
+      // Function to render a table body
+      function renderTable(devices, tbody) {
+        devices.forEach(device => {
+          const tr = document.createElement('tr');
 
-      statusDiv.textContent = `Showing ${data.length} taken scanner(s).`;
+          const idTd = document.createElement('td');
+          idTd.textContent = device.id;
+
+          const typeTd = document.createElement('td');
+          typeTd.textContent = device.type || 'N/A';
+
+          const holderTd = document.createElement('td');
+          holderTd.textContent = device.current_holder || 'N/A';
+
+          const statusTd = document.createElement('td');
+          statusTd.textContent = device.current_status || 'N/A';
+
+          tr.appendChild(idTd);
+          tr.appendChild(typeTd);
+          tr.appendChild(holderTd);
+          tr.appendChild(statusTd);
+
+          tbody.appendChild(tr);
+        });
+      }
+
+      renderTable(mushinyList, mushinyBody);
+      renderTable(wmsList, wmsBody);
+
+      statusDiv.textContent = 
+        `Showing ${mushinyList.length} Mushiny scanner(s) and ${wmsList.length} WMS scanner(s).`;
     }
 
-    
-    // Refresh handler
-    refreshBtn.addEventListener('click', fetchTakenScanners);
+    refreshBtn.addEventListener('click', fetchAvailableScanners);
 
     // Initial load
-    fetchTakenScanners();
+    fetchAvailableScanners();
   </script>
 
 </body>
