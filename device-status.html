@@ -2,29 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Available Scanners Report v2.1</title>
+  <title>Currently Taken Scanners Report v2.1</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
     }
     h1 {
-      color: #28a745;
-      margin-bottom: 5px;
+      color: #007BFF;
     }
     h2 {
-      color: #007BFF;
-      margin-top: 25px;
+      color: #28a745;
+      margin-top: 30px;
     }
     table {
       border-collapse: collapse;
       width: 100%;
-      margin-top: 5px;
+      margin-top: 10px;
       margin-bottom: 20px;
     }
     th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
+      border: 1px solid #cccccc;
+      padding: 10px;
       text-align: left;
     }
     th {
@@ -45,33 +44,31 @@
 </head>
 <body>
 
-  <h1>Available Scanners Report v2.1</h1>
+  <h1>Currently Taken Scanners Report v2.1</h1>
   <button id="refresh-btn">Refresh List</button>
   <div id="status" aria-live="polite"></div>
 
-  <!-- Mushiny Table -->
-  <h2>Mushiny Scanners</h2>
+  <!-- Mushiny Taken Scanners Table -->
+  <h2>Mushiny Taken Scanners</h2>
   <table id="mushiny-table">
     <thead>
       <tr>
         <th>Device ID</th>
         <th>Type</th>
         <th>Current Holder</th>
-        <th>Status</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
 
-  <!-- WMS Table -->
-  <h2>WMS Scanners</h2>
+  <!-- WMS Taken Scanners Table -->
+  <h2>WMS Taken Scanners</h2>
   <table id="wms-table">
     <thead>
       <tr>
         <th>Device ID</th>
         <th>Type</th>
         <th>Current Holder</th>
-        <th>Status</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -85,17 +82,18 @@
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
     const mushinyBody = document.querySelector('#mushiny-table tbody');
-    const wmsBody     = document.querySelector('#wms-table tbody');
-    const statusDiv   = document.getElementById('status');
-    const refreshBtn  = document.getElementById('refresh-btn');
+    const wmsBody = document.querySelector('#wms-table tbody');
+    const statusDiv = document.getElementById('status');
+    const refreshBtn = document.getElementById('refresh-btn');
 
-    async function fetchAvailableScanners() {
+    async function fetchTakenScanners() {
       statusDiv.textContent = 'Loading...';
 
+      // Query: only signed_out devices (taken)
       const { data, error } = await supabaseClient
         .from('devices')
-        .select('id, type, current_holder, current_status')
-        .neq('current_status', 'signed_out')
+        .select('id, type, current_holder')
+        .eq('current_status', 'signed_out')
         .order('id', { ascending: true });
 
       if (error) {
@@ -104,29 +102,27 @@
         return;
       }
 
-      // Clear tables
       mushinyBody.innerHTML = '';
       wmsBody.innerHTML = '';
 
       if (!data || data.length === 0) {
-        statusDiv.textContent = 'No available scanners found.';
+        statusDiv.textContent = 'No scanners are currently taken.';
         return;
       }
 
-      // Separate into Mushiny and WMS
+      // Split devices based on type field (adjust this logic if needed)
       const mushinyList = [];
       const wmsList = [];
 
       data.forEach(device => {
-        // Here we decide based on the 'type' field (adjust if your DB uses another field)
-        if (device.type && device.type.toLowerCase().includes('mushiny')) {
+        const typeLower = (device.type || '').toLowerCase();
+        if (typeLower.includes('mushiny')) {
           mushinyList.push(device);
-        } else if (device.type && device.type.toLowerCase().includes('wms')) {
+        } else if (typeLower.includes('wms')) {
           wmsList.push(device);
         }
       });
 
-      // Function to render a table body
       function renderTable(devices, tbody) {
         devices.forEach(device => {
           const tr = document.createElement('tr');
@@ -140,13 +136,9 @@
           const holderTd = document.createElement('td');
           holderTd.textContent = device.current_holder || 'N/A';
 
-          const statusTd = document.createElement('td');
-          statusTd.textContent = device.current_status || 'N/A';
-
           tr.appendChild(idTd);
           tr.appendChild(typeTd);
           tr.appendChild(holderTd);
-          tr.appendChild(statusTd);
 
           tbody.appendChild(tr);
         });
@@ -155,14 +147,13 @@
       renderTable(mushinyList, mushinyBody);
       renderTable(wmsList, wmsBody);
 
-      statusDiv.textContent = 
-        `Showing ${mushinyList.length} Mushiny scanner(s) and ${wmsList.length} WMS scanner(s).`;
+      statusDiv.textContent = `Showing ${mushinyList.length} Mushiny taken scanner(s) and ${wmsList.length} WMS taken scanner(s).`;
     }
 
-    refreshBtn.addEventListener('click', fetchAvailableScanners);
+    refreshBtn.addEventListener('click', fetchTakenScanners);
 
     // Initial load
-    fetchAvailableScanners();
+    fetchTakenScanners();
   </script>
 
 </body>
