@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Available Scanners Report v2.0</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      color: #28a745;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #cccccc;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+    #refresh-btn {
+      margin-top: 10px;
+      padding: 8px 15px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    #status {
+      margin-top: 10px;
+      font-style: italic;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Available Scanners Report v2.0</h1>
+  <button id="refresh-btn">Refresh List</button>
+  <div id="status" aria-live="polite"></div>
+
+  <table id="scanners-table">
+    <thead>
+      <tr>
+        <th>Device ID</th>
+        <th>Type</th>
+        <th>Current Holder</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://tnzrbszknrorumoajgty.supabase.co";
+    const SUPABASE_KEY = "YOUR_KEY_HERE"; // Keep safe if production
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const tableBody = document.querySelector('#scanners-table tbody');
+    const statusDiv = document.getElementById('status');
+    const refreshBtn = document.getElementById('refresh-btn');
+
+    async function fetchAvailableScanners() {
+      statusDiv.textContent = 'Loading...';
+
+      // Query: everything except 'signed_out'
+      const { data, error } = await supabaseClient
+        .from('devices')
+        .select('id, type, current_holder, current_status')
+        .neq('current_status', 'signed_out')
+        .order('id', { ascending: true });
+
+      if (error) {
+        statusDiv.textContent = 'Error fetching data: ' + error.message;
+        console.error(error);
+        return;
+      }
+
+      tableBody.innerHTML = '';
+
+      if (!data || data.length === 0) {
+        statusDiv.textContent = 'No available scanners found.';
+        return;
+      }
+
+      data.forEach(device => {
+        const tr = document.createElement('tr');
+
+        const idTd = document.createElement('td');
+        idTd.textContent = device.id;
+
+        const typeTd = document.createElement('td');
+        typeTd.textContent = device.type || 'N/A';
+
+        const holderTd = document.createElement('td');
+        holderTd.textContent = device.current_holder || 'N/A';
+
+        const statusTd = document.createElement('td');
+        statusTd.textContent = device.current_status || 'N/A';
+
+        tr.appendChild(idTd);
+        tr.appendChild(typeTd);
+        tr.appendChild(holderTd);
+        tr.appendChild(statusTd);
+
+        tableBody.appendChild(tr);
+      });
+
+      statusDiv.textContent = `Showing ${data.length} available scanner(s).`;
+    }
+
+    refreshBtn.addEventListener('click', fetchAvailableScanners);
+
+    // Initial load
+    fetchAvailableScanners();
+  </script>
+
+</body>
+</html>
