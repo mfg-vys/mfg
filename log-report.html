@@ -1,38 +1,38 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Scanner Logs Report</title>
+  <title>Device Sign Logs Report</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
     h1 { color: #007BFF; }
     table { border-collapse: collapse; width: 100%; margin-top: 15px; }
     th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
     th { background-color: #f0f0f0; }
-    #refresh-btn { margin-top: 10px; padding: 8px 15px; font-size: 14px; cursor: pointer; }
+    #refresh-btn { margin-top: 10px; padding: 8px 15px; cursor: pointer; }
     #status { margin-top: 10px; font-style: italic; color: #555; }
-    .filter-label { margin-right: 8px; }
+    .filter { margin-right: 10px; }
   </style>
 </head>
 <body>
-  <h1>Scanner Logs Report</h1>
-  
-  <div>
-    <label class="filter-label">From: <input type="date" id="from-date" /></label>
-    <label class="filter-label">To: <input type="date" id="to-date" /></label>
-    <button id="refresh-btn">Refresh Logs</button>
-  </div>
-  
+
+  <h1>Device Sign Logs Report</h1>
+  <label class="filter">From: <input type="date" id="from-date"></label>
+  <label class="filter">To: <input type="date" id="to-date"></label>
+  <button id="refresh-btn">Refresh Logs</button>
   <div id="status" aria-live="polite"></div>
 
   <table id="logs-table">
     <thead>
       <tr>
-        <th>Log ID</th>
-        <th>Device ID</th>
-        <th>Event Type</th>
+        <th>ID</th>
         <th>User</th>
-        <th>Timestamp</th>
+        <th>Device ID</th>
+        <th>Action</th>
+        <th>Logged At</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -45,9 +45,8 @@
     const { createClient } = supabase;
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const tableBody = document.querySelector('#logs-table tbody');
     const statusDiv = document.getElementById('status');
-    const refreshBtn = document.getElementById('refresh-btn');
+    const tableBody = document.querySelector('#logs-table tbody');
     const fromDateInput = document.getElementById('from-date');
     const toDateInput = document.getElementById('to-date');
 
@@ -55,66 +54,50 @@
       statusDiv.textContent = 'Loading logs...';
       tableBody.innerHTML = '';
 
-      let query = supabaseClient.from('scanner_logs').select('id, device_id, event_type, user, timestamp').order('timestamp', { ascending: false });
+      let query = supabaseClient
+        .from('device_sign_logs')
+        .select('id, user_name, device_id, action, logged_at')
+        .order('logged_at', { ascending: false });
 
-      // Apply date filters if set
       const fromDate = fromDateInput.value;
       const toDate = toDateInput.value;
 
-      if (fromDate) {
-        query = query.gte('timestamp', fromDate + 'T00:00:00Z');
-      }
-      if (toDate) {
-        query = query.lte('timestamp', toDate + 'T23:59:59Z');
-      }
+      if (fromDate) query = query.gte('logged_at', fromDate + 'T00:00:00Z');
+      if (toDate)   query = query.lte('logged_at', toDate   + 'T23:59:59Z');
 
       const { data, error } = await query;
 
       if (error) {
-        statusDiv.textContent = 'Error fetching logs: ' + error.message;
-        console.error(error);
+        statusDiv.textContent = 'Error: ' + error.message;
         return;
       }
 
       if (!data || data.length === 0) {
-        statusDiv.textContent = 'No log entries found for the selected range.';
+        statusDiv.textContent = 'No logs found for this range.';
         return;
       }
 
       data.forEach(log => {
         const tr = document.createElement('tr');
-
-        const idTd = document.createElement('td');
-        idTd.textContent = log.id;
-
-        const deviceTd = document.createElement('td');
-        deviceTd.textContent = log.device_id || 'N/A';
-
-        const eventTd = document.createElement('td');
-        eventTd.textContent = log.event_type || 'N/A';
-
-        const userTd = document.createElement('td');
-        userTd.textContent = log.user || 'N/A';
-
-        const timeTd = document.createElement('td');
-        timeTd.textContent = new Date(log.timestamp).toLocaleString();
-
-        tr.appendChild(idTd);
-        tr.appendChild(deviceTd);
-        tr.appendChild(eventTd);
-        tr.appendChild(userTd);
-        tr.appendChild(timeTd);
-
+        tr.innerHTML = `
+          <td>${log.id}</td>
+          <td>${log.user_name || 'N/A'}</td>
+          <td>${log.device_id || 'N/A'}</td>
+          <td>${log.action || 'N/A'}</td>
+          <td>${new Date(log.logged_at).toLocaleString()}</td>
+        `;
         tableBody.appendChild(tr);
       });
 
       statusDiv.textContent = `Showing ${data.length} log entries.`;
     }
 
-    refreshBtn.addEventListener('click', fetchLogs);
+    document.getElementById('refresh-btn').addEventListener('click', fetchLogs);
 
-    // Initial load without filters
+    // Load logs immediately
     fetchLogs();
   </script>
+
 </body>
 </html>
+
