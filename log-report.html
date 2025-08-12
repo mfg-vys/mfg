@@ -97,7 +97,6 @@
       data.forEach(log => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${log.id}</td>
           <td>${log.user_name || 'N/A'}</td>
           <td>${log.device_id || 'N/A'}</td>
           <td>${log.action || 'N/A'}</td>
