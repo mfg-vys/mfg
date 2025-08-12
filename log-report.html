@@ -19,7 +19,7 @@
 </head>
 <body>
 
-  <h1>Device Sign Logs Report</h1>
+  <h1>Device Sign Logs Report 1.0</h1>
   <label class="filter">From: <input type="date" id="from-date"></label>
   <label class="filter">To: <input type="date" id="to-date"></label>
   <button id="refresh-btn">Refresh Logs</button>
@@ -51,46 +51,39 @@
     const toDateInput = document.getElementById('to-date');
 
     async function fetchLogs() {
-      statusDiv.textContent = 'Loading logs...';
-      tableBody.innerHTML = '';
+  statusDiv.textContent = 'Loading logs...';
+  tableBody.innerHTML = '';
 
-      let query = supabaseClient
-        .from('device_sign_logs')
-        .select('id, user_name, device_id, action, logged_at')
-        .order('logged_at', { ascending: false });
+  const { data, error } = await supabaseClient
+    .from('device_sign_logs')
+    .select('id, user_name, device_id, action, logged_at')
+    .order('logged_at', { ascending: false });
 
-      const fromDate = fromDateInput.value;
-      const toDate = toDateInput.value;
+  if (error) {
+    statusDiv.textContent = 'Error: ' + error.message;
+    return;
+  }
 
-      if (fromDate) query = query.gte('logged_at', fromDate + 'T00:00:00Z');
-      if (toDate)   query = query.lte('logged_at', toDate   + 'T23:59:59Z');
+  if (!data || data.length === 0) {
+    statusDiv.textContent = 'No logs found.';
+    return;
+  }
 
-      const { data, error } = await query;
+  data.forEach(log => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${log.id}</td>
+      <td>${log.user_name || 'N/A'}</td>
+      <td>${log.device_id || 'N/A'}</td>
+      <td>${log.action || 'N/A'}</td>
+      <td>${new Date(log.logged_at).toLocaleString()}</td>
+    `;
+    tableBody.appendChild(tr);
+  });
 
-      if (error) {
-        statusDiv.textContent = 'Error: ' + error.message;
-        return;
-      }
+  statusDiv.textContent = `Showing ${data.length} log entries.`;
+}
 
-      if (!data || data.length === 0) {
-        statusDiv.textContent = 'No logs found for this range.';
-        return;
-      }
-
-      data.forEach(log => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${log.id}</td>
-          <td>${log.user_name || 'N/A'}</td>
-          <td>${log.device_id || 'N/A'}</td>
-          <td>${log.action || 'N/A'}</td>
-          <td>${new Date(log.logged_at).toLocaleString()}</td>
-        `;
-        tableBody.appendChild(tr);
-      });
-
-      statusDiv.textContent = `Showing ${data.length} log entries.`;
-    }
 
     document.getElementById('refresh-btn').addEventListener('click', fetchLogs);
 
