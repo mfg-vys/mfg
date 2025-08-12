@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Scanner Logs Report</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { color: #007BFF; }
+    table { border-collapse: collapse; width: 100%; margin-top: 15px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f0f0f0; }
+    #refresh-btn { margin-top: 10px; padding: 8px 15px; font-size: 14px; cursor: pointer; }
+    #status { margin-top: 10px; font-style: italic; color: #555; }
+    .filter-label { margin-right: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Scanner Logs Report</h1>
+  
+  <div>
+    <label class="filter-label">From: <input type="date" id="from-date" /></label>
+    <label class="filter-label">To: <input type="date" id="to-date" /></label>
+    <button id="refresh-btn">Refresh Logs</button>
+  </div>
+  
+  <div id="status" aria-live="polite"></div>
+
+  <table id="logs-table">
+    <thead>
+      <tr>
+        <th>Log ID</th>
+        <th>Device ID</th>
+        <th>Event Type</th>
+        <th>User</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://tnzrbszknrorumoajgty.supabase.co";
+    const SUPABASE_KEY = "YOUR_SECURE_KEY"; // Use safe key management practices
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const tableBody = document.querySelector('#logs-table tbody');
+    const statusDiv = document.getElementById('status');
+    const refreshBtn = document.getElementById('refresh-btn');
+    const fromDateInput = document.getElementById('from-date');
+    const toDateInput = document.getElementById('to-date');
+
+    async function fetchLogs() {
+      statusDiv.textContent = 'Loading logs...';
+      tableBody.innerHTML = '';
+
+      let query = supabaseClient.from('scanner_logs').select('id, device_id, event_type, user, timestamp').order('timestamp', { ascending: false });
+
+      // Apply date filters if set
+      const fromDate = fromDateInput.value;
+      const toDate = toDateInput.value;
+
+      if (fromDate) {
+        query = query.gte('timestamp', fromDate + 'T00:00:00Z');
+      }
+      if (toDate) {
+        query = query.lte('timestamp', toDate + 'T23:59:59Z');
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        statusDiv.textContent = 'Error fetching logs: ' + error.message;
+        console.error(error);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        statusDiv.textContent = 'No log entries found for the selected range.';
+        return;
+      }
+
+      data.forEach(log => {
+        const tr = document.createElement('tr');
+
+        const idTd = document.createElement('td');
+        idTd.textContent = log.id;
+
+        const deviceTd = document.createElement('td');
+        deviceTd.textContent = log.device_id || 'N/A';
+
+        const eventTd = document.createElement('td');
+        eventTd.textContent = log.event_type || 'N/A';
+
+        const userTd = document.createElement('td');
+        userTd.textContent = log.user || 'N/A';
+
+        const timeTd = document.createElement('td');
+        timeTd.textContent = new Date(log.timestamp).toLocaleString();
+
+        tr.appendChild(idTd);
+        tr.appendChild(deviceTd);
+        tr.appendChild(eventTd);
+        tr.appendChild(userTd);
+        tr.appendChild(timeTd);
+
+        tableBody.appendChild(tr);
+      });
+
+      statusDiv.textContent = `Showing ${data.length} log entries.`;
+    }
+
+    refreshBtn.addEventListener('click', fetchLogs);
+
+    // Initial load without filters
+    fetchLogs();
+  </script>
+</body>
+</html>
