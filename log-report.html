@@ -18,9 +18,13 @@
 <body>
 
   <h1>Device Sign Logs Report</h1>
+
+  <label>From: <input type="date" id="from-date"></label>
+  <label>To: <input type="date" id="to-date"></label>
   <button id="refresh-btn">Refresh Logs</button>
   <div id="status" aria-live="polite"></div>
 
+  
   <table id="logs-table">
     <thead>
       <tr>
@@ -49,23 +53,34 @@
     async function fetchLogs() {
       statusDiv.textContent = 'Loading logs...';
       tableBody.innerHTML = '';
-
-      const { data, error } = await supabaseClient
+    
+      let query = supabaseClient
         .from('device_sign_logs')
         .select('id, user_name, device_id, action, logged_at')
         .order('logged_at', { ascending: false });
-
+    
+      const fromDate = document.getElementById('from-date').value;
+      const toDate = document.getElementById('to-date').value;
+    
+      if (fromDate) {
+        query = query.gte('logged_at', fromDate + 'T00:00:00Z');
+      }
+      if (toDate) {
+        query = query.lte('logged_at', toDate + 'T23:59:59Z');
+      }
+    
+      const { data, error } = await query;
+    
       if (error) {
-        statusDiv.textContent = 'Error fetching logs: ' + error.message;
-        console.error(error);
+        statusDiv.textContent = 'Error: ' + error.message;
         return;
       }
-
+    
       if (!data || data.length === 0) {
-        statusDiv.textContent = 'No log entries found.';
+        statusDiv.textContent = 'No log entries found for the selected date range.';
         return;
       }
-
+    
       data.forEach(log => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -77,7 +92,7 @@
         `;
         tableBody.appendChild(tr);
       });
-
+    
       statusDiv.textContent = `Showing ${data.length} log entries.`;
     }
 
