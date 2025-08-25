@@ -1,33 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Combined Device Reports</title>
-  <style>
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-    }
-    td {
-      vertical-align: top;
-      border: 1px solid #ccc;
-      padding: 10px;
-      overflow: auto;
-      max-height: 90vh;
-    }
-    iframe {
-      width: 100%;
-      height: 90vh;
-      border: none;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>Tabbed HTML Viewer</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  .tabs { overflow: hidden; border-bottom: 1px solid #ccc; }
+  .tab-button {
+    background: #f1f1f1;
+    float: left;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    margin-right: 5px;
+  }
+  .tab-button.active {
+    background: white;
+    font-weight: bold;
+  }
+  .tab-content {
+    border: 1px solid #ccc;
+    padding: 10px;
+    display: none;
+    height: 80vh;
+    overflow: auto;
+  }
+  .tab-content.active {
+    display: block;
+  }
+</style>
 </head>
 <body>
-  <table>
-    <tr>
-      <td>
-        <h1>Currently Taken Scanners Report</h1>
+
+<div class="tabs">
+  <div class="tab-button active" onclick="showTab('tab1')">Device Status</div>
+  <div class="tab-button" onclick="showTab('tab2')">Device Status AV</div>
+  <div class="tab-button" onclick="showTab('tab3')">Log Report</div>
+</div>
+
+<div id="tab1" class="tab-content active">
+  <h1>Currently Taken Scanners Report</h1>
   <button id="refresh-btn">Refresh List</button>
   <div id="status" aria-live="polite"></div>
 
@@ -138,16 +151,255 @@
     // Initial load
     fetchTakenScanners();
   </script>
-      </td>
-      <td>
-        <!-- Content from device-status-av.html -->
-        <!-- Paste the main <body> content from device-status-av.html here -->
-      </td>
-      <td>
-        <!-- Content from log-report.html -->
-        <!-- Paste the main <body> content from log-report.html here -->
-      </td>
-    </tr>
+
+</div>
+<div id="tab2" class="tab-content">
+  <h1>Available Scanners Report</h1>
+  <button id="refresh-btn">Refresh List</button>
+  <div id="status" aria-live="polite"></div>
+
+  <!-- Mushiny Table -->
+  <h2>Mushiny Scanners</h2>
+  <table id="mushiny-table">
+    <thead>
+      <tr>
+        <th>Device ID</th>
+        <th>Type</th>
+        <th>Current Holder</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
   </table>
+
+  <!-- WMS Table -->
+  <h2>WMS Scanners</h2>
+  <table id="wms-table">
+    <thead>
+      <tr>
+        <th>Device ID</th>
+        <th>Type</th>
+        <th>Current Holder</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://tnzrbszknrorumoajgty.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuenJic3prbnJvcnVtb2FqZ3R5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NTM0MTAsImV4cCI6MjA2OTUyOTQxMH0.3Mw2Ke2csi0P2p9LXBv9v1cy1ORVMhgz-mCBqv7Uj4A";
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const mushinyBody = document.querySelector('#mushiny-table tbody');
+    const wmsBody     = document.querySelector('#wms-table tbody');
+    const statusDiv   = document.getElementById('status');
+    const refreshBtn  = document.getElementById('refresh-btn');
+
+    async function fetchAvailableScanners() {
+      statusDiv.textContent = 'Loading...';
+
+      const { data, error } = await supabaseClient
+        .from('devices')
+        .select('id, type, current_holder, current_status')
+        .neq('current_status', 'signed_out')
+        .order('id', { ascending: true });
+
+      if (error) {
+        statusDiv.textContent = 'Error fetching data: ' + error.message;
+        console.error(error);
+        return;
+      }
+
+      // Clear tables
+      mushinyBody.innerHTML = '';
+      wmsBody.innerHTML = '';
+
+      if (!data || data.length === 0) {
+        statusDiv.textContent = 'No available scanners found.';
+        return;
+      }
+
+      // Separate into Mushiny and WMS
+      const mushinyList = [];
+      const wmsList = [];
+
+      data.forEach(device => {
+        // Here we decide based on the 'type' field (adjust if your DB uses another field)
+        if (device.type && device.type.toLowerCase().includes('mushiny')) {
+          mushinyList.push(device);
+        } else if (device.type && device.type.toLowerCase().includes('wms')) {
+          wmsList.push(device);
+        }
+      });
+
+      // Function to render a table body
+      function renderTable(devices, tbody) {
+        devices.forEach(device => {
+          const tr = document.createElement('tr');
+
+          const idTd = document.createElement('td');
+          idTd.textContent = device.id;
+
+          const typeTd = document.createElement('td');
+          typeTd.textContent = device.type || 'N/A';
+
+          const holderTd = document.createElement('td');
+          holderTd.textContent = device.current_holder || 'N/A';
+
+          const statusTd = document.createElement('td');
+          statusTd.textContent = device.current_status || 'N/A';
+
+          tr.appendChild(idTd);
+          tr.appendChild(typeTd);
+          tr.appendChild(holderTd);
+          tr.appendChild(statusTd);
+
+          tbody.appendChild(tr);
+        });
+      }
+
+      renderTable(mushinyList, mushinyBody);
+      renderTable(wmsList, wmsBody);
+
+      statusDiv.textContent = 
+        `Showing ${mushinyList.length} Mushiny scanner(s) and ${wmsList.length} WMS scanner(s).`;
+    }
+
+    refreshBtn.addEventListener('click', fetchAvailableScanners);
+
+    // Initial load
+    fetchAvailableScanners();
+  </script>
+
+</div>
+<div id="tab3" class="tab-content">
+  <h1>Device Sign Logs Report</h1>
+
+  <label>From: <input type="date" id="from-date"></label>
+  <label>To: <input type="date" id="to-date"></label>
+  <button id="refresh-btn">Refresh Logs</button>
+  <div id="status" aria-live="polite"></div>
+
+  
+  <table id="logs-table">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Device ID</th>
+        <th>Action</th>
+        <th>Logged At</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://tnzrbszknrorumoajgty.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuenJic3prbnJvcnVtb2FqZ3R5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NTM0MTAsImV4cCI6MjA2OTUyOTQxMH0.3Mw2Ke2csi0P2p9LXBv9v1cy1ORVMhgz-mCBqv7Uj4A";
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const statusDiv = document.getElementById('status');
+    const tableBody = document.querySelector('#logs-table tbody');
+    const refreshBtn = document.getElementById('refresh-btn');
+
+    function setDefaultDatesToToday() {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+      const dd = String(today.getDate()).padStart(2, '0');
+      const formattedDate = `${yyyy}-${mm}-${dd}`;
+    
+      const fromDateInput = document.getElementById('from-date');
+      const toDateInput = document.getElementById('to-date');
+    
+      if (fromDateInput) fromDateInput.value = formattedDate;
+      if (toDateInput) toDateInput.value = formattedDate;
+    }
+    
+    async function fetchLogs() {
+      statusDiv.textContent = 'Loading logs...';
+      tableBody.innerHTML = '';
+    
+      let query = supabaseClient
+        .from('device_sign_logs')
+        .select('id, user_name, device_id, action, logged_at')
+        .order('logged_at', { ascending: false });
+    
+      const fromDate = document.getElementById('from-date').value;
+      const toDate = document.getElementById('to-date').value;
+    
+      // Apply true UTC date filtering
+      if (fromDate) {
+        query = query.gte('logged_at', toUTCISOString(fromDate, '00:00:00'));
+      }
+      if (toDate) {
+        query = query.lte('logged_at', toUTCISOString(toDate, '23:59:59'));
+      }
+    
+      const { data, error } = await query;
+    
+      if (error) {
+        statusDiv.textContent = 'Error: ' + error.message;
+        console.error(error);
+        return;
+      }
+    
+      if (!data || data.length === 0) {
+        statusDiv.textContent = 'No log entries found for this range.';
+        return;
+      }
+    
+      data.forEach(log => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${log.user_name || 'N/A'}</td>
+          <td>${log.device_id || 'N/A'}</td>
+          <td>${log.action || 'N/A'}</td>
+          <td>${new Date(log.logged_at).toLocaleString()}</td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    
+      statusDiv.textContent = `Showing ${data.length} log entries.`;
+    }
+    
+    function toUTCISOString(localDate, time) {
+      // Treats local date as local time and converts to UTC ISO string
+      const dt = new Date(localDate + 'T' + time);
+      return dt.toISOString();
+    }
+
+    refreshBtn.addEventListener('click', fetchLogs);
+
+    // Call this function on page load
+    setDefaultDatesToToday();
+    
+    // Load all logs immediately on page load
+    fetchLogs();
+  </script>
+</div>
+
+<script>
+function showTab(tabId) {
+  // Hide all tabs
+  const contents = document.querySelectorAll('.tab-content');
+  contents.forEach(c => c.classList.remove('active'));
+
+  // Remove active class from all buttons
+  const buttons = document.querySelectorAll('.tab-button');
+  buttons.forEach(b => b.classList.remove('active'));
+
+  // Show current tab and activate button
+  document.getElementById(tabId).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+</script>
+
 </body>
 </html>
