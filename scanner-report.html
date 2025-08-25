@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Combined Device Reports</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    td {
+      vertical-align: top;
+      border: 1px solid #ccc;
+      padding: 10px;
+      overflow: auto;
+      max-height: 90vh;
+    }
+    iframe {
+      width: 100%;
+      height: 90vh;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <table>
+    <tr>
+      <td>
+        <h1>Currently Taken Scanners Report</h1>
+  <button id="refresh-btn">Refresh List</button>
+  <div id="status" aria-live="polite"></div>
+
+  <!-- Mushiny Taken Scanners Table -->
+  <h2>Mushiny Taken Scanners</h2>
+  <table id="mushiny-table">
+    <thead>
+      <tr>
+        <th>Device ID</th>
+        <th>Type</th>
+        <th>Current Holder</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- WMS Taken Scanners Table -->
+  <h2>WMS Taken Scanners</h2>
+  <table id="wms-table">
+    <thead>
+      <tr>
+        <th>Device ID</th>
+        <th>Type</th>
+        <th>Current Holder</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://tnzrbszknrorumoajgty.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuenJic3prbnJvcnVtb2FqZ3R5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NTM0MTAsImV4cCI6MjA2OTUyOTQxMH0.3Mw2Ke2csi0P2p9LXBv9v1cy1ORVMhgz-mCBqv7Uj4A";
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const mushinyBody = document.querySelector('#mushiny-table tbody');
+    const wmsBody = document.querySelector('#wms-table tbody');
+    const statusDiv = document.getElementById('status');
+    const refreshBtn = document.getElementById('refresh-btn');
+
+    async function fetchTakenScanners() {
+      statusDiv.textContent = 'Loading...';
+
+      // Query: only signed_out devices (taken)
+      const { data, error } = await supabaseClient
+        .from('devices')
+        .select('id, type, current_holder')
+        .eq('current_status', 'signed_out')
+        .order('id', { ascending: true });
+
+      if (error) {
+        statusDiv.textContent = 'Error fetching data: ' + error.message;
+        console.error(error);
+        return;
+      }
+
+      mushinyBody.innerHTML = '';
+      wmsBody.innerHTML = '';
+
+      if (!data || data.length === 0) {
+        statusDiv.textContent = 'No scanners are currently taken.';
+        return;
+      }
+
+      // Split devices based on type field (adjust this logic if needed)
+      const mushinyList = [];
+      const wmsList = [];
+
+      data.forEach(device => {
+        const typeLower = (device.type || '').toLowerCase();
+        if (typeLower.includes('mushiny')) {
+          mushinyList.push(device);
+        } else if (typeLower.includes('wms')) {
+          wmsList.push(device);
+        }
+      });
+
+      function renderTable(devices, tbody) {
+        devices.forEach(device => {
+          const tr = document.createElement('tr');
+
+          const idTd = document.createElement('td');
+          idTd.textContent = device.id;
+
+          const typeTd = document.createElement('td');
+          typeTd.textContent = device.type || 'N/A';
+
+          const holderTd = document.createElement('td');
+          holderTd.textContent = device.current_holder || 'N/A';
+
+          tr.appendChild(idTd);
+          tr.appendChild(typeTd);
+          tr.appendChild(holderTd);
+
+          tbody.appendChild(tr);
+        });
+      }
+
+      renderTable(mushinyList, mushinyBody);
+      renderTable(wmsList, wmsBody);
+
+      statusDiv.textContent = `Showing ${mushinyList.length} Mushiny taken scanner(s) and ${wmsList.length} WMS taken scanner(s).`;
+    }
+
+    refreshBtn.addEventListener('click', fetchTakenScanners);
+
+    // Initial load
+    fetchTakenScanners();
+  </script>
+      </td>
+      <td>
+        <!-- Content from device-status-av.html -->
+        <!-- Paste the main <body> content from device-status-av.html here -->
+      </td>
+      <td>
+        <!-- Content from log-report.html -->
+        <!-- Paste the main <body> content from log-report.html here -->
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
