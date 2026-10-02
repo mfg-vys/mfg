@@ -1150,6 +1150,14 @@ function validateCurrentPage() {
                 .getElementById("inductionDate")
                 .value;
 
+        // Convert yyyy-mm-dd to dd/mm/yyyy for display
+        const dateParts = date.split("-");
+
+        const displayDate =
+            dateParts[2] + "/" +
+            dateParts[1] + "/" +
+            dateParts[0];
+
 
         if (!employee) {
 
@@ -2291,7 +2299,7 @@ async function completeInduction() {
 
 
     pdf.text(
-        date,
+        displayDate,
         75,
         103
     );
@@ -2829,7 +2837,7 @@ async function completeInduction() {
 
     pdf.text(
         "Induction Date: " +
-        date,
+        displayDate,
         20,
         185
     );
