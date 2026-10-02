@@ -1,16 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Employee Induction Checklist</title>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <style>
-
 * {
     box-sizing: border-box;
 }
@@ -32,9 +27,7 @@ body {
     box-shadow: 0 3px 15px rgba(0,0,0,0.10);
 }
 
-
 /* LOGO */
-
 .logo {
     display: block;
     max-width: 330px;
@@ -43,9 +36,7 @@ body {
     margin-bottom: 25px;
 }
 
-
 /* HEADINGS */
-
 h1 {
     margin: 0 0 5px 0;
 }
@@ -67,7 +58,6 @@ h1 {
 
 
 /* PROGRESS BAR */
-
 .progress-container {
     margin-bottom: 30px;
 }
@@ -96,9 +86,7 @@ h1 {
     transition: width 0.3s;
 }
 
-
 /* PAGE */
-
 .page {
     display: none;
 }
@@ -107,9 +95,7 @@ h1 {
     display: block;
 }
 
-
 /* FIELDS */
-
 .field {
     margin-bottom: 20px;
 }
@@ -129,9 +115,7 @@ input[type="date"] {
     border-radius: 6px;
 }
 
-
 /* CHECKLIST */
-
 .stage-counter {
     display: inline-block;
     margin-bottom: 15px;
@@ -172,9 +156,7 @@ input[type="date"] {
     cursor: pointer;
 }
 
-
 /* NAVIGATION */
-
 .navigation {
     display: flex;
     gap: 10px;
@@ -205,9 +187,7 @@ button {
     margin-left: auto;
 }
 
-
 /* SIGNATURE */
-
 .declaration {
     background: #f5f6f7;
     border-left: 4px solid #111;
@@ -261,9 +241,7 @@ canvas {
     cursor: pointer;
 }
 
-
 /* MESSAGE */
-
 #message {
     margin-top: 20px;
     padding: 15px;
@@ -284,343 +262,164 @@ canvas {
     color: #146c2e;
 }
 
-
 /* MOBILE */
-
 @media (max-width: 600px) {
-
     body {
         padding: 10px;
     }
-
     .container {
         padding: 20px;
     }
-
     .logo {
         width: 75%;
     }
-
     h1 {
         font-size: 25px;
     }
-
     .navigation {
         flex-wrap: wrap;
     }
-
     .back-button,
     .next-button {
         flex: 1;
     }
-
 }
-
 </style>
-
 </head>
-
 <body>
-
 <div class="container">
-
-
 <!-- LOGO -->
-
-<img
-    src="logo.png"
-    id="companyLogo"
-    class="logo"
-    alt="Munro Footwear Group">
-
-
+<img src="logo.png" id="companyLogo" class="logo" alt="Munro Footwear Group">
 <h1>Employee Induction Checklist</h1>
-
-<div class="subtitle">
-    Distribution Centre
-</div>
-
-
-
+<div class="subtitle">Distribution Centre</div>
 <!-- PROGRESS -->
-
 <div class="progress-container">
-
     <div class="progress-info">
-
-        <span id="stepName">
-            Employee Details
-        </span>
-
-        <span id="stepNumber">
-            Step 1 of 7
-        </span>
-
+        <span id="stepName">Employee Details</span>
+        <span id="stepNumber">Step 1 of 7</span>
     </div>
-
     <div class="progress-bar">
-
-        <div
-            class="progress-fill"
-            id="progressFill">
-        </div>
-
+        <div class="progress-fill" id="progressFill"></div>
     </div>
-
 </div>
-
-
-
 <!-- =====================================================
      PAGE 1 - EMPLOYEE DETAILS
 ===================================================== -->
-
 <div class="page active" id="page0">
-
-    <h2 class="stage-title">
-        Employee Details
-    </h2>
-
-    <div class="stage-description">
-        Enter the new starter's induction details.
-    </div>
-
-
+    <h2 class="stage-title">Employee Details</h2>
+    <div class="stage-description">Enter the new starter's induction details.</div>
     <div class="field">
-
-        <label for="employeeName">
-            Employee Name
-        </label>
-
-        <input
-            type="text"
-            id="employeeName"
-            placeholder="Enter employee's full name">
-
+        <label for="employeeName">Employee Name</label>
+        <input type="text" id="employeeName" placeholder="Enter employee's full name">
     </div>
-
-
     <div class="field">
-
-        <label for="coordinator">
-            Coordinator / Manager
-        </label>
-
-        <input
-            type="text"
-            id="coordinator"
-            placeholder="Enter coordinator or manager name">
-
+        <label for="coordinator">Coordinator / Manager</label>
+        <input type="text" id="coordinator" placeholder="Enter coordinator or manager name">
     </div>
-
-
     <div class="field">
-
-        <label for="inductionDate">
-            Induction Date
-        </label>
-
-        <input
-            type="date"
-            id="inductionDate">
-
+        <label for="inductionDate">Induction Date</label>
+        <input type="date" id="inductionDate">
     </div>
-
-
     <div class="navigation">
-
-        <button
-            class="next-button"
-            type="button"
-            onclick="nextPage()">
-
-            Start Induction →
-
-        </button>
-
+        <button class="next-button" type="button" onclick="nextPage()">Start Induction →</button>
     </div>
-
 </div>
-
-
-
 <!-- =====================================================
      PAGE 2 - STAGE 1
 ===================================================== -->
-
 <div class="page" id="page1">
-
-    <h2 class="stage-title">
-        Stage 1 - Introduction
-    </h2>
-
-    <div class="stage-description">
-        Reception and Car Park
-    </div>
-
-    <div
-        class="stage-counter"
-        id="counter1">
-    </div>
-
-
+    <h2 class="stage-title">Stage 1 - Introduction</h2>
+    <div class="stage-description">Reception and Car Park</div>
+    <div class="stage-counter" id="counter1"></div>
     <div class="check-item">
         <input type="checkbox" class="stage1">
         <label>Boots are appropriate, laces done up and ankles covered</label>
     </div>
-
     <div class="check-item">
         <input type="checkbox" class="stage1">
         <label>Hi Vis (orange only)</label>
     </div>
-
     <div class="check-item">
         <input type="checkbox" class="stage1">
         <label>Ear-pods not allowed. Speaker rules</label>
     </div>
-
     <div class="check-item">
         <input type="checkbox" class="stage1">
         <label>All hoodies must be down. You can wear a beanie</label>
     </div>
-
     <div class="check-item">
         <input type="checkbox" class="stage1">
         <label>Scarves should be secure and not dangle down</label>
     </div>
-
     <div class="check-item">
         <input type="checkbox" class="stage1">
         <label>Evacuation rules - muster point (must be physically shown)</label>
     </div>
-
     <div class="check-item">
         <input type="checkbox" class="stage1">
         <label>Parking on site - E vehicles</label>
     </div>
-
     <div class="check-item">
         <input type="checkbox" class="stage1">
         <label>Drop Off Location</label>
     </div>
-
     <div class="check-item">
         <input type="checkbox" class="stage1">
         <label>Site access hours - keycard limits out of hours</label>
     </div>
-
-
     <div class="navigation">
-
-        <button
-            class="back-button"
-            type="button"
-            onclick="previousPage()">
-            ← Back
-        </button>
-
-        <button
-            class="next-button"
-            type="button"
-            onclick="nextPage()">
-            Next →
-        </button>
-
+        <button class="back-button" type="button" onclick="previousPage()">← Back</button>
+        <button class="next-button" type="button" onclick="nextPage()">Next →</button>
     </div>
-
 </div>
-
-
-
 <!-- =====================================================
      PAGE 3 - STAGE 2
 ===================================================== -->
-
 <div class="page" id="page2">
-
-    <h2 class="stage-title">
-        Stage 2 - Front Building
-    </h2>
-
-    <div class="stage-description">
-        Toilets, Break Room and Smokers Area
-    </div>
-
-    <div
-        class="stage-counter"
-        id="counter2">
-    </div>
-
-
+    <h2 class="stage-title">Stage 2 - Front Building</h2>
+    <div class="stage-description">Toilets, Break Room and Smokers Area</div>
+    <div class="stage-counter" id="counter2"></div>
     <div class="check-item">
         <input type="checkbox" class="stage2">
         <label>First Aid Room and First Aid locations</label>
     </div>
-
     <div class="check-item">
         <input type="checkbox" class="stage2">
         <label>Wellness Room Location and uses</label>
     </div>
-
     <div class="check-item">
         <input type="checkbox" class="stage2">
         <label>Toilets</label>
     </div>
-
     <div class="check-item">
         <input type="checkbox" class="stage2">
         <label>Clean up after yourself (kitchen/bathrooms)</label>
     </div>
-
     <div class="check-item">
         <input type="checkbox" class="stage2">
         <label>Kitchen and its facilities</label>
     </div>
-
     <div class="check-item">
         <input type="checkbox" class="stage2">
         <label>Pigeon Holes</label>
     </div>
-
     <div class="check-item">
         <input type="checkbox" class="stage2">
         <label>Smokers Hub</label>
     </div>
-
     <div class="check-item">
         <input type="checkbox" class="stage2">
         <label>Company values addressed (notice board)</label>
     </div>
-
-
     <div class="navigation">
-
-        <button
-            class="back-button"
-            type="button"
-            onclick="previousPage()">
-            ← Back
-        </button>
-
-        <button
-            class="next-button"
-            type="button"
-            onclick="nextPage()">
-            Next →
-        </button>
-
+        <button class="back-button" type="button" onclick="previousPage()">← Back</button>
+        <button class="next-button" type="button" onclick="nextPage()">Next →</button>
     </div>
-
 </div>
-
-
-
 <!-- =====================================================
      PAGE 4 - STAGE 3
 ===================================================== -->
-
 <div class="page" id="page3">
-
     <h2 class="stage-title">
         Stage 3 - DC Walkthrough
     </h2>
