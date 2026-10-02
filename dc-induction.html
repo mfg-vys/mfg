@@ -2444,13 +2444,11 @@ async function completeInduction() {
     const declaration =
         "I confirm that the above induction items have been explained and/or demonstrated to me.";
 
-
     const declarationLines =
         pdf.splitTextToSize(
             declaration,
             165
         );
-
 
     pdf.text(
         declarationLines,
@@ -2458,15 +2456,11 @@ async function completeInduction() {
         68
     );
 
-
-
     /* EMPLOYEE */
-
     pdf.setFont(
         "helvetica",
         "bold"
     );
-
 
     pdf.text(
         "Employee:",
@@ -2474,12 +2468,10 @@ async function completeInduction() {
         92
     );
 
-
     pdf.setFont(
         "helvetica",
         "normal"
     );
-
 
     pdf.text(
         employee,
@@ -2487,15 +2479,11 @@ async function completeInduction() {
         92
     );
 
-
-
     /* SIGNATURE HEADINGS */
-
     pdf.setFont(
         "helvetica",
         "bold"
     );
-
 
     pdf.text(
         "Employee Signature",
@@ -2503,44 +2491,34 @@ async function completeInduction() {
         115
     );
 
-
     pdf.text(
         "Coordinator / Manager Signature",
         110,
         115
     );
 
-
-
     /* SIGNATURE IMAGES */
-
     const employeeCanvas =
         document.getElementById(
             "employeeSignature"
         );
 
-
     const coordinatorCanvas =
         document.getElementById(
             "coordinatorSignature"
         );
-
-
     /*
        Get the current signature directly from each canvas.
     */
-
     const employeeImage =
         employeeCanvas.toDataURL(
             "image/png"
         );
 
-
     const coordinatorImage =
         coordinatorCanvas.toDataURL(
             "image/png"
         );
-
 
     pdf.addImage(
         employeeImage,
@@ -2551,7 +2529,6 @@ async function completeInduction() {
         35
     );
 
-
     pdf.addImage(
         coordinatorImage,
         "PNG",
@@ -2561,17 +2538,13 @@ async function completeInduction() {
         35
     );
 
-
-
     /* SIGNATURE LINES */
-
     pdf.line(
         20,
         158,
         95,
         158
     );
-
 
     pdf.line(
         110,
@@ -2580,18 +2553,13 @@ async function completeInduction() {
         158
     );
 
-
-
     /* NAMES */
-
     pdf.setFontSize(9);
-
 
     pdf.setFont(
         "helvetica",
         "normal"
     );
-
 
     pdf.text(
         employee,
@@ -2599,26 +2567,20 @@ async function completeInduction() {
         164
     );
 
-
     pdf.text(
         coordinator,
         110,
         164
     );
 
-
-
     /* COMPLETED */
-
     const completed =
         new Date()
             .toLocaleString(
                 "en-AU"
             );
 
-
     pdf.setFontSize(10);
-
 
     pdf.text(
         "Induction Date: " +
@@ -2627,7 +2589,6 @@ async function completeInduction() {
         185
     );
 
-
     pdf.text(
         "Completed: " +
         completed,
@@ -2635,16 +2596,12 @@ async function completeInduction() {
         193
     );
 
-
-
     /* FOOTER */
-
     pdf.setDrawColor(
         190,
         190,
         190
     );
-
 
     pdf.line(
         20,
@@ -2653,9 +2610,7 @@ async function completeInduction() {
         270
     );
 
-
     pdf.setFontSize(8);
-
 
     pdf.setTextColor(
         100,
@@ -2663,13 +2618,11 @@ async function completeInduction() {
         100
     );
 
-
     pdf.text(
         "Munro Footwear Group - Distribution Centre",
         20,
         277
     );
-
 
     pdf.setTextColor(
         0,
@@ -2677,195 +2630,77 @@ async function completeInduction() {
         0
     );
 
-
-
     /* =================================================
        CREATE PDF FILE
     ================================================= */
-
-    const pdfBlob =
-        pdf.output(
-            "blob"
-        );
-
-
-    const safeName =
-        employee.replace(
-            /[^a-z0-9]/gi,
-            "_"
-        );
-
-
-    const fileName =
-        safeName +
-        "_Employee_Induction_" +
-        date +
-        ".pdf";
-
-
-    const pdfFile =
-        new File(
-
-            [pdfBlob],
-
-            fileName,
-
+    const pdfBlob = pdf.output("blob");
+    const safeName = employee.replace(/[^a-z0-9]/gi,"_");
+    const fileName = safeName + "_Employee_Induction_" + date + ".pdf";
+    const pdfFile = new File([pdfBlob],fileName,
             {
-                type:
-                    "application/pdf"
+                type:"application/pdf"
             }
-
         );
-
-
 
     /* =================================================
        SHARE PDF
     ================================================= */
-
     const shareData = {
-
-        title:
-            "Employee Induction - " +
-            employee,
-
-        text:
-            "Please find attached the completed employee induction for " +
-            employee +
-            ".",
-
-        files: [
-            pdfFile
-        ]
-
+        title:"Employee Induction - " +employee,
+        text:"Please find attached the completed employee induction for " + employee + ".",
+        files: [pdfFile]
     };
-
-
-
     if (
-
         navigator.canShare &&
-
-        navigator.canShare({
-            files: [
-                pdfFile
-            ]
-        })
-
+        navigator.canShare({files: [pdfFile]})
     ) {
-
-
         try {
-
-            await navigator.share(
-                shareData
-            );
-
-
-            const message =
-                document.getElementById(
-                    "message"
-                );
-
-
-            message.className =
-                "success";
-
-
-            message.textContent =
-                "Induction completed. The PDF has been created and shared.";
-
+            await navigator.share(shareData);
+            const message = document.getElementById("message");
+            message.className = "success";
+            message.textContent = "Induction completed. The PDF has been created and shared.";
         }
-
-
         catch (error) {
-
-
             if (
-                error.name !==
-                "AbortError"
+                error.name !== "AbortError"
             ) {
-
-                console.error(
-                    error
-                );
-
-
-                const message =
-                    document.getElementById(
-                        "message"
-                    );
-
-
-                message.className =
-                    "error";
-
-
-                message.textContent =
-                    "Unable to open the share menu.";
-
+                console.error(error);
+                const message = document.getElementById("message");
+                message.className = "error";
+                message.textContent = "Unable to open the share menu.";
             }
-
         }
-
     }
-
-
     else {
-
-
         /*
            Fallback for desktop browsers that don't
            support sharing files.
 
            Download the PDF instead.
         */
-
-        pdf.save(
-            fileName
-        );
-
-
-        const message =
-            document.getElementById(
-                "message"
-            );
-
-
-        message.className =
-            "success";
-
-
-        message.textContent =
-            "This device does not support direct PDF sharing, so the completed induction PDF has been downloaded instead.";
-
+        pdf.save(fileName);
+        const message = document.getElementById("message");
+        message.className = "success";
+        message.textContent = "This device does not support direct PDF sharing, so the completed induction PDF has been downloaded instead.";
     }
-
 }
-
-
 
 /* =====================================================
    INITIALISE SIGNATURE EVENTS
 
    Do NOT resize here because Page 7 is hidden.
 ===================================================== */
-
 setupSignature(
     "employeeSignature"
 );
-
 
 setupSignature(
     "coordinatorSignature"
 );
 
-
-
 /* =====================================================
    INITIALISE PAGE
 ===================================================== */
-
 updateCounters();
 
 showPage(0);
