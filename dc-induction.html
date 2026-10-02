@@ -2133,11 +2133,29 @@ async function completeInduction() {
 
 
     const date =
-        document
-            .getElementById(
-                "inductionDate"
-            )
-            .value;
+    document
+        .getElementById(
+            "inductionDate"
+        )
+        .value;
+
+
+    /*
+       Date used inside PDF:
+       yyyy-mm-dd → dd/mm/yyyy
+    
+       The original "date" variable stays yyyy-mm-dd
+       for the PDF filename.
+    */
+    
+    const dateParts =
+        date.split("-");
+    
+    
+    const displayDate =
+        dateParts[2] + "/" +
+        dateParts[1] + "/" +
+        dateParts[0];
 
 
 
