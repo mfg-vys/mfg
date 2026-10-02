@@ -75,6 +75,7 @@ h1 {
 .progress-info {
     display: flex;
     justify-content: space-between;
+    gap: 20px;
     font-size: 13px;
     color: #666;
     margin-bottom: 7px;
@@ -150,6 +151,7 @@ input[type="date"] {
     background: #f5f6f7;
     border-radius: 7px;
     cursor: pointer;
+    user-select: none;
 }
 
 .check-item:hover {
@@ -218,13 +220,22 @@ button {
     margin-top: 30px;
 }
 
+.signature-box {
+    width: 100%;
+}
+
 canvas {
     width: 100%;
     height: 170px;
     display: block;
-    background: white;
+    background: #fff;
     border: 2px solid #bbb;
     border-radius: 7px;
+
+    /*
+       Important for signing on Android/iPhone/iPad.
+       Prevents the page from scrolling while drawing.
+    */
     touch-action: none;
 }
 
@@ -292,6 +303,15 @@ canvas {
 
     h1 {
         font-size: 25px;
+    }
+
+    .navigation {
+        flex-wrap: wrap;
+    }
+
+    .back-button,
+    .next-button {
+        flex: 1;
     }
 
 }
@@ -368,7 +388,7 @@ canvas {
 
     <div class="field">
 
-        <label>
+        <label for="employeeName">
             Employee Name
         </label>
 
@@ -382,7 +402,7 @@ canvas {
 
     <div class="field">
 
-        <label>
+        <label for="coordinator">
             Coordinator / Manager
         </label>
 
@@ -396,7 +416,7 @@ canvas {
 
     <div class="field">
 
-        <label>
+        <label for="inductionDate">
             Induction Date
         </label>
 
@@ -411,6 +431,7 @@ canvas {
 
         <button
             class="next-button"
+            type="button"
             onclick="nextPage()">
 
             Start Induction →
@@ -445,73 +466,47 @@ canvas {
 
     <div class="check-item">
         <input type="checkbox" class="stage1">
-        <label>
-            Boots are appropriate, laces done up and ankles covered
-        </label>
+        <label>Boots are appropriate, laces done up and ankles covered</label>
     </div>
-
 
     <div class="check-item">
         <input type="checkbox" class="stage1">
-        <label>
-            Hi Vis (orange only)
-        </label>
+        <label>Hi Vis (orange only)</label>
     </div>
-
 
     <div class="check-item">
         <input type="checkbox" class="stage1">
-        <label>
-            Ear-pods not allowed. Speaker rules
-        </label>
+        <label>Ear-pods not allowed. Speaker rules</label>
     </div>
-
 
     <div class="check-item">
         <input type="checkbox" class="stage1">
-        <label>
-            All hoodies must be down. You can wear a beanie
-        </label>
+        <label>All hoodies must be down. You can wear a beanie</label>
     </div>
-
 
     <div class="check-item">
         <input type="checkbox" class="stage1">
-        <label>
-            Scarves should be secure and not dangle down
-        </label>
+        <label>Scarves should be secure and not dangle down</label>
     </div>
-
 
     <div class="check-item">
         <input type="checkbox" class="stage1">
-        <label>
-            Evacuation rules - muster point (must be physically shown)
-        </label>
+        <label>Evacuation rules - muster point (must be physically shown)</label>
     </div>
-
 
     <div class="check-item">
         <input type="checkbox" class="stage1">
-        <label>
-            Parking on site - E vehicles
-        </label>
+        <label>Parking on site - E vehicles</label>
     </div>
-
 
     <div class="check-item">
         <input type="checkbox" class="stage1">
-        <label>
-            Drop Off Location
-        </label>
+        <label>Drop Off Location</label>
     </div>
-
 
     <div class="check-item">
         <input type="checkbox" class="stage1">
-        <label>
-            Site access hours - keycard limits out of hours
-        </label>
+        <label>Site access hours - keycard limits out of hours</label>
     </div>
 
 
@@ -519,12 +514,14 @@ canvas {
 
         <button
             class="back-button"
+            type="button"
             onclick="previousPage()">
             ← Back
         </button>
 
         <button
             class="next-button"
+            type="button"
             onclick="nextPage()">
             Next →
         </button>
@@ -557,65 +554,42 @@ canvas {
 
     <div class="check-item">
         <input type="checkbox" class="stage2">
-        <label>
-            First Aid Room and First Aid locations
-        </label>
+        <label>First Aid Room and First Aid locations</label>
     </div>
-
 
     <div class="check-item">
         <input type="checkbox" class="stage2">
-        <label>
-            Wellness Room Location and uses
-        </label>
+        <label>Wellness Room Location and uses</label>
     </div>
-
 
     <div class="check-item">
         <input type="checkbox" class="stage2">
-        <label>
-            Toilets
-        </label>
+        <label>Toilets</label>
     </div>
-
 
     <div class="check-item">
         <input type="checkbox" class="stage2">
-        <label>
-            Clean up after yourself (kitchen/bathrooms)
-        </label>
+        <label>Clean up after yourself (kitchen/bathrooms)</label>
     </div>
-
 
     <div class="check-item">
         <input type="checkbox" class="stage2">
-        <label>
-            Kitchen and its facilities
-        </label>
+        <label>Kitchen and its facilities</label>
     </div>
-
 
     <div class="check-item">
         <input type="checkbox" class="stage2">
-        <label>
-            Pigeon Holes
-        </label>
+        <label>Pigeon Holes</label>
     </div>
-
 
     <div class="check-item">
         <input type="checkbox" class="stage2">
-        <label>
-            Smokers Hub
-        </label>
+        <label>Smokers Hub</label>
     </div>
-
 
     <div class="check-item">
         <input type="checkbox" class="stage2">
-        <label>
-            Company values addressed (notice board)
-        </label>
+        <label>Company values addressed (notice board)</label>
     </div>
 
 
@@ -623,12 +597,14 @@ canvas {
 
         <button
             class="back-button"
+            type="button"
             onclick="previousPage()">
             ← Back
         </button>
 
         <button
             class="next-button"
+            type="button"
             onclick="nextPage()">
             Next →
         </button>
@@ -691,9 +667,7 @@ canvas {
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            Breaks - time, duration and onus on punctuality
-        </label>
+        <label>Breaks - time, duration and onus on punctuality</label>
     </div>
 
     <div class="check-item">
@@ -703,142 +677,102 @@ canvas {
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            Do not operate an electric Pallet Jack until authorised to do so
-        </label>
+        <label>Do not operate an electric Pallet Jack until authorised to do so</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            Do NOT ride any mobile equipment (or operate a forklift without prior approval)
-        </label>
+        <label>Do NOT ride any mobile equipment (or operate a forklift without prior approval)</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            Do not attempt to repair equipment
-        </label>
+        <label>Do not attempt to repair equipment</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            Travel to and from rear stations
-        </label>
+        <label>Travel to and from rear stations</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            Web Pack and External Introduction
-        </label>
+        <label>Web Pack and External Introduction</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            Do not enter the "GRID" unless trained to do so
-        </label>
+        <label>Do not enter the "GRID" unless trained to do so</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            Ladders (3 point of contact)
-        </label>
+        <label>Ladders (3 point of contact)</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            Use safety steps - don't over reach
-        </label>
+        <label>Use safety steps - don't over reach</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            Web Pick and Receiving Introduction
-        </label>
+        <label>Web Pick and Receiving Introduction</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            Cleaning Stations and Tag Outs
-        </label>
+        <label>Cleaning Stations and Tag Outs</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            B2B Introduction
-        </label>
+        <label>B2B Introduction</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            High level Manual Handling (eg knees)
-        </label>
+        <label>High level Manual Handling (eg knees)</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            Shared Zones - Forklift and Pedestrians reminder
-        </label>
+        <label>Shared Zones - Forklift and Pedestrians reminder</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            Dock Office / Priority Receipt Area Introduction (Do not enter the Dock Office yet)
-        </label>
+        <label>Dock Office / Priority Receipt Area Introduction (Do not enter the Dock Office yet)</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            Putaway and Returns Introductions
-        </label>
+        <label>Putaway and Returns Introductions</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            Racking Aisles explained - straps
-        </label>
+        <label>Racking Aisles explained - straps</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            Back Stations / Canopy 3 / Cross Dock Introduction
-        </label>
+        <label>Back Stations / Canopy 3 / Cross Dock Introduction</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            Canopy 1 Introduction
-        </label>
+        <label>Canopy 1 Introduction</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            Working outside outlined - walkways
-        </label>
+        <label>Working outside outlined - walkways</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
-        <label>
-            Compactor and Bins outlined
-        </label>
+        <label>Compactor and Bins outlined</label>
     </div>
 
 
@@ -846,12 +780,14 @@ canvas {
 
         <button
             class="back-button"
+            type="button"
             onclick="previousPage()">
             ← Back
         </button>
 
         <button
             class="next-button"
+            type="button"
             onclick="nextPage()">
             Next →
         </button>
@@ -880,58 +816,42 @@ canvas {
 
     <div class="check-item">
         <input type="checkbox" class="stage4">
-        <label>
-            Further PPE (earplugs, goggles and gloves)
-        </label>
+        <label>Further PPE (earplugs, goggles and gloves)</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage4">
-        <label>
-            Equipment - Pens, Markers, Cutters etc.
-        </label>
+        <label>Equipment - Pens, Markers, Cutters etc.</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage4">
-        <label>
-            Scanners - Types and Sign In/Out
-        </label>
+        <label>Scanners - Types and Sign In/Out</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage4">
-        <label>
-            Upstairs Dock Office Introduction
-        </label>
+        <label>Upstairs Dock Office Introduction</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage4">
-        <label>
-            Container Unload - view from upstairs
-        </label>
+        <label>Container Unload - view from upstairs</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage4">
-        <label>
-            Tour taken (full site & across all teams)
-        </label>
+        <label>Tour taken (full site & across all teams)</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage4">
-        <label>
-            Finger Scan Set Up Conducted
-        </label>
+        <label>Finger Scan Set Up Conducted</label>
     </div>
 
     <div class="check-item">
         <input type="checkbox" class="stage4">
-        <label>
-            Key introductions - staff
-        </label>
+        <label>Key introductions - staff</label>
     </div>
 
 
@@ -939,12 +859,14 @@ canvas {
 
         <button
             class="back-button"
+            type="button"
             onclick="previousPage()">
             ← Back
         </button>
 
         <button
             class="next-button"
+            type="button"
             onclick="nextPage()">
             Next →
         </button>
@@ -977,17 +899,12 @@ canvas {
 
     <div class="check-item">
         <input type="checkbox" class="stage5">
-        <label>
-            Raising an Elumina
-        </label>
+        <label>Raising an Elumina</label>
     </div>
-
 
     <div class="check-item">
         <input type="checkbox" class="stage5">
-        <label>
-            Stella Modules conducted
-        </label>
+        <label>Stella Modules conducted</label>
     </div>
 
 
@@ -995,12 +912,14 @@ canvas {
 
         <button
             class="back-button"
+            type="button"
             onclick="previousPage()">
             ← Back
         </button>
 
         <button
             class="next-button"
+            type="button"
             onclick="nextPage()">
             Continue to Signatures →
         </button>
@@ -1034,10 +953,13 @@ canvas {
         Employee Signature
     </h3>
 
-    <canvas id="employeeSignature"></canvas>
+    <div class="signature-box">
+        <canvas id="employeeSignature"></canvas>
+    </div>
 
     <button
         class="clear-button"
+        type="button"
         onclick="clearSignature('employeeSignature')">
 
         Clear Signature
@@ -1050,10 +972,13 @@ canvas {
         Coordinator / Manager Signature
     </h3>
 
-    <canvas id="coordinatorSignature"></canvas>
+    <div class="signature-box">
+        <canvas id="coordinatorSignature"></canvas>
+    </div>
 
     <button
         class="clear-button"
+        type="button"
         onclick="clearSignature('coordinatorSignature')">
 
         Clear Signature
@@ -1064,6 +989,7 @@ canvas {
 
     <button
         class="complete-button"
+        type="button"
         onclick="completeInduction()">
 
         Complete & Email Induction
@@ -1078,6 +1004,7 @@ canvas {
 
         <button
             class="back-button"
+            type="button"
             onclick="previousPage()">
             ← Back
         </button>
@@ -1114,7 +1041,6 @@ let currentPage = 0;
 const totalPages = 7;
 
 const pageNames = [
-
     "Employee Details",
     "Stage 1",
     "Stage 2",
@@ -1122,7 +1048,6 @@ const pageNames = [
     "Stage 4",
     "Stage 5",
     "Sign & Complete"
-
 ];
 
 
@@ -1131,16 +1056,12 @@ function showPage(pageNumber) {
     document
         .querySelectorAll(".page")
         .forEach(page => {
-
             page.classList.remove("active");
-
         });
 
 
     document
-        .getElementById(
-            "page" + pageNumber
-        )
+        .getElementById("page" + pageNumber)
         .classList
         .add("active");
 
@@ -1174,6 +1095,29 @@ function showPage(pageNumber) {
 
 
     updateCounters();
+
+
+    /*
+       IMPORTANT:
+       The signature canvases are hidden until Page 7.
+       We resize them only after the page becomes visible.
+    */
+
+    if (pageNumber === 6) {
+
+        setTimeout(function() {
+
+            resizeSignatureCanvas(
+                "employeeSignature"
+            );
+
+            resizeSignatureCanvas(
+                "coordinatorSignature"
+            );
+
+        }, 100);
+
+    }
 
 }
 
@@ -1431,18 +1375,19 @@ document
                     event.target.tagName ===
                     "INPUT"
                 ) {
-
                     return;
-
                 }
+
 
                 const checkbox =
                     this.querySelector(
                         'input[type="checkbox"]'
                     );
 
+
                 checkbox.checked =
                     !checkbox.checked;
+
 
                 checkbox.dispatchEvent(
                     new Event("change")
@@ -1456,7 +1401,7 @@ document
 
 
 /* =====================================================
-   SIGNATURES
+   SIGNATURE STATE
 ===================================================== */
 
 const signatureState = {
@@ -1467,6 +1412,23 @@ const signatureState = {
 };
 
 
+/*
+   Store a copy of each signature so it is not lost
+   if the user goes Back and then returns to Page 7.
+*/
+
+const signatureImages = {
+
+    employeeSignature: null,
+    coordinatorSignature: null
+
+};
+
+
+
+/* =====================================================
+   SETUP SIGNATURE PAD
+===================================================== */
 
 function setupSignature(canvasId) {
 
@@ -1485,8 +1447,15 @@ function setupSignature(canvasId) {
             canvas.getBoundingClientRect();
 
         return {
-            x: event.clientX - rect.left,
-            y: event.clientY - rect.top
+
+            x:
+                event.clientX -
+                rect.left,
+
+            y:
+                event.clientY -
+                rect.top
+
         };
 
     }
@@ -1500,14 +1469,26 @@ function setupSignature(canvasId) {
 
             drawing = true;
 
-            signatureState[canvasId] = true;
+            signatureState[canvasId] =
+                true;
 
-            canvas.setPointerCapture(
-                event.pointerId
-            );
+
+            try {
+
+                canvas.setPointerCapture(
+                    event.pointerId
+                );
+
+            }
+
+            catch (error) {
+                // Ignore if unsupported.
+            }
+
 
             const pos =
                 position(event);
+
 
             ctx.beginPath();
 
@@ -1515,6 +1496,19 @@ function setupSignature(canvasId) {
                 pos.x,
                 pos.y
             );
+
+
+            /*
+               Draw a tiny dot as well.
+               This means even a tap is recognised.
+            */
+
+            ctx.lineTo(
+                pos.x + 0.01,
+                pos.y + 0.01
+            );
+
+            ctx.stroke();
 
         }
     );
@@ -1528,15 +1522,19 @@ function setupSignature(canvasId) {
                 return;
             }
 
+
             event.preventDefault();
+
 
             const pos =
                 position(event);
+
 
             ctx.lineTo(
                 pos.x,
                 pos.y
             );
+
 
             ctx.stroke();
 
@@ -1544,37 +1542,77 @@ function setupSignature(canvasId) {
     );
 
 
+    function finishDrawing(event) {
+
+        if (!drawing) {
+            return;
+        }
+
+
+        if (event) {
+            event.preventDefault();
+        }
+
+
+        drawing = false;
+
+
+        /*
+           Save current signature.
+        */
+
+        signatureImages[canvasId] =
+            canvas.toDataURL(
+                "image/png"
+            );
+
+    }
+
+
     canvas.addEventListener(
         "pointerup",
-        function(event) {
-
-            event.preventDefault();
-
-            drawing = false;
-
-        }
+        finishDrawing
     );
 
 
     canvas.addEventListener(
         "pointercancel",
-        function() {
+        finishDrawing
+    );
 
-            drawing = false;
+
+    canvas.addEventListener(
+        "pointerleave",
+        function(event) {
+
+            if (drawing) {
+                finishDrawing(event);
+            }
 
         }
     );
 
 }
 
+
+
+/* =====================================================
+   RESIZE SIGNATURE CANVAS
+===================================================== */
+
 function resizeSignatureCanvas(canvasId) {
 
     const canvas =
         document.getElementById(canvasId);
 
+
     const rect =
         canvas.getBoundingClientRect();
 
+
+    /*
+       Don't resize a hidden canvas.
+    */
 
     if (
         rect.width === 0 ||
@@ -1584,15 +1622,42 @@ function resizeSignatureCanvas(canvasId) {
     }
 
 
+    /*
+       Save existing signature before resizing.
+       Resizing a canvas normally clears it.
+    */
+
+    let savedImage =
+        signatureImages[canvasId];
+
+
+    if (
+        signatureState[canvasId] &&
+        !savedImage
+    ) {
+
+        savedImage =
+            canvas.toDataURL(
+                "image/png"
+            );
+
+    }
+
+
     const ratio =
         window.devicePixelRatio || 1;
 
 
     canvas.width =
-        rect.width * ratio;
+        Math.round(
+            rect.width * ratio
+        );
+
 
     canvas.height =
-        rect.height * ratio;
+        Math.round(
+            rect.height * ratio
+        );
 
 
     const ctx =
@@ -1610,126 +1675,77 @@ function resizeSignatureCanvas(canvasId) {
 
 
     ctx.lineWidth = 2;
+
     ctx.lineCap = "round";
+
     ctx.lineJoin = "round";
+
     ctx.strokeStyle = "#000";
 
-}
+
+    /*
+       Restore signature if one already exists.
+    */
+
+    if (savedImage) {
+
+        const image =
+            new Image();
 
 
+        image.onload =
+            function() {
 
-    function position(event) {
+                ctx.drawImage(
+                    image,
+                    0,
+                    0,
+                    rect.width,
+                    rect.height
+                );
 
-        const rect =
-            canvas.getBoundingClientRect();
+            };
 
 
-        return {
-
-            x:
-                event.clientX -
-                rect.left,
-
-            y:
-                event.clientY -
-                rect.top
-
-        };
+        image.src =
+            savedImage;
 
     }
 
-
-
-    canvas.addEventListener(
-        "pointerdown",
-        function(event) {
-
-            drawing = true;
-
-            signatureState[canvasId] =
-                true;
-
-
-            canvas.setPointerCapture(
-                event.pointerId
-            );
-
-
-            const pos =
-                position(event);
-
-
-            ctx.beginPath();
-
-            ctx.moveTo(
-                pos.x,
-                pos.y
-            );
-
-        }
-    );
-
-
-    canvas.addEventListener(
-        "pointermove",
-        function(event) {
-
-            if (!drawing) {
-                return;
-            }
-
-
-            const pos =
-                position(event);
-
-
-            ctx.lineTo(
-                pos.x,
-                pos.y
-            );
-
-
-            ctx.stroke();
-
-        }
-    );
-
-
-    canvas.addEventListener(
-        "pointerup",
-        function() {
-
-            drawing = false;
-
-        }
-    );
-
-
-    canvas.addEventListener(
-        "pointercancel",
-        function() {
-
-            drawing = false;
-
-        }
-    );
-
-
-    resizeCanvas();
-
 }
 
 
+
+/* =====================================================
+   CLEAR SIGNATURE
+===================================================== */
 
 function clearSignature(canvasId) {
 
     const canvas =
-        document.getElementById(
-            canvasId
-        );
+        document.getElementById(canvasId);
+
 
     const ctx =
         canvas.getContext("2d");
+
+
+    /*
+       Because the context is scaled for high-DPI
+       displays, reset the transform temporarily.
+    */
+
+    ctx.save();
+
+
+    ctx.setTransform(
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+    );
 
 
     ctx.clearRect(
@@ -1740,8 +1756,15 @@ function clearSignature(canvasId) {
     );
 
 
+    ctx.restore();
+
+
     signatureState[canvasId] =
         false;
+
+
+    signatureImages[canvasId] =
+        null;
 
 }
 
@@ -1866,7 +1889,12 @@ function addPDFHeader(
         );
 
 
-    const logoWidth = 70;
+    /*
+       Keep the natural aspect ratio of the MFG logo.
+    */
+
+    const logoWidth = 75;
+
 
     const logoHeight =
         (
@@ -1893,6 +1921,7 @@ function addPDFHeader(
 
 
     pdf.setFontSize(8);
+
 
     pdf.setTextColor(
         100,
@@ -2007,7 +2036,7 @@ function addPDFItem(
 async function completeInduction() {
 
 
-    /* VALIDATE EVERYTHING */
+    /* CHECK ALL STAGES */
 
     for (
         let stage = 1;
@@ -2045,6 +2074,8 @@ async function completeInduction() {
     }
 
 
+
+    /* CHECK SIGNATURES */
 
     if (
         !signatureState
@@ -2179,6 +2210,7 @@ async function completeInduction() {
 
     pdf.setFontSize(11);
 
+
     pdf.setFont(
         "helvetica",
         "normal"
@@ -2194,7 +2226,6 @@ async function completeInduction() {
 
 
     /* DETAILS BOX */
-
 
     pdf.setDrawColor(
         190,
@@ -2272,14 +2303,6 @@ async function completeInduction() {
 
 
 
-    /* STAGES 1 & 2 */
-
-    const firstStages = [
-        1,
-        2
-    ];
-
-
     const stageTitles = {
 
         1:
@@ -2301,8 +2324,12 @@ async function completeInduction() {
 
 
 
+    /* =================================================
+       STAGES 1 & 2
+    ================================================= */
+
     for (
-        const stage of firstStages
+        const stage of [1, 2]
     ) {
 
 
@@ -2341,6 +2368,30 @@ async function completeInduction() {
             getStageItems(stage)
         ) {
 
+            /*
+               If the first page runs out of space,
+               continue onto another page.
+            */
+
+            if (y > 270) {
+
+                pdf.addPage();
+
+                pageNumber++;
+
+
+                addPDFHeader(
+                    pdf,
+                    logoData,
+                    pageNumber
+                );
+
+
+                y = 50;
+
+            }
+
+
             y =
                 addPDFItem(
                     pdf,
@@ -2360,7 +2411,6 @@ async function completeInduction() {
     /* =================================================
        STAGE 3
     ================================================= */
-
 
     pdf.addPage();
 
@@ -2386,14 +2436,24 @@ async function completeInduction() {
     pdf.setFontSize(14);
 
 
+    const stage3Heading =
+        pdf.splitTextToSize(
+            stageTitles[3],
+            165
+        );
+
+
     pdf.text(
-        stageTitles[3],
+        stage3Heading,
         20,
         y
     );
 
 
-    y += 12;
+    y +=
+        stage3Heading.length *
+        6 +
+        6;
 
 
 
@@ -2419,6 +2479,25 @@ async function completeInduction() {
 
             y = 50;
 
+
+            pdf.setFont(
+                "helvetica",
+                "bold"
+            );
+
+
+            pdf.setFontSize(11);
+
+
+            pdf.text(
+                "Stage 3 - DC Walkthrough (continued)",
+                20,
+                y
+            );
+
+
+            y += 10;
+
         }
 
 
@@ -2436,7 +2515,6 @@ async function completeInduction() {
     /* =================================================
        STAGES 4 & 5
     ================================================= */
-
 
     pdf.addPage();
 
@@ -2494,6 +2572,26 @@ async function completeInduction() {
             getStageItems(stage)
         ) {
 
+
+            if (y > 270) {
+
+                pdf.addPage();
+
+                pageNumber++;
+
+
+                addPDFHeader(
+                    pdf,
+                    logoData,
+                    pageNumber
+                );
+
+
+                y = 50;
+
+            }
+
+
             y =
                 addPDFItem(
                     pdf,
@@ -2513,7 +2611,6 @@ async function completeInduction() {
     /* =================================================
        SIGNATURE PAGE
     ================================================= */
-
 
     pdf.addPage();
 
@@ -2571,8 +2668,7 @@ async function completeInduction() {
 
 
 
-    /* EMPLOYEE INFO */
-
+    /* EMPLOYEE */
 
     pdf.setFont(
         "helvetica",
@@ -2603,7 +2699,6 @@ async function completeInduction() {
 
     /* SIGNATURE HEADINGS */
 
-
     pdf.setFont(
         "helvetica",
         "bold"
@@ -2627,7 +2722,6 @@ async function completeInduction() {
 
     /* SIGNATURE IMAGES */
 
-
     const employeeCanvas =
         document.getElementById(
             "employeeSignature"
@@ -2639,6 +2733,10 @@ async function completeInduction() {
             "coordinatorSignature"
         );
 
+
+    /*
+       Get the current signature directly from each canvas.
+    */
 
     const employeeImage =
         employeeCanvas.toDataURL(
@@ -2675,7 +2773,6 @@ async function completeInduction() {
 
     /* SIGNATURE LINES */
 
-
     pdf.line(
         20,
         158,
@@ -2694,7 +2791,6 @@ async function completeInduction() {
 
 
     /* NAMES */
-
 
     pdf.setFontSize(9);
 
@@ -2721,7 +2817,6 @@ async function completeInduction() {
 
 
     /* COMPLETED */
-
 
     const completed =
         new Date()
@@ -2750,10 +2845,51 @@ async function completeInduction() {
 
 
 
-    /* =================================================
-       CREATE FILE
-    ================================================= */
+    /* FOOTER */
 
+    pdf.setDrawColor(
+        190,
+        190,
+        190
+    );
+
+
+    pdf.line(
+        20,
+        270,
+        190,
+        270
+    );
+
+
+    pdf.setFontSize(8);
+
+
+    pdf.setTextColor(
+        100,
+        100,
+        100
+    );
+
+
+    pdf.text(
+        "Munro Footwear Group - Treadshed Distribution Centre",
+        20,
+        277
+    );
+
+
+    pdf.setTextColor(
+        0,
+        0,
+        0
+    );
+
+
+
+    /* =================================================
+       CREATE PDF FILE
+    ================================================= */
 
     const pdfBlob =
         pdf.output(
@@ -2792,9 +2928,8 @@ async function completeInduction() {
 
 
     /* =================================================
-       SHARE
+       SHARE PDF
     ================================================= */
-
 
     const shareData = {
 
@@ -2820,11 +2955,9 @@ async function completeInduction() {
         navigator.canShare &&
 
         navigator.canShare({
-
             files: [
                 pdfFile
             ]
-
         })
 
     ) {
@@ -2889,6 +3022,18 @@ async function completeInduction() {
     else {
 
 
+        /*
+           Fallback for desktop browsers that don't
+           support sharing files.
+
+           Download the PDF instead.
+        */
+
+        pdf.save(
+            fileName
+        );
+
+
         const message =
             document.getElementById(
                 "message"
@@ -2896,11 +3041,11 @@ async function completeInduction() {
 
 
         message.className =
-            "error";
+            "success";
 
 
         message.textContent =
-            "This browser does not support sharing PDF files.";
+            "This device does not support direct PDF sharing, so the completed induction PDF has been downloaded instead.";
 
     }
 
@@ -2909,9 +3054,10 @@ async function completeInduction() {
 
 
 /* =====================================================
-   INITIALISE
-===================================================== */
+   INITIALISE SIGNATURE EVENTS
 
+   Do NOT resize here because Page 7 is hidden.
+===================================================== */
 
 setupSignature(
     "employeeSignature"
@@ -2923,8 +3069,12 @@ setupSignature(
 );
 
 
-updateCounters();
 
+/* =====================================================
+   INITIALISE PAGE
+===================================================== */
+
+updateCounters();
 
 showPage(0);
 
