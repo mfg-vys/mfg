@@ -682,40 +682,44 @@ async function completeInduction() {
 
 
     /* ---------------------------------------------------
-       ADD LOGO
-    --------------------------------------------------- */
+   ADD LOGO - KEEP ORIGINAL ASPECT RATIO
+--------------------------------------------------- */
 
-    try {
+try {
 
-        const logoData =
-            await getLogoData();
+    const logoData =
+        await getLogoData();
 
-        /*
-        Horizontal logo:
-        60mm wide
-        Height automatically kept fairly shallow
-        */
+    const logoProperties =
+        pdf.getImageProperties(logoData);
 
-        pdf.addImage(
-            logoData,
-            "PNG",
-            20,
-            15,
-            65,
-            18
-        );
+    // Desired width on PDF
+    const logoWidth = 75;
 
-    }
+    // Automatically calculate height
+    // so the logo is not stretched
+    const logoHeight =
+        (logoProperties.height * logoWidth) /
+        logoProperties.width;
 
-    catch (error) {
+    pdf.addImage(
+        logoData,
+        "PNG",
+        20,             // X position
+        15,             // Y position
+        logoWidth,
+        logoHeight
+    );
 
-        console.log(
-            "Logo could not be added to PDF.",
-            error
-        );
+}
+catch (error) {
 
-    }
+    console.error(
+        "Logo could not be added to PDF:",
+        error
+    );
 
+}
 
 
     /* ---------------------------------------------------
