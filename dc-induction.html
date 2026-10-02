@@ -1150,63 +1150,31 @@ function validateCurrentPage() {
                 .getElementById("inductionDate")
                 .value;
 
-        // Convert yyyy-mm-dd to dd/mm/yyyy for display
-        const dateParts = date.split("-");
-
-        const displayDate =
-            dateParts[2] + "/" +
-            dateParts[1] + "/" +
-            dateParts[0];
-
-
         if (!employee) {
-
-            alert(
-                "Please enter the employee's name."
-            );
-
+            alert("Please enter the employee's name.");
             return false;
-
         }
-
 
         if (!coordinator) {
-
-            alert(
-                "Please enter the coordinator or manager name."
-            );
-
+            alert("Please enter the coordinator or manager name.");
             return false;
-
         }
-
 
         if (!date) {
-
-            alert(
-                "Please select the induction date."
-            );
-
+            alert("Please select the induction date.");
             return false;
-
         }
-
     }
 
-
-
     /* CHECKLIST STAGES */
-
     if (
         currentPage >= 1 &&
         currentPage <= 5
     ) {
-
         const checkboxes =
             document.querySelectorAll(
                 ".stage" + currentPage
             );
-
 
         const incomplete =
             Array
