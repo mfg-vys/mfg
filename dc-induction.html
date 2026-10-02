@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>DC New Starter Induction 2</title>
+<title>DC New Starter Induction</title>
 
-<!-- PDF Library -->
+<!-- jsPDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
+
     * {
         box-sizing: border-box;
     }
@@ -102,6 +103,7 @@
         margin-top: 8px;
         border-radius: 5px;
         font-size: 14px;
+        cursor: pointer;
     }
 
     .complete-button {
@@ -114,6 +116,7 @@
         color: white;
         font-size: 18px;
         font-weight: bold;
+        cursor: pointer;
     }
 
     .complete-button:active {
@@ -125,6 +128,7 @@
         padding: 15px;
         display: none;
         border-radius: 6px;
+        line-height: 1.5;
     }
 
     .error {
@@ -138,165 +142,369 @@
         background: #e4f7e8;
         color: #146c2e;
     }
+
 </style>
 </head>
+
 
 <body>
 
 <div class="container">
 
     <h1>New Starter Induction</h1>
-    <div class="subtitle">DC Induction Record</div>
 
-    <div class="field">
-        <label>New Starter Name</label>
-        <input type="text" id="employeeName">
+    <div class="subtitle">
+        DC Induction Record
     </div>
 
-    <div class="field">
-        <label>Coordinator</label>
-        <input type="text" id="coordinator">
-    </div>
+
+    <!-- EMPLOYEE -->
 
     <div class="field">
-        <label>Induction Date</label>
-        <input type="date" id="inductionDate">
+
+        <label>
+            New Starter Name
+        </label>
+
+        <input
+            type="text"
+            id="employeeName"
+            placeholder="Enter full name">
+
     </div>
 
-    <h2>Induction Checklist</h2>
+
+    <!-- COORDINATOR -->
+
+    <div class="field">
+
+        <label>
+            Coordinator
+        </label>
+
+        <input
+            type="text"
+            id="coordinator"
+            placeholder="Enter coordinator name">
+
+    </div>
+
+
+    <!-- DATE -->
+
+    <div class="field">
+
+        <label>
+            Induction Date
+        </label>
+
+        <input
+            type="date"
+            id="inductionDate">
+
+    </div>
+
+
+
+    <!-- CHECKLIST -->
+
+    <h2>
+        Induction Checklist
+    </h2>
+
 
     <div class="check-item">
-        <input type="checkbox" id="check1">
+
+        <input
+            type="checkbox"
+            id="check1">
 
         <label for="check1">
+
             Site tour and emergency exits have been explained.
+
         </label>
+
     </div>
+
 
     <div class="check-item">
-        <input type="checkbox" id="check2">
+
+        <input
+            type="checkbox"
+            id="check2">
 
         <label for="check2">
+
             PPE and safety footwear requirements have been explained.
+
         </label>
+
     </div>
 
-    <h2>New Starter Signature</h2>
+
+
+    <!-- EMPLOYEE SIGNATURE -->
+
+    <h2>
+        New Starter Signature
+    </h2>
 
     <canvas id="employeeSignature"></canvas>
 
     <button
         class="clear-button"
+        type="button"
         onclick="clearSignature('employeeSignature')">
+
         Clear Signature
+
     </button>
 
-    <h2>Coordinator Signature</h2>
+
+
+    <!-- COORDINATOR SIGNATURE -->
+
+    <h2>
+        Coordinator Signature
+    </h2>
 
     <canvas id="coordinatorSignature"></canvas>
 
     <button
         class="clear-button"
+        type="button"
         onclick="clearSignature('coordinatorSignature')">
+
         Clear Signature
+
     </button>
+
+
+
+    <!-- COMPLETE -->
 
     <button
         class="complete-button"
+        type="button"
         onclick="completeInduction()">
-        Complete Induction
+
+        Complete & Email Induction
+
     </button>
+
 
     <div id="message"></div>
 
 </div>
 
 
+
 <script>
 
 const { jsPDF } = window.jspdf;
 
+
+/*
+---------------------------------------------------------
+SET TODAY'S DATE
+---------------------------------------------------------
+*/
+
 document.getElementById("inductionDate").value =
     new Date().toISOString().split("T")[0];
 
+
+
+/*
+---------------------------------------------------------
+EMAIL SETTINGS
+---------------------------------------------------------
+*/
+
+const EMAIL_ADDRESS =
+    "vys.ing@munrofg.com";
+
+
+
+/*
+---------------------------------------------------------
+SIGNATURE STATUS
+---------------------------------------------------------
+*/
+
 const signatureState = {
+
     employeeSignature: false,
+
     coordinatorSignature: false
+
 };
 
 
+
+/*
+---------------------------------------------------------
+SETUP SIGNATURE PAD
+---------------------------------------------------------
+*/
+
 function setupSignature(canvasId) {
 
-    const canvas = document.getElementById(canvasId);
-    const ctx = canvas.getContext("2d");
+    const canvas =
+        document.getElementById(canvasId);
 
-    const ratio = window.devicePixelRatio || 1;
+    const ctx =
+        canvas.getContext("2d");
 
-    canvas.width = canvas.offsetWidth * ratio;
-    canvas.height = canvas.offsetHeight * ratio;
 
-    ctx.scale(ratio, ratio);
+    const ratio =
+        window.devicePixelRatio || 1;
+
+
+    canvas.width =
+        canvas.offsetWidth * ratio;
+
+    canvas.height =
+        canvas.offsetHeight * ratio;
+
+
+    ctx.scale(
+        ratio,
+        ratio
+    );
+
 
     ctx.lineWidth = 2;
+
     ctx.lineCap = "round";
+
     ctx.lineJoin = "round";
+
     ctx.strokeStyle = "#000";
+
 
     let drawing = false;
 
 
+
     function position(event) {
 
-        const rect = canvas.getBoundingClientRect();
+        const rect =
+            canvas.getBoundingClientRect();
+
 
         return {
-            x: event.clientX - rect.left,
-            y: event.clientY - rect.top
+
+            x:
+                event.clientX -
+                rect.left,
+
+            y:
+                event.clientY -
+                rect.top
+
         };
+
     }
 
 
-    canvas.addEventListener("pointerdown", function(event) {
 
-        drawing = true;
+    canvas.addEventListener(
+        "pointerdown",
+        function(event) {
 
-        signatureState[canvasId] = true;
+            drawing = true;
 
-        canvas.setPointerCapture(event.pointerId);
-
-        const pos = position(event);
-
-        ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y);
-    });
+            signatureState[canvasId] =
+                true;
 
 
-    canvas.addEventListener("pointermove", function(event) {
-
-        if (!drawing) return;
-
-        const pos = position(event);
-
-        ctx.lineTo(pos.x, pos.y);
-        ctx.stroke();
-    });
+            canvas.setPointerCapture(
+                event.pointerId
+            );
 
 
-    canvas.addEventListener("pointerup", function() {
-        drawing = false;
-    });
+            const pos =
+                position(event);
 
 
-    canvas.addEventListener("pointercancel", function() {
-        drawing = false;
-    });
+            ctx.beginPath();
+
+            ctx.moveTo(
+                pos.x,
+                pos.y
+            );
+
+        }
+    );
+
+
+
+    canvas.addEventListener(
+        "pointermove",
+        function(event) {
+
+            if (!drawing) {
+                return;
+            }
+
+
+            const pos =
+                position(event);
+
+
+            ctx.lineTo(
+                pos.x,
+                pos.y
+            );
+
+
+            ctx.stroke();
+
+        }
+    );
+
+
+
+    canvas.addEventListener(
+        "pointerup",
+        function() {
+
+            drawing = false;
+
+        }
+    );
+
+
+
+    canvas.addEventListener(
+        "pointercancel",
+        function() {
+
+            drawing = false;
+
+        }
+    );
+
 }
 
 
+
+/*
+---------------------------------------------------------
+CLEAR SIGNATURE
+---------------------------------------------------------
+*/
+
 function clearSignature(canvasId) {
 
-    const canvas = document.getElementById(canvasId);
-    const ctx = canvas.getContext("2d");
+    const canvas =
+        document.getElementById(canvasId);
+
+    const ctx =
+        canvas.getContext("2d");
+
 
     ctx.clearRect(
         0,
@@ -305,38 +513,90 @@ function clearSignature(canvasId) {
         canvas.height
     );
 
-    signatureState[canvasId] = false;
+
+    signatureState[canvasId] =
+        false;
+
 }
 
 
-function showMessage(text, type) {
 
-    const message = document.getElementById("message");
+/*
+---------------------------------------------------------
+MESSAGE
+---------------------------------------------------------
+*/
 
-    message.className = type;
-    message.textContent = text;
+function showMessage(
+    text,
+    type
+) {
+
+    const message =
+        document.getElementById("message");
+
+
+    message.className =
+        type;
+
+
+    message.textContent =
+        text;
+
 }
 
+
+
+/*
+---------------------------------------------------------
+COMPLETE INDUCTION
+---------------------------------------------------------
+*/
 
 async function completeInduction() {
 
+
+    /*
+    GET INFORMATION
+    */
+
     const employee =
-        document.getElementById("employeeName").value.trim();
+        document
+            .getElementById("employeeName")
+            .value
+            .trim();
+
 
     const coordinator =
-        document.getElementById("coordinator").value.trim();
+        document
+            .getElementById("coordinator")
+            .value
+            .trim();
+
 
     const date =
-        document.getElementById("inductionDate").value;
+        document
+            .getElementById("inductionDate")
+            .value;
+
 
     const check1 =
-        document.getElementById("check1").checked;
+        document
+            .getElementById("check1")
+            .checked;
+
 
     const check2 =
-        document.getElementById("check2").checked;
+        document
+            .getElementById("check2")
+            .checked;
 
 
-    // VALIDATION
+
+    /*
+    VALIDATION
+    */
+
 
     if (!employee) {
 
@@ -346,7 +606,9 @@ async function completeInduction() {
         );
 
         return;
+
     }
+
 
 
     if (!coordinator) {
@@ -357,7 +619,22 @@ async function completeInduction() {
         );
 
         return;
+
     }
+
+
+
+    if (!date) {
+
+        showMessage(
+            "Please select the induction date.",
+            "error"
+        );
+
+        return;
+
+    }
+
 
 
     if (!check1 || !check2) {
@@ -368,10 +645,14 @@ async function completeInduction() {
         );
 
         return;
+
     }
 
 
-    if (!signatureState.employeeSignature) {
+
+    if (
+        !signatureState.employeeSignature
+    ) {
 
         showMessage(
             "The new starter must sign the induction.",
@@ -379,10 +660,14 @@ async function completeInduction() {
         );
 
         return;
+
     }
 
 
-    if (!signatureState.coordinatorSignature) {
+
+    if (
+        !signatureState.coordinatorSignature
+    ) {
 
         showMessage(
             "The coordinator must sign the induction.",
@@ -390,19 +675,41 @@ async function completeInduction() {
         );
 
         return;
+
     }
 
 
-    // CREATE PDF
 
-    const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4"
-    });
+    /*
+    -----------------------------------------------------
+    CREATE PDF
+    -----------------------------------------------------
+    */
+
+
+    const pdf =
+        new jsPDF({
+
+            orientation:
+                "portrait",
+
+            unit:
+                "mm",
+
+            format:
+                "a4"
+
+        });
+
+
+
+    /*
+    TITLE
+    */
 
 
     pdf.setFontSize(20);
+
     pdf.text(
         "New Starter Induction",
         20,
@@ -419,13 +726,21 @@ async function completeInduction() {
     );
 
 
+
+    /*
+    EMPLOYEE DETAILS
+    */
+
+
     pdf.setFontSize(12);
+
 
     pdf.text(
         "New Starter:",
         20,
         45
     );
+
 
     pdf.text(
         employee,
@@ -440,6 +755,7 @@ async function completeInduction() {
         54
     );
 
+
     pdf.text(
         coordinator,
         55,
@@ -453,6 +769,7 @@ async function completeInduction() {
         63
     );
 
+
     pdf.text(
         date,
         55,
@@ -460,9 +777,14 @@ async function completeInduction() {
     );
 
 
-    // CHECKLIST
+
+    /*
+    CHECKLIST
+    */
+
 
     pdf.setFontSize(15);
+
 
     pdf.text(
         "Induction Checklist",
@@ -473,11 +795,13 @@ async function completeInduction() {
 
     pdf.setFontSize(11);
 
+
     pdf.text(
         "[X] Site tour and emergency exits have been explained.",
         20,
         92
     );
+
 
     pdf.text(
         "[X] PPE and safety footwear requirements have been explained.",
@@ -486,9 +810,14 @@ async function completeInduction() {
     );
 
 
-    // EMPLOYEE SIGNATURE
+
+    /*
+    EMPLOYEE SIGNATURE
+    */
+
 
     pdf.setFontSize(13);
+
 
     pdf.text(
         "New Starter Signature",
@@ -498,10 +827,15 @@ async function completeInduction() {
 
 
     const employeeCanvas =
-        document.getElementById("employeeSignature");
+        document.getElementById(
+            "employeeSignature"
+        );
+
 
     const employeeImage =
-        employeeCanvas.toDataURL("image/png");
+        employeeCanvas.toDataURL(
+            "image/png"
+        );
 
 
     pdf.addImage(
@@ -522,7 +856,11 @@ async function completeInduction() {
     );
 
 
-    // COORDINATOR SIGNATURE
+
+    /*
+    COORDINATOR SIGNATURE
+    */
+
 
     pdf.text(
         "Coordinator Signature",
@@ -532,10 +870,15 @@ async function completeInduction() {
 
 
     const coordinatorCanvas =
-        document.getElementById("coordinatorSignature");
+        document.getElementById(
+            "coordinatorSignature"
+        );
+
 
     const coordinatorImage =
-        coordinatorCanvas.toDataURL("image/png");
+        coordinatorCanvas.toDataURL(
+            "image/png"
+        );
 
 
     pdf.addImage(
@@ -556,13 +899,18 @@ async function completeInduction() {
     );
 
 
-    // COMPLETION TIME
+
+    /*
+    COMPLETION TIME
+    */
+
 
     const completed =
         new Date().toLocaleString();
 
 
     pdf.setFontSize(9);
+
 
     pdf.text(
         "Completed: " + completed,
@@ -571,10 +919,22 @@ async function completeInduction() {
     );
 
 
-    // CREATE PDF IN MEMORY
+
+    /*
+    -----------------------------------------------------
+    CREATE PDF IN MEMORY
+    -----------------------------------------------------
+    */
+
 
     const pdfBlob =
         pdf.output("blob");
+
+
+
+    /*
+    CREATE SAFE FILE NAME
+    */
 
 
     const safeName =
@@ -591,63 +951,155 @@ async function completeInduction() {
         ".pdf";
 
 
+
+    /*
+    CREATE FILE
+    */
+
+
     const pdfFile =
         new File(
+
             [pdfBlob],
+
             fileName,
+
             {
-                type: "application/pdf"
+                type:
+                    "application/pdf"
             }
+
         );
 
 
-    // SHARE PDF
+
+    /*
+    -----------------------------------------------------
+    EMAIL DETAILS
+    -----------------------------------------------------
+    */
+
+
+    const emailSubject =
+        "Completed DC Induction - " +
+        employee;
+
+
+    const emailBody =
+        "Please find attached the completed DC induction for " +
+        employee +
+        ".";
+
+
+
+    /*
+    -----------------------------------------------------
+    COPY EMAIL ADDRESS
+    -----------------------------------------------------
+    */
+
+
+    try {
+
+        await navigator.clipboard.writeText(
+            EMAIL_ADDRESS
+        );
+
+    }
+
+    catch (error) {
+
+        console.log(
+            "Could not copy email address."
+        );
+
+    }
+
+
+
+    /*
+    -----------------------------------------------------
+    ANDROID SHARE
+    -----------------------------------------------------
+    */
+
 
     const shareData = {
 
         title:
-            "Completed DC Induction - " +
-            employee,
+            emailSubject,
 
         text:
-            "Completed induction for " +
-            employee +
-            ".\n\n" +
-            "Please send to:\n" +
-            "vys.ing@munrofg.com",
+            emailBody,
 
         files: [
             pdfFile
         ]
+
     };
 
 
-    // CHECK ANDROID/BROWSER SUPPORT
+
+    /*
+    CHECK FILE SHARING SUPPORT
+    */
+
 
     if (
+
         navigator.canShare &&
+
         navigator.canShare({
             files: [pdfFile]
         })
+
     ) {
 
+
         try {
+
+
+            /*
+            OPEN ANDROID SHARE MENU
+            */
+
 
             await navigator.share(
                 shareData
             );
 
 
+
+            /*
+            SUCCESS
+            */
+
+
             showMessage(
-                "Induction completed and shared successfully.",
+
+                "Induction completed. " +
+                "The PDF has been attached. " +
+                EMAIL_ADDRESS +
+                " has been copied — paste it into the To field in Outlook.",
+
                 "success"
+
             );
 
+
         }
+
         catch (error) {
 
+
+            /*
+            USER CANCELLED
+            */
+
+
             if (
-                error.name !== "AbortError"
+                error.name !==
+                "AbortError"
             ) {
 
                 showMessage(
@@ -660,11 +1112,17 @@ async function completeInduction() {
         }
 
     }
+
     else {
 
+
         showMessage(
-            "This browser does not support sharing PDF files. Try opening the page in Chrome on the Android tablet.",
+
+            "This browser does not support sharing PDF files. " +
+            "Try opening the page in Chrome on the Android tablet.",
+
             "error"
+
         );
 
     }
@@ -672,9 +1130,18 @@ async function completeInduction() {
 }
 
 
+
+/*
+---------------------------------------------------------
+START SIGNATURE PADS
+---------------------------------------------------------
+*/
+
+
 setupSignature(
     "employeeSignature"
 );
+
 
 setupSignature(
     "coordinatorSignature"
