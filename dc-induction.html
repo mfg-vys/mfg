@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>DC New Starter Induction 2</title>
+<title>DC New Starter Induction</title>
 
-<!-- jsPDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
@@ -27,14 +26,23 @@
         max-width: 750px;
         margin: auto;
         background: white;
-        padding: 25px;
+        padding: 30px;
         border-radius: 12px;
         box-shadow: 0 3px 15px rgba(0,0,0,0.10);
+    }
+
+    .logo {
+        display: block;
+        max-width: 300px;
+        width: 65%;
+        height: auto;
+        margin-bottom: 30px;
     }
 
     h1 {
         margin-top: 0;
         margin-bottom: 5px;
+        font-size: 28px;
     }
 
     .subtitle {
@@ -63,6 +71,7 @@
 
     h2 {
         margin-top: 30px;
+        font-size: 20px;
     }
 
     .check-item {
@@ -150,10 +159,18 @@
 
 <div class="container">
 
+    <!-- MFG LOGO -->
+    <img
+        src="logo.png"
+        id="companyLogo"
+        class="logo"
+        alt="Munro Footwear Group">
+
+
     <h1>New Starter Induction</h1>
 
     <div class="subtitle">
-        DC Induction Record
+        Treadshed Distribution Centre
     </div>
 
 
@@ -161,9 +178,7 @@
 
     <div class="field">
 
-        <label>
-            New Starter Name
-        </label>
+        <label>New Starter Name</label>
 
         <input
             type="text"
@@ -177,9 +192,7 @@
 
     <div class="field">
 
-        <label>
-            Coordinator
-        </label>
+        <label>Coordinator</label>
 
         <input
             type="text"
@@ -193,9 +206,7 @@
 
     <div class="field">
 
-        <label>
-            Induction Date
-        </label>
+        <label>Induction Date</label>
 
         <input
             type="date"
@@ -207,9 +218,7 @@
 
     <!-- CHECKLIST -->
 
-    <h2>
-        Induction Checklist
-    </h2>
+    <h2>Induction Checklist</h2>
 
 
     <div class="check-item">
@@ -241,9 +250,7 @@
 
     <!-- NEW STARTER SIGNATURE -->
 
-    <h2>
-        New Starter Signature
-    </h2>
+    <h2>New Starter Signature</h2>
 
     <canvas id="employeeSignature"></canvas>
 
@@ -260,9 +267,7 @@
 
     <!-- COORDINATOR SIGNATURE -->
 
-    <h2>
-        Coordinator Signature
-    </h2>
+    <h2>Coordinator Signature</h2>
 
     <canvas id="coordinatorSignature"></canvas>
 
@@ -294,44 +299,36 @@
 </div>
 
 
-
 <script>
 
 const { jsPDF } = window.jspdf;
 
 
-/*
----------------------------------------------------------
-SET TODAY'S DATE
----------------------------------------------------------
-*/
+/* -------------------------------------------------------
+   SET TODAY'S DATE
+------------------------------------------------------- */
 
 document.getElementById("inductionDate").value =
     new Date().toISOString().split("T")[0];
 
 
 
-/*
----------------------------------------------------------
-SIGNATURE STATUS
----------------------------------------------------------
-*/
+/* -------------------------------------------------------
+   SIGNATURE STATUS
+------------------------------------------------------- */
 
 const signatureState = {
 
     employeeSignature: false,
-
     coordinatorSignature: false
 
 };
 
 
 
-/*
----------------------------------------------------------
-SETUP SIGNATURE PAD
----------------------------------------------------------
-*/
+/* -------------------------------------------------------
+   SIGNATURE PAD
+------------------------------------------------------- */
 
 function setupSignature(canvasId) {
 
@@ -340,7 +337,6 @@ function setupSignature(canvasId) {
 
     const ctx =
         canvas.getContext("2d");
-
 
     const ratio =
         window.devicePixelRatio || 1;
@@ -353,30 +349,21 @@ function setupSignature(canvasId) {
         canvas.offsetHeight * ratio;
 
 
-    ctx.scale(
-        ratio,
-        ratio
-    );
-
+    ctx.scale(ratio, ratio);
 
     ctx.lineWidth = 2;
-
     ctx.lineCap = "round";
-
     ctx.lineJoin = "round";
-
     ctx.strokeStyle = "#000";
 
 
     let drawing = false;
 
 
-
     function position(event) {
 
         const rect =
             canvas.getBoundingClientRect();
-
 
         return {
 
@@ -393,7 +380,6 @@ function setupSignature(canvasId) {
     }
 
 
-
     canvas.addEventListener(
         "pointerdown",
         function(event) {
@@ -403,15 +389,12 @@ function setupSignature(canvasId) {
             signatureState[canvasId] =
                 true;
 
-
             canvas.setPointerCapture(
                 event.pointerId
             );
 
-
             const pos =
                 position(event);
-
 
             ctx.beginPath();
 
@@ -424,7 +407,6 @@ function setupSignature(canvasId) {
     );
 
 
-
     canvas.addEventListener(
         "pointermove",
         function(event) {
@@ -433,22 +415,18 @@ function setupSignature(canvasId) {
                 return;
             }
 
-
             const pos =
                 position(event);
-
 
             ctx.lineTo(
                 pos.x,
                 pos.y
             );
 
-
             ctx.stroke();
 
         }
     );
-
 
 
     canvas.addEventListener(
@@ -459,7 +437,6 @@ function setupSignature(canvasId) {
 
         }
     );
-
 
 
     canvas.addEventListener(
@@ -475,11 +452,9 @@ function setupSignature(canvasId) {
 
 
 
-/*
----------------------------------------------------------
-CLEAR SIGNATURE
----------------------------------------------------------
-*/
+/* -------------------------------------------------------
+   CLEAR SIGNATURE
+------------------------------------------------------- */
 
 function clearSignature(canvasId) {
 
@@ -489,14 +464,12 @@ function clearSignature(canvasId) {
     const ctx =
         canvas.getContext("2d");
 
-
     ctx.clearRect(
         0,
         0,
         canvas.width,
         canvas.height
     );
-
 
     signatureState[canvasId] =
         false;
@@ -505,24 +478,17 @@ function clearSignature(canvasId) {
 
 
 
-/*
----------------------------------------------------------
-MESSAGE
----------------------------------------------------------
-*/
+/* -------------------------------------------------------
+   MESSAGE
+------------------------------------------------------- */
 
-function showMessage(
-    text,
-    type
-) {
+function showMessage(text, type) {
 
     const message =
         document.getElementById("message");
 
-
     message.className =
         type;
-
 
     message.textContent =
         text;
@@ -531,18 +497,63 @@ function showMessage(
 
 
 
-/*
----------------------------------------------------------
-COMPLETE INDUCTION
----------------------------------------------------------
-*/
+/* -------------------------------------------------------
+   CONVERT LOGO TO IMAGE DATA
+------------------------------------------------------- */
+
+function getLogoData() {
+
+    return new Promise((resolve, reject) => {
+
+        const img =
+            document.getElementById("companyLogo");
+
+        const canvas =
+            document.createElement("canvas");
+
+        canvas.width =
+            img.naturalWidth;
+
+        canvas.height =
+            img.naturalHeight;
+
+        const ctx =
+            canvas.getContext("2d");
+
+        ctx.drawImage(
+            img,
+            0,
+            0
+        );
+
+        try {
+
+            resolve(
+                canvas.toDataURL(
+                    "image/png"
+                )
+            );
+
+        }
+
+        catch (error) {
+
+            reject(error);
+
+        }
+
+    });
+
+}
+
+
+
+/* -------------------------------------------------------
+   COMPLETE INDUCTION
+------------------------------------------------------- */
 
 async function completeInduction() {
 
-
-    /*
-    GET INFORMATION
-    */
 
     const employee =
         document
@@ -577,11 +588,9 @@ async function completeInduction() {
 
 
 
-    /*
-    -----------------------------------------------------
-    VALIDATION
-    -----------------------------------------------------
-    */
+    /* ---------------------------------------------------
+       VALIDATION
+    --------------------------------------------------- */
 
 
     if (!employee) {
@@ -596,7 +605,6 @@ async function completeInduction() {
     }
 
 
-
     if (!coordinator) {
 
         showMessage(
@@ -607,7 +615,6 @@ async function completeInduction() {
         return;
 
     }
-
 
 
     if (!date) {
@@ -622,7 +629,6 @@ async function completeInduction() {
     }
 
 
-
     if (!check1 || !check2) {
 
         showMessage(
@@ -635,10 +641,7 @@ async function completeInduction() {
     }
 
 
-
-    if (
-        !signatureState.employeeSignature
-    ) {
+    if (!signatureState.employeeSignature) {
 
         showMessage(
             "The new starter must sign the induction.",
@@ -650,10 +653,7 @@ async function completeInduction() {
     }
 
 
-
-    if (
-        !signatureState.coordinatorSignature
-    ) {
+    if (!signatureState.coordinatorSignature) {
 
         showMessage(
             "The coordinator must sign the induction.",
@@ -666,155 +666,255 @@ async function completeInduction() {
 
 
 
-    /*
-    -----------------------------------------------------
-    CREATE PDF
-    -----------------------------------------------------
-    */
-
+    /* ---------------------------------------------------
+       CREATE PDF
+    --------------------------------------------------- */
 
     const pdf =
         new jsPDF({
 
-            orientation:
-                "portrait",
-
-            unit:
-                "mm",
-
-            format:
-                "a4"
+            orientation: "portrait",
+            unit: "mm",
+            format: "a4"
 
         });
 
 
 
-    /*
-    TITLE
-    */
+    /* ---------------------------------------------------
+       ADD LOGO
+    --------------------------------------------------- */
 
+    try {
+
+        const logoData =
+            await getLogoData();
+
+        /*
+        Horizontal logo:
+        60mm wide
+        Height automatically kept fairly shallow
+        */
+
+        pdf.addImage(
+            logoData,
+            "PNG",
+            20,
+            15,
+            65,
+            18
+        );
+
+    }
+
+    catch (error) {
+
+        console.log(
+            "Logo could not be added to PDF.",
+            error
+        );
+
+    }
+
+
+
+    /* ---------------------------------------------------
+       TITLE
+    --------------------------------------------------- */
 
     pdf.setFontSize(20);
+
+    pdf.setFont(
+        "helvetica",
+        "bold"
+    );
 
     pdf.text(
         "New Starter Induction",
         20,
-        20
+        48
     );
 
+
+    pdf.setFontSize(10);
+
+    pdf.setFont(
+        "helvetica",
+        "normal"
+    );
+
+    pdf.text(
+        "Treadshed Distribution Centre",
+        20,
+        55
+    );
+
+
+
+    /* HEADER LINE */
+
+    pdf.setLineWidth(0.5);
+
+    pdf.line(
+        20,
+        62,
+        190,
+        62
+    );
+
+
+
+    /* ---------------------------------------------------
+       EMPLOYEE DETAILS
+    --------------------------------------------------- */
 
     pdf.setFontSize(11);
 
-    pdf.text(
-        "DC Induction Record",
-        20,
-        28
+
+    pdf.setFont(
+        "helvetica",
+        "bold"
     );
-
-
-
-    /*
-    NEW STARTER DETAILS
-    */
-
-
-    pdf.setFontSize(12);
-
 
     pdf.text(
         "New Starter:",
         20,
-        45
+        75
     );
 
+
+    pdf.setFont(
+        "helvetica",
+        "normal"
+    );
 
     pdf.text(
         employee,
-        55,
-        45
+        52,
+        75
     );
 
+
+
+    pdf.setFont(
+        "helvetica",
+        "bold"
+    );
 
     pdf.text(
         "Coordinator:",
         20,
-        54
+        84
     );
 
+
+    pdf.setFont(
+        "helvetica",
+        "normal"
+    );
 
     pdf.text(
         coordinator,
-        55,
-        54
+        52,
+        84
     );
 
+
+
+    pdf.setFont(
+        "helvetica",
+        "bold"
+    );
 
     pdf.text(
         "Date:",
         20,
-        63
+        93
     );
 
+
+    pdf.setFont(
+        "helvetica",
+        "normal"
+    );
 
     pdf.text(
         date,
-        55,
-        63
+        52,
+        93
     );
 
 
 
-    /*
-    -----------------------------------------------------
-    CHECKLIST
-    -----------------------------------------------------
-    */
+    /* ---------------------------------------------------
+       CHECKLIST
+    --------------------------------------------------- */
 
+    pdf.setFontSize(14);
 
-    pdf.setFontSize(15);
-
+    pdf.setFont(
+        "helvetica",
+        "bold"
+    );
 
     pdf.text(
         "Induction Checklist",
         20,
-        80
+        112
     );
 
 
     pdf.setFontSize(11);
 
-
-    pdf.text(
-        "[X] Site tour and emergency exits have been explained.",
-        20,
-        92
+    pdf.setFont(
+        "helvetica",
+        "normal"
     );
 
 
     pdf.text(
-        "[X] PPE and safety footwear requirements have been explained.",
+        "[X]  Site tour and emergency exits have been explained.",
         20,
-        102
+        125
+    );
+
+
+    pdf.text(
+        "[X]  PPE and safety footwear requirements have been explained.",
+        20,
+        136
     );
 
 
 
-    /*
-    -----------------------------------------------------
-    NEW STARTER SIGNATURE
-    -----------------------------------------------------
-    */
+    /* ---------------------------------------------------
+       SIGNATURES
+    --------------------------------------------------- */
 
+    pdf.setFontSize(12);
 
-    pdf.setFontSize(13);
+    pdf.setFont(
+        "helvetica",
+        "bold"
+    );
 
 
     pdf.text(
         "New Starter Signature",
         20,
-        125
+        160
     );
 
+
+    pdf.text(
+        "Coordinator Signature",
+        110,
+        160
+    );
+
+
+
+    /* NEW STARTER SIGNATURE */
 
     const employeeCanvas =
         document.getElementById(
@@ -832,34 +932,14 @@ async function completeInduction() {
         employeeImage,
         "PNG",
         20,
-        130,
+        165,
         75,
         30
     );
 
 
-    pdf.line(
-        20,
-        163,
-        95,
-        163
-    );
 
-
-
-    /*
-    -----------------------------------------------------
-    COORDINATOR SIGNATURE
-    -----------------------------------------------------
-    */
-
-
-    pdf.text(
-        "Coordinator Signature",
-        110,
-        125
-    );
-
+    /* COORDINATOR SIGNATURE */
 
     const coordinatorCanvas =
         document.getElementById(
@@ -877,27 +957,35 @@ async function completeInduction() {
         coordinatorImage,
         "PNG",
         110,
-        130,
+        165,
         75,
         30
     );
 
 
+
+    /* SIGNATURE LINES */
+
+    pdf.line(
+        20,
+        198,
+        95,
+        198
+    );
+
+
     pdf.line(
         110,
-        163,
+        198,
         185,
-        163
+        198
     );
 
 
 
-    /*
-    -----------------------------------------------------
-    COMPLETION TIME
-    -----------------------------------------------------
-    */
-
+    /* ---------------------------------------------------
+       COMPLETION INFORMATION
+    --------------------------------------------------- */
 
     const completed =
         new Date().toLocaleString();
@@ -905,33 +993,69 @@ async function completeInduction() {
 
     pdf.setFontSize(9);
 
+    pdf.setFont(
+        "helvetica",
+        "normal"
+    );
+
 
     pdf.text(
-        "Completed: " + completed,
+        "Completed: " +
+        completed,
         20,
-        180
+        215
     );
 
 
 
-    /*
-    -----------------------------------------------------
-    CREATE PDF IN MEMORY
-    -----------------------------------------------------
-    */
+    /* ---------------------------------------------------
+       FOOTER
+    --------------------------------------------------- */
 
+    pdf.setDrawColor(
+        180,
+        180,
+        180
+    );
+
+
+    pdf.line(
+        20,
+        270,
+        190,
+        270
+    );
+
+
+    pdf.setFontSize(8);
+
+    pdf.setTextColor(
+        100,
+        100,
+        100
+    );
+
+
+    pdf.text(
+        "Munro Footwear Group - Treadshed Distribution Centre",
+        20,
+        277
+    );
+
+
+
+    /* ---------------------------------------------------
+       CREATE PDF IN MEMORY
+    --------------------------------------------------- */
 
     const pdfBlob =
         pdf.output("blob");
 
 
 
-    /*
-    -----------------------------------------------------
-    CREATE SAFE FILE NAME
-    -----------------------------------------------------
-    */
-
+    /* ---------------------------------------------------
+       FILE NAME
+    --------------------------------------------------- */
 
     const safeName =
         employee.replace(
@@ -948,13 +1072,6 @@ async function completeInduction() {
 
 
 
-    /*
-    -----------------------------------------------------
-    CREATE PDF FILE
-    -----------------------------------------------------
-    */
-
-
     const pdfFile =
         new File(
 
@@ -963,22 +1080,17 @@ async function completeInduction() {
             fileName,
 
             {
-
                 type:
                     "application/pdf"
-
             }
 
         );
 
 
 
-    /*
-    -----------------------------------------------------
-    SHARE DETAILS
-    -----------------------------------------------------
-    */
-
+    /* ---------------------------------------------------
+       EMAIL / SHARE INFORMATION
+    --------------------------------------------------- */
 
     const emailSubject =
         "Completed DC Induction - " +
@@ -1008,12 +1120,9 @@ async function completeInduction() {
 
 
 
-    /*
-    -----------------------------------------------------
-    CHECK FILE SHARING SUPPORT
-    -----------------------------------------------------
-    */
-
+    /* ---------------------------------------------------
+       OPEN ANDROID / IOS SHARE MENU
+    --------------------------------------------------- */
 
     if (
 
@@ -1032,21 +1141,9 @@ async function completeInduction() {
 
         try {
 
-
-            /*
-            OPEN ANDROID / IOS SHARE MENU
-            */
-
-
             await navigator.share(
                 shareData
             );
-
-
-
-            /*
-            SUCCESS
-            */
 
 
             showMessage(
@@ -1057,22 +1154,15 @@ async function completeInduction() {
 
             );
 
-
         }
 
+
         catch (error) {
-
-
-            /*
-            IGNORE USER CANCELLING SHARE MENU
-            */
-
 
             if (
                 error.name !==
                 "AbortError"
             ) {
-
 
                 console.error(
                     error
@@ -1095,7 +1185,6 @@ async function completeInduction() {
 
     else {
 
-
         showMessage(
 
             "This browser does not support sharing PDF files. Try using Chrome on Android or Safari on iPhone/iPad.",
@@ -1110,12 +1199,9 @@ async function completeInduction() {
 
 
 
-/*
----------------------------------------------------------
-START SIGNATURE PADS
----------------------------------------------------------
-*/
-
+/* -------------------------------------------------------
+   START SIGNATURE PADS
+------------------------------------------------------- */
 
 setupSignature(
     "employeeSignature"
