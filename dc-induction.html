@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>DC New Starter Induction</title>
+<title>DC New Starter Induction 2</title>
 
 <!-- jsPDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -146,7 +146,6 @@
 </style>
 </head>
 
-
 <body>
 
 <div class="container">
@@ -158,7 +157,7 @@
     </div>
 
 
-    <!-- EMPLOYEE -->
+    <!-- NEW STARTER -->
 
     <div class="field">
 
@@ -220,9 +219,7 @@
             id="check1">
 
         <label for="check1">
-
             Site tour and emergency exits have been explained.
-
         </label>
 
     </div>
@@ -235,16 +232,14 @@
             id="check2">
 
         <label for="check2">
-
             PPE and safety footwear requirements have been explained.
-
         </label>
 
     </div>
 
 
 
-    <!-- EMPLOYEE SIGNATURE -->
+    <!-- NEW STARTER SIGNATURE -->
 
     <h2>
         New Starter Signature
@@ -313,17 +308,6 @@ SET TODAY'S DATE
 
 document.getElementById("inductionDate").value =
     new Date().toISOString().split("T")[0];
-
-
-
-/*
----------------------------------------------------------
-EMAIL SETTINGS
----------------------------------------------------------
-*/
-
-const EMAIL_ADDRESS =
-    "vys.ing@munrofg.com";
 
 
 
@@ -594,7 +578,9 @@ async function completeInduction() {
 
 
     /*
+    -----------------------------------------------------
     VALIDATION
+    -----------------------------------------------------
     */
 
 
@@ -728,7 +714,7 @@ async function completeInduction() {
 
 
     /*
-    EMPLOYEE DETAILS
+    NEW STARTER DETAILS
     */
 
 
@@ -779,7 +765,9 @@ async function completeInduction() {
 
 
     /*
+    -----------------------------------------------------
     CHECKLIST
+    -----------------------------------------------------
     */
 
 
@@ -812,7 +800,9 @@ async function completeInduction() {
 
 
     /*
-    EMPLOYEE SIGNATURE
+    -----------------------------------------------------
+    NEW STARTER SIGNATURE
+    -----------------------------------------------------
     */
 
 
@@ -858,7 +848,9 @@ async function completeInduction() {
 
 
     /*
+    -----------------------------------------------------
     COORDINATOR SIGNATURE
+    -----------------------------------------------------
     */
 
 
@@ -901,7 +893,9 @@ async function completeInduction() {
 
 
     /*
+    -----------------------------------------------------
     COMPLETION TIME
+    -----------------------------------------------------
     */
 
 
@@ -933,7 +927,9 @@ async function completeInduction() {
 
 
     /*
+    -----------------------------------------------------
     CREATE SAFE FILE NAME
+    -----------------------------------------------------
     */
 
 
@@ -953,7 +949,9 @@ async function completeInduction() {
 
 
     /*
-    CREATE FILE
+    -----------------------------------------------------
+    CREATE PDF FILE
+    -----------------------------------------------------
     */
 
 
@@ -965,8 +963,10 @@ async function completeInduction() {
             fileName,
 
             {
+
                 type:
                     "application/pdf"
+
             }
 
         );
@@ -975,7 +975,7 @@ async function completeInduction() {
 
     /*
     -----------------------------------------------------
-    EMAIL DETAILS
+    SHARE DETAILS
     -----------------------------------------------------
     */
 
@@ -990,38 +990,6 @@ async function completeInduction() {
         employee +
         ".";
 
-
-
-    /*
-    -----------------------------------------------------
-    COPY EMAIL ADDRESS
-    -----------------------------------------------------
-    */
-
-
-    try {
-
-        await navigator.clipboard.writeText(
-            EMAIL_ADDRESS
-        );
-
-    }
-
-    catch (error) {
-
-        console.log(
-            "Could not copy email address."
-        );
-
-    }
-
-
-
-    /*
-    -----------------------------------------------------
-    ANDROID SHARE
-    -----------------------------------------------------
-    */
 
 
     const shareData = {
@@ -1041,7 +1009,9 @@ async function completeInduction() {
 
 
     /*
+    -----------------------------------------------------
     CHECK FILE SHARING SUPPORT
+    -----------------------------------------------------
     */
 
 
@@ -1050,7 +1020,11 @@ async function completeInduction() {
         navigator.canShare &&
 
         navigator.canShare({
-            files: [pdfFile]
+
+            files: [
+                pdfFile
+            ]
+
         })
 
     ) {
@@ -1060,7 +1034,7 @@ async function completeInduction() {
 
 
             /*
-            OPEN ANDROID SHARE MENU
+            OPEN ANDROID / IOS SHARE MENU
             */
 
 
@@ -1077,10 +1051,7 @@ async function completeInduction() {
 
             showMessage(
 
-                "Induction completed. " +
-                "The PDF has been attached. " +
-                EMAIL_ADDRESS +
-                " has been copied — paste it into the To field in Outlook.",
+                "Induction completed. The PDF has been created and shared.",
 
                 "success"
 
@@ -1093,7 +1064,7 @@ async function completeInduction() {
 
 
             /*
-            USER CANCELLED
+            IGNORE USER CANCELLING SHARE MENU
             */
 
 
@@ -1102,9 +1073,18 @@ async function completeInduction() {
                 "AbortError"
             ) {
 
+
+                console.error(
+                    error
+                );
+
+
                 showMessage(
-                    "Unable to open the Android share menu.",
+
+                    "Unable to open the share menu.",
+
                     "error"
+
                 );
 
             }
@@ -1118,8 +1098,7 @@ async function completeInduction() {
 
         showMessage(
 
-            "This browser does not support sharing PDF files. " +
-            "Try opening the page in Chrome on the Android tablet.",
+            "This browser does not support sharing PDF files. Try using Chrome on Android or Safari on iPhone/iPad.",
 
             "error"
 
