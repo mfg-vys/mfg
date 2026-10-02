@@ -6,25 +6,39 @@
 
 <title>DC New Starter Induction</title>
 
+<!-- PDF Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <style>
+    * {
+        box-sizing: border-box;
+    }
+
     body {
-        font-family: Arial, sans-serif;
-        background: #f4f6f8;
         margin: 0;
-        padding: 30px;
+        padding: 20px;
+        background: #f2f4f7;
+        font-family: Arial, sans-serif;
+        color: #222;
     }
 
     .container {
-        max-width: 800px;
+        max-width: 750px;
         margin: auto;
         background: white;
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.10);
     }
 
     h1 {
         margin-top: 0;
+        margin-bottom: 5px;
+    }
+
+    .subtitle {
+        color: #666;
+        margin-bottom: 30px;
     }
 
     .field {
@@ -32,74 +46,97 @@
     }
 
     label {
-        font-weight: bold;
         display: block;
-        margin-bottom: 6px;
+        font-weight: bold;
+        margin-bottom: 7px;
     }
 
     input[type="text"],
     input[type="date"] {
         width: 100%;
-        padding: 10px;
-        box-sizing: border-box;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
-
-    .checklist {
-        margin: 25px 0;
-    }
-
-    .check-item {
-        padding: 15px;
-        background: #f7f7f7;
-        margin-bottom: 10px;
+        padding: 13px;
+        font-size: 16px;
+        border: 1px solid #bbb;
         border-radius: 6px;
     }
 
-    .check-item label {
-        display: inline;
-        font-weight: normal;
-        margin-left: 8px;
+    h2 {
+        margin-top: 30px;
     }
 
-    .signature-section {
-        margin-top: 30px;
+    .check-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+        margin-bottom: 10px;
+        background: #f5f6f7;
+        border-radius: 7px;
+    }
+
+    .check-item input {
+        width: 22px;
+        height: 22px;
+        flex-shrink: 0;
+    }
+
+    .check-item label {
+        font-weight: normal;
+        margin: 1px 0 0 0;
     }
 
     canvas {
         width: 100%;
-        height: 160px;
-        border: 2px solid #ccc;
-        border-radius: 6px;
+        height: 170px;
+        display: block;
         background: white;
+        border: 2px solid #bbb;
+        border-radius: 7px;
         touch-action: none;
     }
 
-    button {
-        padding: 10px 18px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+    .clear-button {
+        background: #e4e4e4;
+        border: 0;
+        padding: 10px 16px;
         margin-top: 8px;
+        border-radius: 5px;
+        font-size: 14px;
     }
 
-    .clear {
-        background: #ddd;
-    }
-
-    .complete {
-        background: #222;
-        color: white;
-        font-size: 16px;
+    .complete-button {
         width: 100%;
-        margin-top: 30px;
-        padding: 15px;
+        padding: 17px;
+        margin-top: 35px;
+        border: 0;
+        border-radius: 7px;
+        background: #111;
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .complete-button:active {
+        transform: scale(0.99);
     }
 
     #message {
         margin-top: 20px;
-        font-weight: bold;
+        padding: 15px;
+        display: none;
+        border-radius: 6px;
+    }
+
+    .error {
+        display: block !important;
+        background: #ffe4e4;
+        color: #a40000;
+    }
+
+    .success {
+        display: block !important;
+        background: #e4f7e8;
+        color: #146c2e;
     }
 </style>
 </head>
@@ -109,9 +146,10 @@
 <div class="container">
 
     <h1>New Starter Induction</h1>
+    <div class="subtitle">DC Induction Record</div>
 
     <div class="field">
-        <label>Employee Name</label>
+        <label>New Starter Name</label>
         <input type="text" id="employeeName">
     </div>
 
@@ -121,53 +159,51 @@
     </div>
 
     <div class="field">
-        <label>Date</label>
+        <label>Induction Date</label>
         <input type="date" id="inductionDate">
     </div>
 
     <h2>Induction Checklist</h2>
 
-    <div class="checklist">
+    <div class="check-item">
+        <input type="checkbox" id="check1">
 
-        <div class="check-item">
-            <input type="checkbox" id="check1">
-            <label for="check1">
-                Site tour and emergency exits have been explained.
-            </label>
-        </div>
-
-        <div class="check-item">
-            <input type="checkbox" id="check2">
-            <label for="check2">
-                PPE and safety footwear requirements have been explained.
-            </label>
-        </div>
-
+        <label for="check1">
+            Site tour and emergency exits have been explained.
+        </label>
     </div>
 
-    <div class="signature-section">
-        <h2>New Starter Signature</h2>
+    <div class="check-item">
+        <input type="checkbox" id="check2">
 
-        <canvas id="employeeSignature"></canvas>
-
-        <button class="clear"
-                onclick="clearSignature('employeeSignature')">
-            Clear Signature
-        </button>
+        <label for="check2">
+            PPE and safety footwear requirements have been explained.
+        </label>
     </div>
 
-    <div class="signature-section">
-        <h2>Coordinator Signature</h2>
+    <h2>New Starter Signature</h2>
 
-        <canvas id="coordinatorSignature"></canvas>
+    <canvas id="employeeSignature"></canvas>
 
-        <button class="clear"
-                onclick="clearSignature('coordinatorSignature')">
-            Clear Signature
-        </button>
-    </div>
+    <button
+        class="clear-button"
+        onclick="clearSignature('employeeSignature')">
+        Clear Signature
+    </button>
 
-    <button class="complete" onclick="completeInduction()">
+    <h2>Coordinator Signature</h2>
+
+    <canvas id="coordinatorSignature"></canvas>
+
+    <button
+        class="clear-button"
+        onclick="clearSignature('coordinatorSignature')">
+        Clear Signature
+    </button>
+
+    <button
+        class="complete-button"
+        onclick="completeInduction()">
         Complete Induction
     </button>
 
@@ -178,7 +214,15 @@
 
 <script>
 
-document.getElementById("inductionDate").valueAsDate = new Date();
+const { jsPDF } = window.jspdf;
+
+document.getElementById("inductionDate").value =
+    new Date().toISOString().split("T")[0];
+
+const signatureState = {
+    employeeSignature: false,
+    coordinatorSignature: false
+};
 
 
 function setupSignature(canvasId) {
@@ -186,83 +230,66 @@ function setupSignature(canvasId) {
     const canvas = document.getElementById(canvasId);
     const ctx = canvas.getContext("2d");
 
-    function resizeCanvas() {
-        const ratio = window.devicePixelRatio || 1;
+    const ratio = window.devicePixelRatio || 1;
 
-        canvas.width = canvas.offsetWidth * ratio;
-        canvas.height = canvas.offsetHeight * ratio;
+    canvas.width = canvas.offsetWidth * ratio;
+    canvas.height = canvas.offsetHeight * ratio;
 
-        ctx.scale(ratio, ratio);
+    ctx.scale(ratio, ratio);
 
-        ctx.lineWidth = 2;
-        ctx.lineCap = "round";
-        ctx.strokeStyle = "#000";
-    }
-
-    resizeCanvas();
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "#000";
 
     let drawing = false;
 
-    function getPosition(event) {
+
+    function position(event) {
 
         const rect = canvas.getBoundingClientRect();
 
-        const clientX =
-            event.touches
-                ? event.touches[0].clientX
-                : event.clientX;
-
-        const clientY =
-            event.touches
-                ? event.touches[0].clientY
-                : event.clientY;
-
         return {
-            x: clientX - rect.left,
-            y: clientY - rect.top
+            x: event.clientX - rect.left,
+            y: event.clientY - rect.top
         };
     }
 
 
-    function startDrawing(event) {
+    canvas.addEventListener("pointerdown", function(event) {
 
         drawing = true;
 
-        const pos = getPosition(event);
+        signatureState[canvasId] = true;
+
+        canvas.setPointerCapture(event.pointerId);
+
+        const pos = position(event);
 
         ctx.beginPath();
         ctx.moveTo(pos.x, pos.y);
-
-        event.preventDefault();
-    }
+    });
 
 
-    function draw(event) {
+    canvas.addEventListener("pointermove", function(event) {
 
         if (!drawing) return;
 
-        const pos = getPosition(event);
+        const pos = position(event);
 
         ctx.lineTo(pos.x, pos.y);
         ctx.stroke();
-
-        event.preventDefault();
-    }
+    });
 
 
-    function stopDrawing() {
+    canvas.addEventListener("pointerup", function() {
         drawing = false;
-    }
+    });
 
 
-    canvas.addEventListener("mousedown", startDrawing);
-    canvas.addEventListener("mousemove", draw);
-    canvas.addEventListener("mouseup", stopDrawing);
-    canvas.addEventListener("mouseleave", stopDrawing);
-
-    canvas.addEventListener("touchstart", startDrawing);
-    canvas.addEventListener("touchmove", draw);
-    canvas.addEventListener("touchend", stopDrawing);
+    canvas.addEventListener("pointercancel", function() {
+        drawing = false;
+    });
 }
 
 
@@ -271,17 +298,36 @@ function clearSignature(canvasId) {
     const canvas = document.getElementById(canvasId);
     const ctx = canvas.getContext("2d");
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    signatureState[canvasId] = false;
 }
 
 
-function completeInduction() {
+function showMessage(text, type) {
+
+    const message = document.getElementById("message");
+
+    message.className = type;
+    message.textContent = text;
+}
+
+
+async function completeInduction() {
 
     const employee =
-        document.getElementById("employeeName").value;
+        document.getElementById("employeeName").value.trim();
 
     const coordinator =
-        document.getElementById("coordinator").value;
+        document.getElementById("coordinator").value.trim();
+
+    const date =
+        document.getElementById("inductionDate").value;
 
     const check1 =
         document.getElementById("check1").checked;
@@ -289,14 +335,26 @@ function completeInduction() {
     const check2 =
         document.getElementById("check2").checked;
 
-    const message =
-        document.getElementById("message");
+
+    // VALIDATION
+
+    if (!employee) {
+
+        showMessage(
+            "Please enter the new starter's name.",
+            "error"
+        );
+
+        return;
+    }
 
 
-    if (!employee || !coordinator) {
+    if (!coordinator) {
 
-        message.innerHTML =
-            "Please enter the employee and coordinator names.";
+        showMessage(
+            "Please enter the coordinator's name.",
+            "error"
+        );
 
         return;
     }
@@ -304,20 +362,323 @@ function completeInduction() {
 
     if (!check1 || !check2) {
 
-        message.innerHTML =
-            "Please complete all induction checklist items.";
+        showMessage(
+            "Please complete all induction checklist items.",
+            "error"
+        );
 
         return;
     }
 
 
-    message.innerHTML =
-        "✓ Induction completed successfully.";
+    if (!signatureState.employeeSignature) {
+
+        showMessage(
+            "The new starter must sign the induction.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if (!signatureState.coordinatorSignature) {
+
+        showMessage(
+            "The coordinator must sign the induction.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    // CREATE PDF
+
+    const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4"
+    });
+
+
+    pdf.setFontSize(20);
+    pdf.text(
+        "New Starter Induction",
+        20,
+        20
+    );
+
+
+    pdf.setFontSize(11);
+
+    pdf.text(
+        "DC Induction Record",
+        20,
+        28
+    );
+
+
+    pdf.setFontSize(12);
+
+    pdf.text(
+        "New Starter:",
+        20,
+        45
+    );
+
+    pdf.text(
+        employee,
+        55,
+        45
+    );
+
+
+    pdf.text(
+        "Coordinator:",
+        20,
+        54
+    );
+
+    pdf.text(
+        coordinator,
+        55,
+        54
+    );
+
+
+    pdf.text(
+        "Date:",
+        20,
+        63
+    );
+
+    pdf.text(
+        date,
+        55,
+        63
+    );
+
+
+    // CHECKLIST
+
+    pdf.setFontSize(15);
+
+    pdf.text(
+        "Induction Checklist",
+        20,
+        80
+    );
+
+
+    pdf.setFontSize(11);
+
+    pdf.text(
+        "[X] Site tour and emergency exits have been explained.",
+        20,
+        92
+    );
+
+    pdf.text(
+        "[X] PPE and safety footwear requirements have been explained.",
+        20,
+        102
+    );
+
+
+    // EMPLOYEE SIGNATURE
+
+    pdf.setFontSize(13);
+
+    pdf.text(
+        "New Starter Signature",
+        20,
+        125
+    );
+
+
+    const employeeCanvas =
+        document.getElementById("employeeSignature");
+
+    const employeeImage =
+        employeeCanvas.toDataURL("image/png");
+
+
+    pdf.addImage(
+        employeeImage,
+        "PNG",
+        20,
+        130,
+        75,
+        30
+    );
+
+
+    pdf.line(
+        20,
+        163,
+        95,
+        163
+    );
+
+
+    // COORDINATOR SIGNATURE
+
+    pdf.text(
+        "Coordinator Signature",
+        110,
+        125
+    );
+
+
+    const coordinatorCanvas =
+        document.getElementById("coordinatorSignature");
+
+    const coordinatorImage =
+        coordinatorCanvas.toDataURL("image/png");
+
+
+    pdf.addImage(
+        coordinatorImage,
+        "PNG",
+        110,
+        130,
+        75,
+        30
+    );
+
+
+    pdf.line(
+        110,
+        163,
+        185,
+        163
+    );
+
+
+    // COMPLETION TIME
+
+    const completed =
+        new Date().toLocaleString();
+
+
+    pdf.setFontSize(9);
+
+    pdf.text(
+        "Completed: " + completed,
+        20,
+        180
+    );
+
+
+    // CREATE PDF IN MEMORY
+
+    const pdfBlob =
+        pdf.output("blob");
+
+
+    const safeName =
+        employee.replace(
+            /[^a-z0-9]/gi,
+            "_"
+        );
+
+
+    const fileName =
+        safeName +
+        "_Induction_" +
+        date +
+        ".pdf";
+
+
+    const pdfFile =
+        new File(
+            [pdfBlob],
+            fileName,
+            {
+                type: "application/pdf"
+            }
+        );
+
+
+    // SHARE PDF
+
+    const shareData = {
+
+        title:
+            "Completed DC Induction - " +
+            employee,
+
+        text:
+            "Completed induction for " +
+            employee +
+            ".\n\n" +
+            "Please send to:\n" +
+            "vys.ing@munrofg.com",
+
+        files: [
+            pdfFile
+        ]
+    };
+
+
+    // CHECK ANDROID/BROWSER SUPPORT
+
+    if (
+        navigator.canShare &&
+        navigator.canShare({
+            files: [pdfFile]
+        })
+    ) {
+
+        try {
+
+            await navigator.share(
+                shareData
+            );
+
+
+            showMessage(
+                "Induction completed and shared successfully.",
+                "success"
+            );
+
+        }
+        catch (error) {
+
+            if (
+                error.name !== "AbortError"
+            ) {
+
+                showMessage(
+                    "Unable to open the Android share menu.",
+                    "error"
+                );
+
+            }
+
+        }
+
+    }
+    else {
+
+        showMessage(
+            "This browser does not support sharing PDF files. Try opening the page in Chrome on the Android tablet.",
+            "error"
+        );
+
+    }
+
 }
 
 
-setupSignature("employeeSignature");
-setupSignature("coordinatorSignature");
+setupSignature(
+    "employeeSignature"
+);
+
+setupSignature(
+    "coordinatorSignature"
+);
 
 </script>
 
