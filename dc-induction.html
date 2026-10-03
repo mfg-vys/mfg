@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Employee Induction Checklist</title>
+<title>1. Employee Induction Checklist</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -1655,57 +1655,70 @@ function getStageItems(stage) {
    PDF HEADER
 ===================================================== */
 
-function addPDFHeader(pdf, logoData, pageNumber) {
-
+function addPDFHeader(pdf, logoData) {
     const properties = pdf.getImageProperties(logoData);
 
-    /*
-       Keep the natural aspect ratio of the MFG logo.
-    */
-
-    /*const logoWidth = 75;*/
+    // Logo size
     const logoWidth = 100;
+    const logoHeight = (properties.height * logoWidth) / properties.width;
 
-    const logoHeight =
-        (
-            properties.height *
-            logoWidth
-        ) /
-        properties.width;
+    // Centre logo on A4 page
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const logoX = (pageWidth - logoWidth) / 2;
 
-    pdf.addImage(logoData, "PNG", 20, 12, logoWidth, logoHeight);
-
-    pdf.setFont("helvetica", "normal");
-
-    pdf.setFontSize(8);
-
-    pdf.setTextColor(100, 100, 100);
-
-    pdf.text(
-        "Employee Induction Checklist",
-        190,
-        17,
-        {
-            align: "right"
-        }
+    pdf.addImage(
+        logoData,
+        "PNG",
+        logoX,
+        12,
+        logoWidth,
+        logoHeight
     );
 
-    pdf.text(
-        "Page " +
-        pageNumber,
-        190,
-        22,
-        {
-            align: "right"
-        }
-    );
-
+    // Line underneath header
     pdf.setDrawColor(180, 180, 180);
-
     pdf.line(20, 35, 190, 35);
 
     pdf.setTextColor(0, 0, 0);
+}
 
+function addPDFFooters(pdf) {
+    const totalPDFPages = pdf.getNumberOfPages();
+
+    for (let i = 1; i <= totalPDFPages; i++) {
+        pdf.setPage(i);
+
+        pdf.setDrawColor(190, 190, 190);
+        pdf.line(20, 270, 190, 270);
+
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(8);
+        pdf.setTextColor(100, 100, 100);
+
+        // Bottom left
+        pdf.text(
+            "Munro Footwear Group - Distribution Centre",
+            20,
+            277
+        );
+
+        // Bottom right
+        pdf.text(
+            "Employee Induction Checklist",
+            190,
+            275,
+            { align: "right" }
+        );
+
+        pdf.text(
+            "Page " + i + " of " + totalPDFPages,
+            190,
+            280,
+            { align: "right" }
+        );
+
+        pdf.setTextColor(0, 0, 0);
+    }
 }
 
 /* =====================================================
@@ -1838,9 +1851,7 @@ async function completeInduction() {
 
         });
 
-    let pageNumber = 1;
-
-    addPDFHeader(pdf, logoData, pageNumber);
+    addPDFHeader(pdf, logoData);
 
     /* =================================================
        PAGE 1
@@ -1936,9 +1947,9 @@ async function completeInduction() {
 
                 pdf.addPage();
 
-                pageNumber++;
+                
 
-                addPDFHeader(pdf, logoData, pageNumber);
+                addPDFHeader(pdf, logoData);
 
                 y = 50;
 
@@ -1959,9 +1970,9 @@ async function completeInduction() {
 
     pdf.addPage();
 
-    pageNumber++;
+    
 
-    addPDFHeader(pdf, logoData, pageNumber);
+    addPDFHeader(pdf, logoData);
 
     y = 50;
 
@@ -1987,9 +1998,9 @@ async function completeInduction() {
 
             pdf.addPage();
 
-            pageNumber++;
+            
 
-            addPDFHeader(pdf, logoData, pageNumber);
+            addPDFHeader(pdf, logoData);
 
             y = 50;
 
@@ -2018,9 +2029,9 @@ async function completeInduction() {
 
     pdf.addPage();
 
-    pageNumber++;
+    
 
-    addPDFHeader(pdf, logoData, pageNumber);
+    addPDFHeader(pdf, logoData);
 
     y = 50;
 
@@ -2050,9 +2061,9 @@ async function completeInduction() {
 
                 pdf.addPage();
 
-                pageNumber++;
+                
 
-                addPDFHeader(pdf, logoData, pageNumber);
+                addPDFHeader(pdf, logoData);
 
                 y = 50;
 
@@ -2073,9 +2084,9 @@ async function completeInduction() {
 
     pdf.addPage();
 
-    pageNumber++;
+    
 
-    addPDFHeader(pdf, logoData, pageNumber);
+    addPDFHeader(pdf, logoData);
 
     pdf.setFont("helvetica", "bold");
 
