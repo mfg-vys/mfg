@@ -240,6 +240,16 @@ canvas {
     cursor: pointer;
 }
 
+.new-induction-button {
+    background: #e4e4e4;
+    color: #222;
+    border: 0;
+    padding: 14px 20px;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
 .complete-button {
     width: 100%;
     padding: 17px;
@@ -410,12 +420,17 @@ canvas {
     <div class="navigation">
 
         <button
+            class="new-induction-button"
+            type="button"
+            onclick="startNewInduction()">
+            Start New Induction
+        </button>
+
+        <button
             class="next-button"
             type="button"
             onclick="nextPage()">
-
             Start Induction →
-
         </button>
 
     </div>
@@ -970,11 +985,95 @@ canvas {
 const { jsPDF } = window.jspdf;
 
 /* =====================================================
-   DATE
+   LOCAL SAVE / RESTORE
 ===================================================== */
 
-document.getElementById("inductionDate").value =
-    new Date().toISOString().split("T")[0];
+const STORAGE_KEY = "mfgEmployeeInductionDraft";
+
+function saveProgress() {
+    const data = {
+        employeeName: document.getElementById("employeeName").value,
+        coordinator: document.getElementById("coordinator").value,
+        inductionDate: document.getElementById("inductionDate").value,
+        currentPage: currentPage,
+        checkboxes: Array.from(document.querySelectorAll('input[type="checkbox"]')).map(box => box.checked),
+        employeeSignature: signatureImages.employeeSignature,
+        coordinatorSignature: signatureImages.coordinatorSignature
+    };
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function loadProgress() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+
+    if (!saved) {
+        document.getElementById("inductionDate").value = new Date().toISOString().split("T")[0];
+        return 0;
+    }
+
+    try {
+        const data = JSON.parse(saved);
+
+        document.getElementById("employeeName").value = data.employeeName || "";
+        document.getElementById("coordinator").value = data.coordinator || "";
+        document.getElementById("inductionDate").value = data.inductionDate || new Date().toISOString().split("T")[0];
+
+        const boxes = document.querySelectorAll('input[type="checkbox"]');
+        boxes.forEach((box, index) => {
+            box.checked = Boolean(data.checkboxes && data.checkboxes[index]);
+        });
+
+        signatureImages.employeeSignature = data.employeeSignature || null;
+        signatureImages.coordinatorSignature = data.coordinatorSignature || null;
+        signatureState.employeeSignature = Boolean(signatureImages.employeeSignature);
+        signatureState.coordinatorSignature = Boolean(signatureImages.coordinatorSignature);
+
+        const savedPage = Number(data.currentPage);
+        return Number.isInteger(savedPage) && savedPage >= 0 && savedPage < totalPages ? savedPage : 0;
+    }
+    catch (error) {
+        console.error("Unable to restore saved induction:", error);
+        localStorage.removeItem(STORAGE_KEY);
+        document.getElementById("inductionDate").value = new Date().toISOString().split("T")[0];
+        return 0;
+    }
+}
+
+function clearSavedProgress() {
+    localStorage.removeItem(STORAGE_KEY);
+}
+
+function startNewInduction() {
+    const hasData =
+        document.getElementById("employeeName").value.trim() ||
+        document.getElementById("coordinator").value.trim() ||
+        Array.from(document.querySelectorAll('input[type="checkbox"]')).some(box => box.checked) ||
+        signatureState.employeeSignature ||
+        signatureState.coordinatorSignature;
+
+    if (hasData && !confirm("Start a new induction? The current saved induction will be cleared.")) {
+        return;
+    }
+
+    clearSavedProgress();
+    document.getElementById("employeeName").value = "";
+    document.getElementById("coordinator").value = "";
+    document.getElementById("inductionDate").value = new Date().toISOString().split("T")[0];
+    document.querySelectorAll('input[type="checkbox"]').forEach(box => box.checked = false);
+    clearSignature("employeeSignature");
+    clearSignature("coordinatorSignature");
+
+    const message = document.getElementById("message");
+    message.className = "";
+    message.style.display = "none";
+    message.textContent = "";
+
+    currentPage = 0;
+    updateCounters();
+    showPage(0);
+    saveProgress();
+}
 
 /* =====================================================
    PAGE CONTROL
@@ -1030,18 +1129,15 @@ function showPage(pageNumber) {
     */
 
     if (pageNumber === 6) {
-
         setTimeout(function() {
-
             resizeSignatureCanvas("employeeSignature");
-
             resizeSignatureCanvas("coordinatorSignature");
-
         }, 100);
-
     }
 
+    saveProgress();
 }
+
 
 /* =====================================================
    VALIDATE CURRENT PAGE
@@ -1185,10 +1281,17 @@ function updateCounters() {
 document.querySelectorAll('input[type="checkbox"]').forEach(
         checkbox => {
 
-            checkbox.addEventListener("change", updateCounters);
+            checkbox.addEventListener("change", function() {
+                updateCounters();
+                saveProgress();
+            });
 
         }
     );
+
+document.getElementById("employeeName").addEventListener("input", saveProgress);
+document.getElementById("coordinator").addEventListener("input", saveProgress);
+document.getElementById("inductionDate").addEventListener("change", saveProgress);
 
 /* =====================================================
    ALLOW ENTIRE ROW TO BE TAPPED
@@ -1348,8 +1451,8 @@ function setupSignature(canvasId) {
            Save current signature.
         */
 
-        signatureImages[canvasId] =
-            canvas.toDataURL("image/png");
+        signatureImages[canvasId] = canvas.toDataURL("image/png");
+        saveProgress();
 
     }
 
@@ -1476,10 +1579,10 @@ function clearSignature(canvasId) {
     signatureState[canvasId] =
         false;
 
-    signatureImages[canvasId] =
-        null;
-
+    signatureImages[canvasId] = null;
+    saveProgress();
 }
+
 
 /* =====================================================
    LOGO
@@ -2127,6 +2230,8 @@ async function completeInduction() {
 
             await navigator.share(shareData);
 
+            clearSavedProgress();
+
             const message = document.getElementById("message");
 
             message.className =
@@ -2170,6 +2275,7 @@ async function completeInduction() {
         */
 
         pdf.save(fileName);
+        clearSavedProgress();
 
         const message = document.getElementById("message");
 
@@ -2198,8 +2304,8 @@ setupSignature("coordinatorSignature");
 ===================================================== */
 
 updateCounters();
-
-showPage(0);
+currentPage = loadProgress();
+showPage(currentPage);
 
 </script>
 
