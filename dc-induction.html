@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Employee Induction Checklist</title>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <style>
+
 * {
     box-sizing: border-box;
 }
@@ -28,6 +33,7 @@ body {
 }
 
 /* LOGO */
+
 .logo {
     display: block;
     max-width: 330px;
@@ -37,6 +43,7 @@ body {
 }
 
 /* HEADINGS */
+
 h1 {
     margin: 0 0 5px 0;
 }
@@ -56,8 +63,8 @@ h1 {
     margin-bottom: 20px;
 }
 
-
 /* PROGRESS BAR */
+
 .progress-container {
     margin-bottom: 30px;
 }
@@ -87,6 +94,7 @@ h1 {
 }
 
 /* PAGE */
+
 .page {
     display: none;
 }
@@ -96,6 +104,7 @@ h1 {
 }
 
 /* FIELDS */
+
 .field {
     margin-bottom: 20px;
 }
@@ -116,6 +125,7 @@ input[type="date"] {
 }
 
 /* CHECKLIST */
+
 .stage-counter {
     display: inline-block;
     margin-bottom: 15px;
@@ -157,6 +167,7 @@ input[type="date"] {
 }
 
 /* NAVIGATION */
+
 .navigation {
     display: flex;
     gap: 10px;
@@ -188,6 +199,7 @@ button {
 }
 
 /* SIGNATURE */
+
 .declaration {
     background: #f5f6f7;
     border-left: 4px solid #111;
@@ -242,6 +254,7 @@ canvas {
 }
 
 /* MESSAGE */
+
 #message {
     margin-top: 20px;
     padding: 15px;
@@ -263,163 +276,321 @@ canvas {
 }
 
 /* MOBILE */
+
 @media (max-width: 600px) {
+
     body {
         padding: 10px;
     }
+
     .container {
         padding: 20px;
     }
+
     .logo {
         width: 75%;
     }
+
     h1 {
         font-size: 25px;
     }
+
     .navigation {
         flex-wrap: wrap;
     }
+
     .back-button,
     .next-button {
         flex: 1;
     }
+
 }
+
 </style>
+
 </head>
+
 <body>
+
 <div class="container">
+
 <!-- LOGO -->
-<img src="logo.png" id="companyLogo" class="logo" alt="Munro Footwear Group">
+
+<img
+    src="logo.png"
+    id="companyLogo"
+    class="logo"
+    alt="Munro Footwear Group">
+
 <h1>Employee Induction Checklist</h1>
-<div class="subtitle">Distribution Centre</div>
-<!-- PROGRESS -->
-<div class="progress-container">
-    <div class="progress-info">
-        <span id="stepName">Employee Details</span>
-        <span id="stepNumber">Step 1 of 7</span>
-    </div>
-    <div class="progress-bar">
-        <div class="progress-fill" id="progressFill"></div>
-    </div>
+
+<div class="subtitle">
+    Distribution Centre
 </div>
+
+<!-- PROGRESS -->
+
+<div class="progress-container">
+
+    <div class="progress-info">
+
+        <span id="stepName">
+            Employee Details
+        </span>
+
+        <span id="stepNumber">
+            Step 1 of 7
+        </span>
+
+    </div>
+
+    <div class="progress-bar">
+
+        <div
+            class="progress-fill"
+            id="progressFill">
+        </div>
+
+    </div>
+
+</div>
+
 <!-- =====================================================
      PAGE 1 - EMPLOYEE DETAILS
 ===================================================== -->
+
 <div class="page active" id="page0">
-    <h2 class="stage-title">Employee Details</h2>
-    <div class="stage-description">Enter the new starter's induction details.</div>
-    <div class="field">
-        <label for="employeeName">Employee Name</label>
-        <input type="text" id="employeeName" placeholder="Enter employee's full name">
+
+    <h2 class="stage-title">
+        Employee Details
+    </h2>
+
+    <div class="stage-description">
+        Enter the new starter's induction details.
     </div>
+
     <div class="field">
-        <label for="coordinator">Coordinator / Manager</label>
-        <input type="text" id="coordinator" placeholder="Enter coordinator or manager name">
+
+        <label for="employeeName">
+            Employee Name
+        </label>
+
+        <input
+            type="text"
+            id="employeeName"
+            placeholder="Enter employee's full name">
+
     </div>
+
     <div class="field">
-        <label for="inductionDate">Induction Date</label>
-        <input type="date" id="inductionDate">
+
+        <label for="coordinator">
+            Coordinator / Manager
+        </label>
+
+        <input
+            type="text"
+            id="coordinator"
+            placeholder="Enter coordinator or manager name">
+
     </div>
+
+    <div class="field">
+
+        <label for="inductionDate">
+            Induction Date
+        </label>
+
+        <input
+            type="date"
+            id="inductionDate">
+
+    </div>
+
     <div class="navigation">
-        <button class="next-button" type="button" onclick="nextPage()">Start Induction →</button>
+
+        <button
+            class="next-button"
+            type="button"
+            onclick="nextPage()">
+
+            Start Induction →
+
+        </button>
+
     </div>
+
 </div>
+
 <!-- =====================================================
      PAGE 2 - STAGE 1
 ===================================================== -->
+
 <div class="page" id="page1">
-    <h2 class="stage-title">Stage 1 - Introduction</h2>
-    <div class="stage-description">Reception and Car Park</div>
-    <div class="stage-counter" id="counter1"></div>
+
+    <h2 class="stage-title">
+        Stage 1 - Introduction
+    </h2>
+
+    <div class="stage-description">
+        Reception and Car Park
+    </div>
+
+    <div
+        class="stage-counter"
+        id="counter1">
+    </div>
+
     <div class="check-item">
         <input type="checkbox" class="stage1">
         <label>Boots are appropriate, laces done up and ankles covered</label>
     </div>
+
     <div class="check-item">
         <input type="checkbox" class="stage1">
         <label>Hi Vis (orange only)</label>
     </div>
+
     <div class="check-item">
         <input type="checkbox" class="stage1">
         <label>Ear-pods not allowed. Speaker rules</label>
     </div>
+
     <div class="check-item">
         <input type="checkbox" class="stage1">
         <label>All hoodies must be down. You can wear a beanie</label>
     </div>
+
     <div class="check-item">
         <input type="checkbox" class="stage1">
         <label>Scarves should be secure and not dangle down</label>
     </div>
+
     <div class="check-item">
         <input type="checkbox" class="stage1">
         <label>Evacuation rules - muster point (must be physically shown)</label>
     </div>
+
     <div class="check-item">
         <input type="checkbox" class="stage1">
         <label>Parking on site - E vehicles</label>
     </div>
+
     <div class="check-item">
         <input type="checkbox" class="stage1">
         <label>Drop Off Location</label>
     </div>
+
     <div class="check-item">
         <input type="checkbox" class="stage1">
         <label>Site access hours - keycard limits out of hours</label>
     </div>
+
     <div class="navigation">
-        <button class="back-button" type="button" onclick="previousPage()">← Back</button>
-        <button class="next-button" type="button" onclick="nextPage()">Next →</button>
+
+        <button
+            class="back-button"
+            type="button"
+            onclick="previousPage()">
+            ← Back
+        </button>
+
+        <button
+            class="next-button"
+            type="button"
+            onclick="nextPage()">
+            Next →
+        </button>
+
     </div>
+
 </div>
+
 <!-- =====================================================
      PAGE 3 - STAGE 2
 ===================================================== -->
+
 <div class="page" id="page2">
-    <h2 class="stage-title">Stage 2 - Front Building</h2>
-    <div class="stage-description">Toilets, Break Room and Smokers Area</div>
-    <div class="stage-counter" id="counter2"></div>
+
+    <h2 class="stage-title">
+        Stage 2 - Front Building
+    </h2>
+
+    <div class="stage-description">
+        Toilets, Break Room and Smokers Area
+    </div>
+
+    <div
+        class="stage-counter"
+        id="counter2">
+    </div>
+
     <div class="check-item">
         <input type="checkbox" class="stage2">
         <label>First Aid Room and First Aid locations</label>
     </div>
+
     <div class="check-item">
         <input type="checkbox" class="stage2">
         <label>Wellness Room Location and uses</label>
     </div>
+
     <div class="check-item">
         <input type="checkbox" class="stage2">
         <label>Toilets</label>
     </div>
+
     <div class="check-item">
         <input type="checkbox" class="stage2">
         <label>Clean up after yourself (kitchen/bathrooms)</label>
     </div>
+
     <div class="check-item">
         <input type="checkbox" class="stage2">
         <label>Kitchen and its facilities</label>
     </div>
+
     <div class="check-item">
         <input type="checkbox" class="stage2">
         <label>Pigeon Holes</label>
     </div>
+
     <div class="check-item">
         <input type="checkbox" class="stage2">
         <label>Smokers Hub</label>
     </div>
+
     <div class="check-item">
         <input type="checkbox" class="stage2">
         <label>Company values addressed (notice board)</label>
     </div>
+
     <div class="navigation">
-        <button class="back-button" type="button" onclick="previousPage()">← Back</button>
-        <button class="next-button" type="button" onclick="nextPage()">Next →</button>
+
+        <button
+            class="back-button"
+            type="button"
+            onclick="previousPage()">
+            ← Back
+        </button>
+
+        <button
+            class="next-button"
+            type="button"
+            onclick="nextPage()">
+            Next →
+        </button>
+
     </div>
+
 </div>
+
 <!-- =====================================================
      PAGE 4 - STAGE 3
 ===================================================== -->
+
 <div class="page" id="page3">
+
     <h2 class="stage-title">
         Stage 3 - DC Walkthrough
     </h2>
@@ -432,7 +603,6 @@ canvas {
         class="stage-counter"
         id="counter3">
     </div>
-
 
     <div class="check-item">
         <input type="checkbox" class="stage3">
@@ -574,7 +744,6 @@ canvas {
         <label>Compactor and Bins outlined</label>
     </div>
 
-
     <div class="navigation">
 
         <button
@@ -595,8 +764,6 @@ canvas {
 
 </div>
 
-
-
 <!-- =====================================================
      PAGE 5 - STAGE 4
 ===================================================== -->
@@ -611,7 +778,6 @@ canvas {
         class="stage-counter"
         id="counter4">
     </div>
-
 
     <div class="check-item">
         <input type="checkbox" class="stage4">
@@ -653,7 +819,6 @@ canvas {
         <label>Key introductions - staff</label>
     </div>
 
-
     <div class="navigation">
 
         <button
@@ -674,8 +839,6 @@ canvas {
 
 </div>
 
-
-
 <!-- =====================================================
      PAGE 6 - STAGE 5
 ===================================================== -->
@@ -695,7 +858,6 @@ canvas {
         id="counter5">
     </div>
 
-
     <div class="check-item">
         <input type="checkbox" class="stage5">
         <label>Raising an Elumina</label>
@@ -705,7 +867,6 @@ canvas {
         <input type="checkbox" class="stage5">
         <label>Stella Modules conducted</label>
     </div>
-
 
     <div class="navigation">
 
@@ -727,8 +888,6 @@ canvas {
 
 </div>
 
-
-
 <!-- =====================================================
      PAGE 7 - SIGNATURES
 ===================================================== -->
@@ -745,7 +904,6 @@ canvas {
         explained and/or demonstrated to me.
 
     </div>
-
 
     <h3 class="signature-heading">
         Employee Signature
@@ -764,8 +922,6 @@ canvas {
 
     </button>
 
-
-
     <h3 class="signature-heading">
         Coordinator / Manager Signature
     </h3>
@@ -783,8 +939,6 @@ canvas {
 
     </button>
 
-
-
     <button
         class="complete-button"
         type="button"
@@ -794,9 +948,7 @@ canvas {
 
     </button>
 
-
     <div id="message"></div>
-
 
     <div class="navigation">
 
@@ -811,15 +963,11 @@ canvas {
 
 </div>
 
-
 </div>
-
-
 
 <script>
 
 const { jsPDF } = window.jspdf;
-
 
 /* =====================================================
    DATE
@@ -827,8 +975,6 @@ const { jsPDF } = window.jspdf;
 
 document.getElementById("inductionDate").value =
     new Date().toISOString().split("T")[0];
-
-
 
 /* =====================================================
    PAGE CONTROL
@@ -848,52 +994,34 @@ const pageNames = [
     "Sign & Complete"
 ];
 
-
 function showPage(pageNumber) {
 
-    document
-        .querySelectorAll(".page")
-        .forEach(page => {
+    document.querySelectorAll(".page").forEach(page => {
             page.classList.remove("active");
         });
 
+    document.getElementById("page" + pageNumber).classList.add("active");
 
-    document
-        .getElementById("page" + pageNumber)
-        .classList
-        .add("active");
-
-
-    document.getElementById("stepName")
-        .textContent =
+    document.getElementById("stepName").textContent =
         pageNames[pageNumber];
 
-
-    document.getElementById("stepNumber")
-        .textContent =
+    document.getElementById("stepNumber").textContent =
         "Step " +
         (pageNumber + 1) +
         " of " +
         totalPages;
 
+    const percentage = ((pageNumber + 1) / totalPages) * 100;
 
-    const percentage =
-        ((pageNumber + 1) / totalPages) * 100;
-
-
-    document.getElementById("progressFill")
-        .style.width =
+    document.getElementById("progressFill").style.width =
         percentage + "%";
-
 
     window.scrollTo({
         top: 0,
         behavior: "smooth"
     });
 
-
     updateCounters();
-
 
     /*
        IMPORTANT:
@@ -905,13 +1033,9 @@ function showPage(pageNumber) {
 
         setTimeout(function() {
 
-            resizeSignatureCanvas(
-                "employeeSignature"
-            );
+            resizeSignatureCanvas("employeeSignature");
 
-            resizeSignatureCanvas(
-                "coordinatorSignature"
-            );
+            resizeSignatureCanvas("coordinatorSignature");
 
         }, 100);
 
@@ -919,91 +1043,63 @@ function showPage(pageNumber) {
 
 }
 
-
-
 /* =====================================================
    VALIDATE CURRENT PAGE
 ===================================================== */
 
 function validateCurrentPage() {
 
-
     /* EMPLOYEE DETAILS */
 
     if (currentPage === 0) {
 
-        const employee =
-            document
-                .getElementById("employeeName")
-                .value
-                .trim();
+        const employee = document.getElementById("employeeName").value.trim();
 
-        const coordinator =
-            document
-                .getElementById("coordinator")
-                .value
-                .trim();
+        const coordinator = document.getElementById("coordinator").value.trim();
 
-        const date =
-            document
-                .getElementById("inductionDate")
-                .value;
-
+        const date = document.getElementById("inductionDate").value;
         if (!employee) {
+
             alert("Please enter the employee's name.");
+
             return false;
+
         }
 
         if (!coordinator) {
+
             alert("Please enter the coordinator or manager name.");
+
             return false;
+
         }
 
         if (!date) {
+
             alert("Please select the induction date.");
+
             return false;
+
         }
+
     }
 
     /* CHECKLIST STAGES */
+
     if (
         currentPage >= 1 &&
         currentPage <= 5
     ) {
-        const checkboxes =
-            document.querySelectorAll(
-                ".stage" + currentPage
-            );
 
-        const incomplete =
-            Array
-                .from(checkboxes)
-                .some(
-                    checkbox =>
-                        !checkbox.checked
-                );
+        const checkboxes = document.querySelectorAll(".stage" + currentPage);
 
+        const incomplete = Array.from(checkboxes).some(checkbox => !checkbox.checked);
 
         if (incomplete) {
 
-            const completed =
-                Array
-                    .from(checkboxes)
-                    .filter(
-                        checkbox =>
-                            checkbox.checked
-                    )
-                    .length;
+            const completed = Array.from(checkboxes).filter(checkbox => checkbox.checked).length;
 
-
-            alert(
-                "Please complete all items before continuing.\n\n" +
-                completed +
-                " of " +
-                checkboxes.length +
-                " completed."
-            );
-
+            alert("Please complete all items before continuing.\n\n" + completed + " of " + checkboxes.length + " completed.");
 
             return false;
 
@@ -1011,12 +1107,9 @@ function validateCurrentPage() {
 
     }
 
-
     return true;
 
 }
-
-
 
 /* =====================================================
    NEXT
@@ -1028,7 +1121,6 @@ function nextPage() {
         return;
     }
 
-
     if (
         currentPage <
         totalPages - 1
@@ -1036,15 +1128,11 @@ function nextPage() {
 
         currentPage++;
 
-        showPage(
-            currentPage
-        );
+        showPage(currentPage);
 
     }
 
 }
-
-
 
 /* =====================================================
    BACK
@@ -1056,15 +1144,11 @@ function previousPage() {
 
         currentPage--;
 
-        showPage(
-            currentPage
-        );
+        showPage(currentPage);
 
     }
 
 }
-
-
 
 /* =====================================================
    COUNTERS
@@ -1078,27 +1162,11 @@ function updateCounters() {
         stage++
     ) {
 
-        const boxes =
-            document.querySelectorAll(
-                ".stage" + stage
-            );
+        const boxes = document.querySelectorAll(".stage" + stage);
 
+        const completed = Array.from(boxes).filter(box => box.checked).length;
 
-        const completed =
-            Array
-                .from(boxes)
-                .filter(
-                    box =>
-                        box.checked
-                )
-                .length;
-
-
-        const counter =
-            document.getElementById(
-                "counter" + stage
-            );
-
+        const counter = document.getElementById("counter" + stage);
 
         if (counter) {
 
@@ -1114,32 +1182,19 @@ function updateCounters() {
 
 }
 
-
-
-document
-    .querySelectorAll(
-        'input[type="checkbox"]'
-    )
-    .forEach(
+document.querySelectorAll('input[type="checkbox"]').forEach(
         checkbox => {
 
-            checkbox.addEventListener(
-                "change",
-                updateCounters
-            );
+            checkbox.addEventListener("change", updateCounters);
 
         }
     );
-
-
 
 /* =====================================================
    ALLOW ENTIRE ROW TO BE TAPPED
 ===================================================== */
 
-document
-    .querySelectorAll(".check-item")
-    .forEach(item => {
+document.querySelectorAll(".check-item").forEach(item => {
 
         item.addEventListener(
             "click",
@@ -1152,16 +1207,10 @@ document
                     return;
                 }
 
-
-                const checkbox =
-                    this.querySelector(
-                        'input[type="checkbox"]'
-                    );
-
+                const checkbox = this.querySelector('input[type="checkbox"]');
 
                 checkbox.checked =
                     !checkbox.checked;
-
 
                 checkbox.dispatchEvent(
                     new Event("change")
@@ -1171,8 +1220,6 @@ document
         );
 
     });
-
-
 
 /* =====================================================
    SIGNATURE STATE
@@ -1184,7 +1231,6 @@ const signatureState = {
     coordinatorSignature: false
 
 };
-
 
 /*
    Store a copy of each signature so it is not lost
@@ -1198,27 +1244,21 @@ const signatureImages = {
 
 };
 
-
-
 /* =====================================================
    SETUP SIGNATURE PAD
 ===================================================== */
 
 function setupSignature(canvasId) {
 
-    const canvas =
-        document.getElementById(canvasId);
+    const canvas = document.getElementById(canvasId);
 
-    const ctx =
-        canvas.getContext("2d");
+    const ctx = canvas.getContext("2d");
 
     let drawing = false;
 
-
     function position(event) {
 
-        const rect =
-            canvas.getBoundingClientRect();
+        const rect = canvas.getBoundingClientRect();
 
         return {
 
@@ -1234,7 +1274,6 @@ function setupSignature(canvasId) {
 
     }
 
-
     canvas.addEventListener(
         "pointerdown",
         function(event) {
@@ -1246,12 +1285,9 @@ function setupSignature(canvasId) {
             signatureState[canvasId] =
                 true;
 
-
             try {
 
-                canvas.setPointerCapture(
-                    event.pointerId
-                );
+                canvas.setPointerCapture(event.pointerId);
 
             }
 
@@ -1259,34 +1295,23 @@ function setupSignature(canvasId) {
                 // Ignore if unsupported.
             }
 
-
-            const pos =
-                position(event);
-
+            const pos = position(event);
 
             ctx.beginPath();
 
-            ctx.moveTo(
-                pos.x,
-                pos.y
-            );
-
+            ctx.moveTo(pos.x, pos.y);
 
             /*
                Draw a tiny dot as well.
                This means even a tap is recognised.
             */
 
-            ctx.lineTo(
-                pos.x + 0.01,
-                pos.y + 0.01
-            );
+            ctx.lineTo(pos.x + 0.01, pos.y + 0.01);
 
             ctx.stroke();
 
         }
     );
-
 
     canvas.addEventListener(
         "pointermove",
@@ -1296,25 +1321,16 @@ function setupSignature(canvasId) {
                 return;
             }
 
-
             event.preventDefault();
 
+            const pos = position(event);
 
-            const pos =
-                position(event);
-
-
-            ctx.lineTo(
-                pos.x,
-                pos.y
-            );
-
+            ctx.lineTo(pos.x, pos.y);
 
             ctx.stroke();
 
         }
     );
-
 
     function finishDrawing(event) {
 
@@ -1322,38 +1338,24 @@ function setupSignature(canvasId) {
             return;
         }
 
-
         if (event) {
             event.preventDefault();
         }
 
-
         drawing = false;
-
 
         /*
            Save current signature.
         */
 
         signatureImages[canvasId] =
-            canvas.toDataURL(
-                "image/png"
-            );
+            canvas.toDataURL("image/png");
 
     }
 
+    canvas.addEventListener("pointerup", finishDrawing);
 
-    canvas.addEventListener(
-        "pointerup",
-        finishDrawing
-    );
-
-
-    canvas.addEventListener(
-        "pointercancel",
-        finishDrawing
-    );
-
+    canvas.addEventListener("pointercancel", finishDrawing);
 
     canvas.addEventListener(
         "pointerleave",
@@ -1368,21 +1370,15 @@ function setupSignature(canvasId) {
 
 }
 
-
-
 /* =====================================================
    RESIZE SIGNATURE CANVAS
 ===================================================== */
 
 function resizeSignatureCanvas(canvasId) {
 
-    const canvas =
-        document.getElementById(canvasId);
+    const canvas = document.getElementById(canvasId);
 
-
-    const rect =
-        canvas.getBoundingClientRect();
-
+    const rect = canvas.getBoundingClientRect();
 
     /*
        Don't resize a hidden canvas.
@@ -1395,15 +1391,12 @@ function resizeSignatureCanvas(canvasId) {
         return;
     }
 
-
     /*
        Save existing signature before resizing.
        Resizing a canvas normally clears it.
     */
 
-    let savedImage =
-        signatureImages[canvasId];
-
+    let savedImage = signatureImages[canvasId];
 
     if (
         signatureState[canvasId] &&
@@ -1411,42 +1404,21 @@ function resizeSignatureCanvas(canvasId) {
     ) {
 
         savedImage =
-            canvas.toDataURL(
-                "image/png"
-            );
+            canvas.toDataURL("image/png");
 
     }
 
-
-    const ratio =
-        window.devicePixelRatio || 1;
-
+    const ratio = window.devicePixelRatio || 1;
 
     canvas.width =
-        Math.round(
-            rect.width * ratio
-        );
-
+        Math.round(rect.width * ratio);
 
     canvas.height =
-        Math.round(
-            rect.height * ratio
-        );
+        Math.round(rect.height * ratio);
 
+    const ctx = canvas.getContext("2d");
 
-    const ctx =
-        canvas.getContext("2d");
-
-
-    ctx.setTransform(
-        ratio,
-        0,
-        0,
-        ratio,
-        0,
-        0
-    );
-
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
 
     ctx.lineWidth = 2;
 
@@ -1456,30 +1428,20 @@ function resizeSignatureCanvas(canvasId) {
 
     ctx.strokeStyle = "#000";
 
-
     /*
        Restore signature if one already exists.
     */
 
     if (savedImage) {
 
-        const image =
-            new Image();
-
+        const image = new Image();
 
         image.onload =
             function() {
 
-                ctx.drawImage(
-                    image,
-                    0,
-                    0,
-                    rect.width,
-                    rect.height
-                );
+                ctx.drawImage(image, 0, 0, rect.width, rect.height);
 
             };
-
 
         image.src =
             savedImage;
@@ -1488,21 +1450,15 @@ function resizeSignatureCanvas(canvasId) {
 
 }
 
-
-
 /* =====================================================
    CLEAR SIGNATURE
 ===================================================== */
 
 function clearSignature(canvasId) {
 
-    const canvas =
-        document.getElementById(canvasId);
+    const canvas = document.getElementById(canvasId);
 
-
-    const ctx =
-        canvas.getContext("2d");
-
+    const ctx = canvas.getContext("2d");
 
     /*
        Because the context is scaled for high-DPI
@@ -1511,38 +1467,19 @@ function clearSignature(canvasId) {
 
     ctx.save();
 
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-    ctx.setTransform(
-        1,
-        0,
-        0,
-        1,
-        0,
-        0
-    );
-
-
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     ctx.restore();
 
-
     signatureState[canvasId] =
         false;
-
 
     signatureImages[canvasId] =
         null;
 
 }
-
-
 
 /* =====================================================
    LOGO
@@ -1553,18 +1490,12 @@ function getLogoData() {
     return new Promise(
         (resolve, reject) => {
 
-            const img =
-                new Image();
-
+            const img = new Image();
 
             img.onload =
                 function() {
 
-                    const canvas =
-                        document.createElement(
-                            "canvas"
-                        );
-
+                    const canvas = document.createElement("canvas");
 
                     canvas.width =
                         img.naturalWidth;
@@ -1572,40 +1503,24 @@ function getLogoData() {
                     canvas.height =
                         img.naturalHeight;
 
+                    const ctx = canvas.getContext("2d");
 
-                    const ctx =
-                        canvas.getContext(
-                            "2d"
-                        );
-
-
-                    ctx.drawImage(
-                        img,
-                        0,
-                        0
-                    );
-
+                    ctx.drawImage(img, 0, 0);
 
                     resolve(
-                        canvas.toDataURL(
-                            "image/png"
-                        )
+                        canvas.toDataURL("image/png")
                     );
 
                 };
-
 
             img.onerror =
                 function() {
 
                     reject(
-                        new Error(
-                            "Unable to load logo.png"
-                        )
+                        new Error("Unable to load logo.png")
                     );
 
                 };
-
 
             img.src =
                 "logo.png";
@@ -1615,60 +1530,34 @@ function getLogoData() {
 
 }
 
-
-
 /* =====================================================
    GET CHECKLIST TEXT
 ===================================================== */
 
 function getStageItems(stage) {
 
-    return Array
-        .from(
-            document.querySelectorAll(
-                ".stage" +
-                stage
-            )
-        )
-        .map(
+    return Array.from(
+            document.querySelectorAll(".stage" + stage)
+        ).map(
             checkbox =>
-                checkbox
-                    .closest(
-                        ".check-item"
-                    )
-                    .querySelector(
-                        "label"
-                    )
-                    .textContent
-                    .trim()
+                checkbox.closest(".check-item").querySelector("label").textContent.trim()
         );
 
 }
-
-
 
 /* =====================================================
    PDF HEADER
 ===================================================== */
 
-function addPDFHeader(
-    pdf,
-    logoData,
-    pageNumber
-) {
+function addPDFHeader(pdf, logoData, pageNumber) {
 
-    const properties =
-        pdf.getImageProperties(
-            logoData
-        );
-
+    const properties = pdf.getImageProperties(logoData);
 
     /*
        Keep the natural aspect ratio of the MFG logo.
     */
 
     const logoWidth = 75;
-
 
     const logoHeight =
         (
@@ -1677,32 +1566,13 @@ function addPDFHeader(
         ) /
         properties.width;
 
+    pdf.addImage(logoData, "PNG", 20, 12, logoWidth, logoHeight);
 
-    pdf.addImage(
-        logoData,
-        "PNG",
-        20,
-        12,
-        logoWidth,
-        logoHeight
-    );
-
-
-    pdf.setFont(
-        "helvetica",
-        "normal"
-    );
-
+    pdf.setFont("helvetica", "normal");
 
     pdf.setFontSize(8);
 
-
-    pdf.setTextColor(
-        100,
-        100,
-        100
-    );
-
+    pdf.setTextColor(100, 100, 100);
 
     pdf.text(
         "Employee Induction Checklist",
@@ -1712,7 +1582,6 @@ function addPDFHeader(
             align: "right"
         }
     );
-
 
     pdf.text(
         "Page " +
@@ -1724,71 +1593,29 @@ function addPDFHeader(
         }
     );
 
+    pdf.setDrawColor(180, 180, 180);
 
-    pdf.setDrawColor(
-        180,
-        180,
-        180
-    );
+    pdf.line(20, 35, 190, 35);
 
-
-    pdf.line(
-        20,
-        35,
-        190,
-        35
-    );
-
-
-    pdf.setTextColor(
-        0,
-        0,
-        0
-    );
+    pdf.setTextColor(0, 0, 0);
 
 }
-
-
 
 /* =====================================================
    PDF CHECKLIST ITEM
 ===================================================== */
 
-function addPDFItem(
-    pdf,
-    text,
-    y
-) {
+function addPDFItem(pdf, text, y) {
 
-    const wrapped =
-        pdf.splitTextToSize(
-            text,
-            145
-        );
+    const wrapped = pdf.splitTextToSize(text, 145);
 
-
-    pdf.setFont(
-        "helvetica",
-        "normal"
-    );
-
+    pdf.setFont("helvetica", "normal");
 
     pdf.setFontSize(10);
 
+    pdf.text("[X]", 22, y);
 
-    pdf.text(
-        "[X]",
-        22,
-        y
-    );
-
-
-    pdf.text(
-        wrapped,
-        35,
-        y
-    );
-
+    pdf.text(wrapped, 35, y);
 
     return (
         y +
@@ -1801,14 +1628,11 @@ function addPDFItem(
 
 }
 
-
-
 /* =====================================================
    COMPLETE INDUCTION
 ===================================================== */
 
 async function completeInduction() {
-
 
     /* CHECK ALL STAGES */
 
@@ -1818,28 +1642,13 @@ async function completeInduction() {
         stage++
     ) {
 
-        const boxes =
-            document.querySelectorAll(
-                ".stage" + stage
-            );
+        const boxes = document.querySelectorAll(".stage" + stage);
 
-
-        const incomplete =
-            Array
-                .from(boxes)
-                .some(
-                    box =>
-                        !box.checked
-                );
-
+        const incomplete = Array.from(boxes).some(box => !box.checked);
 
         if (incomplete) {
 
-            alert(
-                "Stage " +
-                stage +
-                " has incomplete items."
-            );
+            alert("Stage " + stage + " has incomplete items.");
 
             return;
 
@@ -1847,89 +1656,49 @@ async function completeInduction() {
 
     }
 
-
-
     /* CHECK SIGNATURES */
 
     if (
-        !signatureState
-            .employeeSignature
+        !signatureState.employeeSignature
     ) {
 
-        alert(
-            "The employee must sign the induction."
-        );
+        alert("The employee must sign the induction.");
 
         return;
 
     }
-
-
 
     if (
-        !signatureState
-            .coordinatorSignature
+        !signatureState.coordinatorSignature
     ) {
 
-        alert(
-            "The coordinator / manager must sign the induction."
-        );
+        alert("The coordinator / manager must sign the induction.");
 
         return;
 
     }
 
+    const employee = document.getElementById("employeeName").value.trim();
 
+    const coordinator = document.getElementById("coordinator").value.trim();
 
-    const employee =
-        document
-            .getElementById(
-                "employeeName"
-            )
-            .value
-            .trim();
-
-
-    const coordinator =
-        document
-            .getElementById(
-                "coordinator"
-            )
-            .value
-            .trim();
-
-
-    const date =
-    document
-        .getElementById(
-            "inductionDate"
-        )
-        .value;
-
+    const date = document.getElementById("inductionDate").value;
 
     /*
        Date used inside PDF:
        yyyy-mm-dd → dd/mm/yyyy
-    
+
        The original "date" variable stays yyyy-mm-dd
        for the PDF filename.
     */
-    
-    const dateParts =
-        date.split("-");
-    
-    
-    const displayDate =
-        dateParts[2] + "/" +
-        dateParts[1] + "/" +
-        dateParts[0];
 
+    const dateParts = date.split("-");
 
+    const displayDate = dateParts[2] + "/" + dateParts[1] + "/" + dateParts[0];
 
     /* LOAD LOGO */
 
     let logoData;
-
 
     try {
 
@@ -1940,15 +1709,11 @@ async function completeInduction() {
 
     catch (error) {
 
-        alert(
-            "Unable to load logo.png."
-        );
+        alert("Unable to load logo.png.");
 
         return;
 
     }
-
-
 
     /* CREATE PDF */
 
@@ -1966,134 +1731,49 @@ async function completeInduction() {
 
         });
 
-
-
     let pageNumber = 1;
 
-
-    addPDFHeader(
-        pdf,
-        logoData,
-        pageNumber
-    );
-
-
+    addPDFHeader(pdf, logoData, pageNumber);
 
     /* =================================================
        PAGE 1
     ================================================= */
 
-
-    pdf.setFont(
-        "helvetica",
-        "bold"
-    );
-
+    pdf.setFont("helvetica", "bold");
 
     pdf.setFontSize(20);
 
-
-    pdf.text(
-        "Employee Induction Checklist",
-        20,
-        53
-    );
-
+    pdf.text("Employee Induction Checklist", 20, 53);
 
     pdf.setFontSize(11);
 
+    pdf.setFont("helvetica", "normal");
 
-    pdf.setFont(
-        "helvetica",
-        "normal"
-    );
-
-
-    pdf.text(
-        "Distribution Centre",
-        20,
-        61
-    );
-
-
+    pdf.text("Distribution Centre", 20, 61);
 
     /* DETAILS BOX */
 
-    pdf.setDrawColor(
-        190,
-        190,
-        190
-    );
+    pdf.setDrawColor(190, 190, 190);
 
+    pdf.roundedRect(20, 72, 170, 35, 2, 2);
 
-    pdf.roundedRect(
-        20,
-        72,
-        170,
-        35,
-        2,
-        2
-    );
+    pdf.setFont("helvetica", "bold");
 
+    pdf.text("Employee:", 27, 83);
 
-    pdf.setFont(
-        "helvetica",
-        "bold"
-    );
+    pdf.text("Coordinator / Manager:", 27, 93);
 
+    pdf.text("Induction Date:", 27, 103);
 
-    pdf.text(
-        "Employee:",
-        27,
-        83
-    );
+    pdf.setFont("helvetica", "normal");
 
+    pdf.text(employee, 75, 83);
 
-    pdf.text(
-        "Coordinator / Manager:",
-        27,
-        93
-    );
+    pdf.text(coordinator, 75, 93);
 
-
-    pdf.text(
-        "Induction Date:",
-        27,
-        103
-    );
-
-
-    pdf.setFont(
-        "helvetica",
-        "normal"
-    );
-
-
-    pdf.text(
-        employee,
-        75,
-        83
-    );
-
-
-    pdf.text(
-        coordinator,
-        75,
-        93
-    );
-
-
-    pdf.text(
-        displayDate,
-        75,
-        103
-    );
-
-
+    pdf.text(displayDate, 75, 103);
 
     let y = 125;
-
-
 
     const stageTitles = {
 
@@ -2114,8 +1794,6 @@ async function completeInduction() {
 
     };
 
-
-
     /* =================================================
        STAGES 1 & 2
     ================================================= */
@@ -2124,36 +1802,18 @@ async function completeInduction() {
         const stage of [1, 2]
     ) {
 
-
-        pdf.setFont(
-            "helvetica",
-            "bold"
-        );
-
+        pdf.setFont("helvetica", "bold");
 
         pdf.setFontSize(12);
 
+        const heading = pdf.splitTextToSize(stageTitles[stage], 165);
 
-        const heading =
-            pdf.splitTextToSize(
-                stageTitles[stage],
-                165
-            );
-
-
-        pdf.text(
-            heading,
-            20,
-            y
-        );
-
+        pdf.text(heading, 20, y);
 
         y +=
             heading.length *
             6 +
             4;
-
-
 
         for (
             const item of
@@ -2171,34 +1831,20 @@ async function completeInduction() {
 
                 pageNumber++;
 
-
-                addPDFHeader(
-                    pdf,
-                    logoData,
-                    pageNumber
-                );
-
+                addPDFHeader(pdf, logoData, pageNumber);
 
                 y = 50;
 
             }
 
-
             y =
-                addPDFItem(
-                    pdf,
-                    item,
-                    y
-                );
+                addPDFItem(pdf, item, y);
 
         }
-
 
         y += 6;
 
     }
-
-
 
     /* =================================================
        STAGE 3
@@ -2208,52 +1854,27 @@ async function completeInduction() {
 
     pageNumber++;
 
-
-    addPDFHeader(
-        pdf,
-        logoData,
-        pageNumber
-    );
-
+    addPDFHeader(pdf, logoData, pageNumber);
 
     y = 50;
 
-
-    pdf.setFont(
-        "helvetica",
-        "bold"
-    );
-
+    pdf.setFont("helvetica", "bold");
 
     pdf.setFontSize(14);
 
+    const stage3Heading = pdf.splitTextToSize(stageTitles[3], 165);
 
-    const stage3Heading =
-        pdf.splitTextToSize(
-            stageTitles[3],
-            165
-        );
-
-
-    pdf.text(
-        stage3Heading,
-        20,
-        y
-    );
-
+    pdf.text(stage3Heading, 20, y);
 
     y +=
         stage3Heading.length *
         6 +
         6;
 
-
-
     for (
         const item of
         getStageItems(3)
     ) {
-
 
         if (y > 270) {
 
@@ -2261,25 +1882,13 @@ async function completeInduction() {
 
             pageNumber++;
 
-
-            addPDFHeader(
-                pdf,
-                logoData,
-                pageNumber
-            );
-
+            addPDFHeader(pdf, logoData, pageNumber);
 
             y = 50;
 
-
-            pdf.setFont(
-                "helvetica",
-                "bold"
-            );
-
+            pdf.setFont("helvetica", "bold");
 
             pdf.setFontSize(11);
-
 
             pdf.text(
                 "Stage 3 - DC Walkthrough (continued)",
@@ -2287,22 +1896,14 @@ async function completeInduction() {
                 y
             );
 
-
             y += 10;
 
         }
 
-
         y =
-            addPDFItem(
-                pdf,
-                item,
-                y
-            );
+            addPDFItem(pdf, item, y);
 
     }
-
-
 
     /* =================================================
        STAGES 4 & 5
@@ -2312,58 +1913,31 @@ async function completeInduction() {
 
     pageNumber++;
 
-
-    addPDFHeader(
-        pdf,
-        logoData,
-        pageNumber
-    );
-
+    addPDFHeader(pdf, logoData, pageNumber);
 
     y = 50;
-
-
 
     for (
         const stage of [4, 5]
     ) {
 
-
-        pdf.setFont(
-            "helvetica",
-            "bold"
-        );
-
+        pdf.setFont("helvetica", "bold");
 
         pdf.setFontSize(13);
 
+        const heading = pdf.splitTextToSize(stageTitles[stage], 165);
 
-        const heading =
-            pdf.splitTextToSize(
-                stageTitles[stage],
-                165
-            );
-
-
-        pdf.text(
-            heading,
-            20,
-            y
-        );
-
+        pdf.text(heading, 20, y);
 
         y +=
             heading.length *
             6 +
             5;
 
-
-
         for (
             const item of
             getStageItems(stage)
         ) {
-
 
             if (y > 270) {
 
@@ -2371,34 +1945,20 @@ async function completeInduction() {
 
                 pageNumber++;
 
-
-                addPDFHeader(
-                    pdf,
-                    logoData,
-                    pageNumber
-                );
-
+                addPDFHeader(pdf, logoData, pageNumber);
 
                 y = 50;
 
             }
 
-
             y =
-                addPDFItem(
-                    pdf,
-                    item,
-                    y
-                );
+                addPDFItem(pdf, item, y);
 
         }
-
 
         y += 10;
 
     }
-
-
 
     /* =================================================
        SIGNATURE PAGE
@@ -2408,281 +1968,219 @@ async function completeInduction() {
 
     pageNumber++;
 
+    addPDFHeader(pdf, logoData, pageNumber);
 
-    addPDFHeader(
-        pdf,
-        logoData,
-        pageNumber
-    );
-
-
-    pdf.setFont(
-        "helvetica",
-        "bold"
-    );
-
+    pdf.setFont("helvetica", "bold");
 
     pdf.setFontSize(18);
 
+    pdf.text("Induction Confirmation", 20, 55);
 
-    pdf.text(
-        "Induction Confirmation",
-        20,
-        55
-    );
-
-
-    pdf.setFont(
-        "helvetica",
-        "normal"
-    );
-
+    pdf.setFont("helvetica", "normal");
 
     pdf.setFontSize(11);
 
+    const declaration = "I confirm that the above induction items have been explained and/or demonstrated to me.";
 
-    const declaration =
-        "I confirm that the above induction items have been explained and/or demonstrated to me.";
+    const declarationLines = pdf.splitTextToSize(declaration, 165);
 
-    const declarationLines =
-        pdf.splitTextToSize(
-            declaration,
-            165
-        );
-
-    pdf.text(
-        declarationLines,
-        20,
-        68
-    );
+    pdf.text(declarationLines, 20, 68);
 
     /* EMPLOYEE */
-    pdf.setFont(
-        "helvetica",
-        "bold"
-    );
 
-    pdf.text(
-        "Employee:",
-        20,
-        92
-    );
+    pdf.setFont("helvetica", "bold");
 
-    pdf.setFont(
-        "helvetica",
-        "normal"
-    );
+    pdf.text("Employee:", 20, 92);
 
-    pdf.text(
-        employee,
-        48,
-        92
-    );
+    pdf.setFont("helvetica", "normal");
+
+    pdf.text(employee, 48, 92);
 
     /* SIGNATURE HEADINGS */
-    pdf.setFont(
-        "helvetica",
-        "bold"
-    );
 
-    pdf.text(
-        "Employee Signature",
-        20,
-        115
-    );
+    pdf.setFont("helvetica", "bold");
 
-    pdf.text(
-        "Coordinator / Manager Signature",
-        110,
-        115
-    );
+    pdf.text("Employee Signature", 20, 115);
+
+    pdf.text("Coordinator / Manager Signature", 110, 115);
 
     /* SIGNATURE IMAGES */
-    const employeeCanvas =
-        document.getElementById(
-            "employeeSignature"
-        );
 
-    const coordinatorCanvas =
-        document.getElementById(
-            "coordinatorSignature"
-        );
+    const employeeCanvas = document.getElementById("employeeSignature");
+
+    const coordinatorCanvas = document.getElementById("coordinatorSignature");
+
     /*
        Get the current signature directly from each canvas.
     */
-    const employeeImage =
-        employeeCanvas.toDataURL(
-            "image/png"
-        );
 
-    const coordinatorImage =
-        coordinatorCanvas.toDataURL(
-            "image/png"
-        );
+    const employeeImage = employeeCanvas.toDataURL("image/png");
 
-    pdf.addImage(
-        employeeImage,
-        "PNG",
-        20,
-        120,
-        75,
-        35
-    );
+    const coordinatorImage = coordinatorCanvas.toDataURL("image/png");
 
-    pdf.addImage(
-        coordinatorImage,
-        "PNG",
-        110,
-        120,
-        75,
-        35
-    );
+    pdf.addImage(employeeImage, "PNG", 20, 120, 75, 35);
+
+    pdf.addImage(coordinatorImage, "PNG", 110, 120, 75, 35);
 
     /* SIGNATURE LINES */
-    pdf.line(
-        20,
-        158,
-        95,
-        158
-    );
 
-    pdf.line(
-        110,
-        158,
-        185,
-        158
-    );
+    pdf.line(20, 158, 95, 158);
+
+    pdf.line(110, 158, 185, 158);
 
     /* NAMES */
+
     pdf.setFontSize(9);
 
-    pdf.setFont(
-        "helvetica",
-        "normal"
-    );
+    pdf.setFont("helvetica", "normal");
 
-    pdf.text(
-        employee,
-        20,
-        164
-    );
+    pdf.text(employee, 20, 164);
 
-    pdf.text(
-        coordinator,
-        110,
-        164
-    );
+    pdf.text(coordinator, 110, 164);
 
     /* COMPLETED */
-    const completed =
-        new Date()
-            .toLocaleString(
-                "en-AU"
-            );
+
+    const completed = new Date().toLocaleString("en-AU");
 
     pdf.setFontSize(10);
 
-    pdf.text(
-        "Induction Date: " +
-        displayDate,
-        20,
-        185
-    );
+    pdf.text("Induction Date: " + displayDate, 20, 185);
 
-    pdf.text(
-        "Completed: " +
-        completed,
-        20,
-        193
-    );
+    pdf.text("Completed: " + completed, 20, 193);
 
     /* FOOTER */
-    pdf.setDrawColor(
-        190,
-        190,
-        190
-    );
 
-    pdf.line(
-        20,
-        270,
-        190,
-        270
-    );
+    pdf.setDrawColor(190, 190, 190);
+
+    pdf.line(20, 270, 190, 270);
 
     pdf.setFontSize(8);
 
-    pdf.setTextColor(
-        100,
-        100,
-        100
-    );
+    pdf.setTextColor(100, 100, 100);
 
-    pdf.text(
-        "Munro Footwear Group - Distribution Centre",
-        20,
-        277
-    );
+    pdf.text("Munro Footwear Group - Distribution Centre", 20, 277);
 
-    pdf.setTextColor(
-        0,
-        0,
-        0
-    );
+    pdf.setTextColor(0, 0, 0);
 
     /* =================================================
        CREATE PDF FILE
     ================================================= */
+
     const pdfBlob = pdf.output("blob");
-    const safeName = employee.replace(/[^a-z0-9]/gi,"_");
-    const fileName = safeName + "_Employee_Induction_" + date + ".pdf";
-    const pdfFile = new File([pdfBlob],fileName,
+
+    const safeName = employee.replace(/[^a-z0-9]/gi, "_");
+
+    const fileName =
+        safeName +
+        "_Employee_Induction_" +
+        date +
+        ".pdf";
+
+    const pdfFile =
+        new File(
+
+            [pdfBlob],
+
+            fileName,
+
             {
-                type:"application/pdf"
+                type:
+                    "application/pdf"
             }
+
         );
 
     /* =================================================
        SHARE PDF
     ================================================= */
+
     const shareData = {
-        title:"Employee Induction - " +employee,
-        text:"Please find attached the completed employee induction for " + employee + ".",
-        files: [pdfFile]
+
+        title:
+            "Employee Induction - " +
+            employee,
+
+        text:
+            "Please find attached the completed employee induction for " +
+            employee +
+            ".",
+
+        files: [
+            pdfFile
+        ]
+
     };
+
     if (
+
         navigator.canShare &&
-        navigator.canShare({files: [pdfFile]})
+
+        navigator.canShare({
+            files: [
+                pdfFile
+            ]
+        })
+
     ) {
+
         try {
+
             await navigator.share(shareData);
+
             const message = document.getElementById("message");
-            message.className = "success";
-            message.textContent = "Induction completed. The PDF has been created and shared.";
+
+            message.className =
+                "success";
+
+            message.textContent =
+                "Induction completed. The PDF has been created and shared.";
+
         }
+
         catch (error) {
+
             if (
-                error.name !== "AbortError"
+                error.name !==
+                "AbortError"
             ) {
+
                 console.error(error);
+
                 const message = document.getElementById("message");
-                message.className = "error";
-                message.textContent = "Unable to open the share menu.";
+
+                message.className =
+                    "error";
+
+                message.textContent =
+                    "Unable to open the share menu.";
+
             }
+
         }
+
     }
+
     else {
+
         /*
            Fallback for desktop browsers that don't
            support sharing files.
 
            Download the PDF instead.
         */
+
         pdf.save(fileName);
+
         const message = document.getElementById("message");
-        message.className = "success";
-        message.textContent = "This device does not support direct PDF sharing, so the completed induction PDF has been downloaded instead.";
+
+        message.className =
+            "success";
+
+        message.textContent =
+            "This device does not support direct PDF sharing, so the completed induction PDF has been downloaded instead.";
+
     }
+
 }
 
 /* =====================================================
@@ -2690,17 +2188,15 @@ async function completeInduction() {
 
    Do NOT resize here because Page 7 is hidden.
 ===================================================== */
-setupSignature(
-    "employeeSignature"
-);
 
-setupSignature(
-    "coordinatorSignature"
-);
+setupSignature("employeeSignature");
+
+setupSignature("coordinatorSignature");
 
 /* =====================================================
    INITIALISE PAGE
 ===================================================== */
+
 updateCounters();
 
 showPage(0);
